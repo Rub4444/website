@@ -45,4 +45,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function isAdmin()
+    {
+        return $this->is_admin === 1; // или если у вас другой способ определения администратора
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

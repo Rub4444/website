@@ -29,6 +29,11 @@ return [
     */
 
     'disks' => [
+        'reset' => [
+                'driver' => 'local',
+                'root' => base_path('resources/images'), // исправлено
+            ],
+
 
         'local' => [
             'driver' => 'local',
@@ -46,6 +51,7 @@ return [
             'throw' => false,
             'report' => false,
         ],
+
 
         's3' => [
             'driver' => 's3',
