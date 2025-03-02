@@ -3,11 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Traits\Translatable;
 
 class Product extends Model
 {
+    use SoftDeletes, Translatable;
+
     protected $fillable = [
-        'code', 'name', 'category_id', 'description', 'image', 'price', 'hit', 'new', 'recommend'
+        'code', 'name', 'category_id', 'description',
+        'image', 'price', 'hit', 'new', 'recommend',
+        'count', 'name_en', 'description_en'
     ];
 
     public function category()
@@ -27,6 +33,11 @@ class Product extends Model
         return $this->pivot ? $this->pivot->count * $this->price : $this->price;
     }
 
+    public function scopeByCode($query, $code)
+    {
+        return $query->where('code', $code);
+    }
+
     public function scopeHit($query)
     {
         return $query->where('hit', 1);
@@ -40,6 +51,10 @@ class Product extends Model
         return $query->where('recommend', 1);
     }
 
+    public function isAvailable()
+    {
+        return !$this->trashed() && $this->count > 0;
+    }
     // Упрощенная обработка чекбоксов
     public function setNewAttribute($value)
     {

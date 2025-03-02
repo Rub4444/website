@@ -7,40 +7,27 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Classes\Basket;
+use App\Models\Category;
+
 
 class BasketController extends Controller
 {
     public function basket()
     {
-        $orderId = session('orderId');
-        $order = $orderId ? Order::find($orderId) : null;
-
-        if (!$order || $order->products->isEmpty()) {
-            session()->flash('warning', 'Your basket is empty.');
-            return redirect()->route('index'); // Перенаправление, если корзина пуста
-        }
-
-        return view('basket', compact('order'));
+        $order = (new Basket())->getOrder();
+        $categories = Category::all();
+        return view('basket', compact('order', 'categories'));
     }
 
     public function basketConfirm(Request $request)
     {
-        $orderId = session('orderId');
-        if (!$orderId) {
-            return redirect()->route('index')->with('error', 'Корзина пуста!');
-        }
-
-        $order = Order::find($orderId);
-        if (!$order || $order->products->isEmpty()) {
-            return redirect()->route('index')->with('error', 'Корзина пуста!');
-        }
-
-        $success = $order->saveOrder($request->name, $request->phone);
-
-        if ($success) {
-            session()->flash('success', 'Ваш заказ успешно оформлен!');
+        $email = Auth::check() ? Auth::user()->email : $request->email;
+        if ((new Basket())->saveOrder($request->name, $request->phone, $email))
+        {
+            session()->flash('success', __('basket.your_order_confirmed'));
         } else {
-            session()->flash('warning', 'Ошибка оформления заказа');
+            session()->flash('warning', 'Товар не доступен!');
         }
         Order::eraseOrderSum();
         return redirect()->route('index');
@@ -48,86 +35,34 @@ class BasketController extends Controller
 
     public function basketPlace()
     {
-        $orderId = session('orderId');
-        if (!$orderId) {
-            return redirect()->route('index')->with('error', 'Корзина пуста!');
+        $basket = new Basket();
+        $order = $basket->getOrder();
+        if(!$basket->countAvailable())
+        {
+            session()->flash('warning', 'Товар не доступен!');
+            return redirect()->route('basket');
         }
-
-        $order = Order::find($orderId);
-        if (!$order) {
-            Log::error('Ошибка при оформлении: заказ не найден');
-            return redirect()->route('index')->with('error', 'Ошибка заказа!');
-        }
-
-        return view('order', compact('order'));
+        $categories = Category::all();
+        return view('order', compact('order', 'categories'));
     }
 
-    public function basketAdd($productId)
+    public function basketAdd(Product $product)
     {
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('warning', 'Пожалуйста, войдите, чтобы добавить товары в корзину.');
+        $result = (new Basket(true))->addProduct($product);
+        if($result)
+        {
+            session()->flash('success', 'Товар "' . $product->name . '" добавлен в корзину');
         }
-
-        $orderId = session('orderId');
-        if (!$orderId) {
-            $order = Order::create(['user_id' => Auth::id()]); // Устанавливаем user_id при создании нового заказа
-            session(['orderId' => $order->id]);
-        } else {
-            $order = Order::find($orderId);
+        else
+        {
+            session()->flash('warning', 'Товар "' . $product->name . '" не добавлен в корзину');
         }
-
-        if (!$order) {
-            Log::error('Ошибка добавления товара: заказ не найден');
-            return redirect()->route('basket')->with('error', 'Ошибка заказа!');
-        }
-
-        $product = Product::find($productId);
-
-        Order::changeFullSum($product->price);
-
-        if (!$product) {
-            return redirect()->route('basket')->with('error', 'Товар не найден!');
-        }
-
-        if ($order->products->contains($productId)) {
-            $pivotRow = $order->products()->where('product_id', $productId)->first()->pivot;
-            $pivotRow->count++;
-            $pivotRow->update();
-        } else {
-            $order->products()->attach($productId, ['count' => 1]);
-        }
-
-        session()->flash('success', 'Товар "' . $product->name . '" добавлен в корзину');
         return redirect()->route('basket');
     }
 
-    public function basketRemove($productId)
+    public function basketRemove(Product $product)
     {
-        $orderId = session('orderId');
-        $order = $orderId ? Order::find($orderId) : null;
-
-        if (!$order) {
-            Log::error('Ошибка удаления товара: заказ не найден');
-            return redirect()->route('basket')->with('error', 'Ошибка заказа!');
-        }
-        $order = Order::find($orderId);
-        if ($order->products->contains($productId)) {
-            $pivotRow = $order->products()->where('product_id', $productId)->first()->pivot;
-            if ($pivotRow->count < 2) {
-                $order->products()->detach($productId);
-            } else {
-                $pivotRow->count--;
-                $pivotRow->update();
-            }
-        }
-        $product = Product::find($productId);
-        Order::changeFullSum(-$product->price);
-
-        // Удаляем заказ, если в нем нет товаров
-        if ($order->products->isEmpty()) {
-            $order->delete();
-            session()->forget('orderId');
-        }
+        (new Basket())->removeProduct($product);
 
         session()->flash('warning', 'Товар удалён из корзины');
         return redirect()->route('basket');

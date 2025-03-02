@@ -22,6 +22,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => '25000',
                 'category_id' => 1,
                 'image' => 'products/iphone_x.jpg',
+                'count' => 5,
             ],
             [
                 'name' => 'HTC One S',
@@ -30,6 +31,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => '12500',
                 'category_id' => 1,
                 'image' => 'products/htc_one_s.png',
+                'count' => 5,
             ],
             [
                 'name' => 'Iphone 5 SE',
@@ -38,6 +40,7 @@ class ProductsTableSeeder extends Seeder
                 'price' => '17000',
                 'category_id' => 1,
                 'image' => 'products/iphone_5.jpg',
+                'count' => 0,
             ],
         ]);
     }

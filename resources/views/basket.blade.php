@@ -1,63 +1,87 @@
 @extends('layouts.master')
 @section('title', 'Իջևան Մարկետ')
 @section('content')
-<div class="panel">
-@if($order)
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>@lang('basket.name')</th>
-                <th>@lang('basket.count')</th>
-                <th>@lang('basket.price')</th>
-                <th>@lang('basket.cost')</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($order->products()->with('category')->get() as $product)
-                <tr>
-                    <td>
-                        <a href="{{ route('product', [$product->category->code, $product->code]) }}">
-                            <img height="56px" src="{{ Storage::url($product->image) }}" alt="">
-                            {{ $product->name }}
-                        </a>
-                    </td>
-                    <td>
-                        <span class="badge" style="color:black;">{{ $product->pivot->count }}</span>
-                        <div>
-                            <form action="{{ route('basket-remove', $product) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-danger">
-                                    <span class="glyphicon glyphicon-minus" aria-hidden="true">-</span>
-                                </button>
-                            </form>
-                            <form action="{{ route('basket-add', $product) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-success">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true">+</span>
-                                </button>
-                            </form>
+    @if($order)
+    <!-- cart section start -->
+    <section class="cart__section section--padding">
+        <div class="container-fluid">
+            <div class="cart__section--inner">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="cart__table">
+                            <table class="cart__table--inner">
+                                <thead class="cart__table--header">
+                                    <tr class="cart__table--header__items">
+                                        <th class="cart__table--header__list">@lang('basket.name')</th>
+                                        <th class="cart__table--header__list">@lang('basket.count')</th>
+                                        <th class="cart__table--header__list">@lang('basket.price')</th>
+                                        <th class="cart__table--header__list">@lang('basket.cost')</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="cart__table--body">
+                                    @foreach($order->products()->with('category')->get() as $product)
+                                        <tr class="cart__table--body__items">
+                                            <td class="cart__table--body__list">
+                                                <a href="{{ route('product', [$product->category->code, $product->code]) }}">
+                                                    <div class="cart__thumbnail">
+                                                        <img class="border-radius-5" src="{{ Storage::url($product->image) }}" alt="cart-product">
+                                                    </div>
+                                                    {{ $product->__('name') }}
+                                                </a>
+                                            </td>
+                                            <td class="cart__table--body__list">
+                                                <div class="quantity__box">
+                                                    <form action="{{ route('basket-remove', $product) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="quantity__value quickview__value--quantity decrease" aria-label="quantity value" value="Decrease Value">-</button>
+                                                    </form>
+                                                    <label>
+                                                        <input type="number" class="quantity__number quickview__value--number" value="{{ $product->pivot->count }}" data-counter />
+                                                    </label>
+                                                    <form action="{{ route('basket-add', $product) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="quantity__value quickview__value--quantity increase" aria-label="quantity value" value="Increase Value">+</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                            <td class="cart__table--body__list">
+                                                <span class="cart__price">{{ $product->price }}AMD</span>
+                                            </td>
+                                            <td class="cart__table--body__list">
+                                                <span class="cart__price end">{{ $product->getPriceForCount() }}AMD</span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                    </td>
-                    <td>{{ $product->price }} AMD</td>
-                    <td>{{ $product->getPriceForCount() }} AMD</td>
-                </tr>
-            @endforeach
-            <tr>
-                <td>Full price:</td>
-                <td>{{ $order->getFullSum() }} AMD</td>
-            </tr>
-        </tbody>
-    </table>
-@else
-    <p>Your basket is empty.</p>
-@endif
-
-    <div class="row">
-        <br>
-        <div class="btn-group pull-right" role="group">
-            <a type="button" class="btn btn-success" href="{{route('basket-place')}}">Confirm</a>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="cart__summary border-radius-10">
+                            <div class="cart__summary--total mb-20">
+                                <table class="cart__summary--total__table">
+                                    <tbody>
+                                        <tr class="cart__summary--total__list">
+                                            <td class="cart__summary--total__title text-left">@lang('basket.cost')</td>
+                                            <td class="cart__summary--amount text-right">{{ $order->getFullSum() }}AMD</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="cart__summary--footer">
+                                <p class="cart__summary--footer__desc">Shipping & taxes calculated at checkout</p>
+                                <ul class="d-flex justify-content-between">
+                                    <li><a class="cart__summary--footer__btn btn checkout" href="{{route('basket-place')}}">@lang('basket.confirm')</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
+    @else
+        <p>Your basket is empty.</p>
+    @endif
 @endsection
 

@@ -1,0 +1,26 @@
+<?php
+return [
+    'online_shop' => 'Online Shop',
+    'all_categories' => 'All Categories',
+    'current_lang' => 'en',
+    'set_lang' => 'ru',
+    'login' => 'Log In',
+    'registration' => 'Registration',
+    'basket' => 'Basket',
+    'admin_panel' => 'Admin Panel',
+    'my_account' => 'My Account',
+    'logout' => 'Log Out',
+    'reset_all' => 'Reset All',
+    'properties' => [
+        'hit' => 'Hit',
+        'recommend' => 'Recommend',
+        'new' => 'New',
+        'price_from' => 'Price From',
+        'price_to' => 'Price To',
+        'apply' => 'Apply',
+        'reset' => 'Reset',
+    ],
+    'cart' => 'Cart',
+    'more' => 'More',
+    'available' => 'Unavailable',
+];

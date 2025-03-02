@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Models\Subscription;
 use App\Http\Requests\ProductFilterRequest;
+use App\Http\Requests\SubscriptionRequest;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 use DebugBar\DebugBar;
+
 
 class MainController extends Controller
 {
@@ -31,8 +35,8 @@ class MainController extends Controller
             }
         }
         $products = $productsQuery->paginate(6)->withPath("?" . $request->getQueryString());
-
-        return view('index', compact('products'));
+        $categories = Category::all();
+        return view('index', compact('products', 'categories'));
     }
 
     public function categories()
@@ -44,11 +48,33 @@ class MainController extends Controller
     public function category($code)
     {
         $category = Category::where('code', $code)->firstOrFail();
-        return view('category', compact('category'));
+        $categories = Category::all();
+        return view('category', compact('category', 'categories'));
     }
 
-    public function product($category, $product = null)
+    public function product($category, $productCode)
     {
-        return view('product', ['product' => $product]);
+        $product = Product::withTrashed()->byCode($productCode)->firstOrFail();
+        $categories = Category::all();
+        return view('product', compact('product', 'categories'));
+    }
+    public function subscribe(SubscriptionRequest $request, Product $product)
+    {
+        Subscription::create([
+            'email' => $request->email,
+            'product_id' => $product->id,
+        ]);
+        return redirect()->back()->with('success', 'Շնորհակալություն, ապրանքի առկայության դեպքում մենք կտեղեկացնենք Ձեզ');
+    }
+    public function changeLocale($locale)
+    {
+        $availableLocales = ['ru', 'en'];
+        if(!in_array($locale, $availableLocales))
+        {
+            $locale = config('app.locale');
+        }
+        session(['locale' => $locale]);
+        App::setLocale($locale);
+        return redirect()->back();
     }
 }

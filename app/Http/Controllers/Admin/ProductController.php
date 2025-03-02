@@ -30,8 +30,6 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
             $params['image'] = $path;
-            dd($params);
-
         }
 
         // Убедимся, что чекбоксы не остаются NULL

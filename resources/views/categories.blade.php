@@ -7,11 +7,11 @@
         <a href="{{route('category', $category->code)}}">
             <img src="{{ Storage::url($category->image) }}">
             <h2>
-                {{$category->name}}
+                {{$category->__('name')}}
             </h2>
         </a>
         <p>
-            {{$category->description}}
+            {{$category->__('description')}}
         </p>
     </div>
 @endforeach

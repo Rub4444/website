@@ -1,0 +1,26 @@
+<?php
+return [
+    'online_shop' => 'Интернет Магазин',
+    'all_categories' => 'Категории',
+    'current_lang' => 'ru',
+    'set_lang' => 'en',
+    'login' => 'Войти',
+    'registration' => 'Регистрация',
+    'basket' => 'Корзина',
+    'admin_panel' => 'Панель админа',
+    'my_account' => 'Мой Аккаунт',
+    'logout' => 'Выйти',
+    'reset_all' => 'Сбросить Все',
+    'properties' => [
+        'hit' => 'Хит',
+        'recommend' => 'Рекомендуем',
+        'new' => 'Новинка',
+        'price_from' => 'Цена От',
+        'price_to' => 'Цена До',
+        'apply' => 'Применять',
+        'reset' => 'Сброс',
+    ],
+    'cart' => 'Корзина',
+    'more' => 'Больше',
+    'available' => 'Недоступно',
+];

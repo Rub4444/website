@@ -1,27 +1,36 @@
-<div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-        <div class="labels">
-            @if($product->isNew())
-                <span class="badge badge-success">New</span>
-            @endif
-            @if($product->isRecommend())
-                <span class="badge badge-warning">Recommend</span>
-            @endif
-            @if($product->isHit())
-                <span class="badge badge-danger">Hit</span>
-            @endif
+<div class="col md-28">
+    <div class="product__items ">
+        <div class="product__items--thumbnail">
+            <a class="product__items--link"  href="{{ route('product', [$product->category->code, $product->code]) }}">
+                <img class="product__items--img product__primary--img" src="{{ asset('storage/' . $product->image) }}" alt="product-img">
+            </a>
+            <div class="product__badge">
+                {{-- <span class="product__badge--items sale">Sale</span> --}}
+                @if($product->isNew())
+                    <span class="product__badge--items new">@lang('main.properties.new')</span>
+                @endif
+                @if($product->isRecommend())
+                    <span class="product__badge--items recommend">@lang('main.properties.recommend')</span>
+                @endif
+                @if($product->isHit())
+                    <span class="product__badge--items hit">@lang('main.properties.hit')</span>
+                @endif
+            </div>
         </div>
-        <img src="{{ Storage::url($product->image) }}" alt="" style="width:100px;height:100px;">
-        <div class="caption">
-            <h3>{{$product->name}}</h3>
-            <p>{{$product->price}} AMD</p>
-            <p>
-                <form action="{{route('basket-add', $product)}}" method="POST">
-                    <button type="submit">Cart</button>
-                    <a href="{{route('product', [isset($category) ?  $category->code : $product->category->code, $product->code])}}">More...</a>
-                    @csrf
-                </form>
-            </p>
+        <div class="product__items--content text-center">
+            <h3 class="product__items--content__title h4"><a href="product-details.html">{{$product->__('name')}}</a></h3>
+            <div class="product__items--price">
+                <span class="current__price">{{$product->price}} AMD</span>
+            </div>
+            <form action="{{route('basket-add', $product)}}" method="POST">
+                @if($product->isAvailable())
+                    <button class="add__to--cart__btn" type="submit">@lang('main.cart')</button>
+                @else
+                    <p class="add__to--cart__btn">@lang('main.available')</p>
+                @endif
+                @csrf
+            </form>
         </div>
     </div>
 </div>
+

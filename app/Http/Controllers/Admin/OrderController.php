@@ -11,12 +11,12 @@ class OrderController extends Controller
     {
         $orders = Order::active()->paginate(10);
 
-        // Возвращаем представление с заказами
         return view('auth.orders.index', compact('orders'));
     }
 
     public function show(Order $order)
     {
-        return view('auth.orders.show', compact('order'));
+        $products = $order->products()->withTrashed()->get();
+        return view('auth.orders.show', compact('order', 'products'));
     }
 }

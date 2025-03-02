@@ -25,6 +25,8 @@ class CategoryRequest extends FormRequest
             'code' => 'required|min:3|max:255|unique:categories,code',
             'name' => 'required|min:3|max:255',
             'description' => 'required|min:3',
+            'name_en' => 'nullable|min:3|max:255',
+            'description_en' => 'nullable|min:3',
         ];
 
         // If the route is not store (it's edit), we remove the unique rule for code
@@ -35,6 +37,11 @@ class CategoryRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Custom error messages.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [
@@ -43,6 +50,10 @@ class CategoryRequest extends FormRequest
             'max' => 'Поле :attribute не может превышать :max символов',
             'unique' => 'Поле :attribute должно быть уникальным',
             'code.unique' => 'Код уже существует, выберите другой',
+            'name_en.min' => 'Поле name_en должно содержать минимум :min символов',
+            'name_en.max' => 'Поле name_en не может превышать :max символов',
+            'description_en.min' => 'Поле description_en должно содержать минимум :min символов',
+            'description_en.max' => 'Поле description_en не может превышать :max символов',
         ];
     }
 }
