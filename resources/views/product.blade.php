@@ -11,10 +11,9 @@
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide">
                                     <div class="product__media--preview__items">
-                                        <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="assets/img/product/big-product1.jpg">
+                                        <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview">
                                             <img class="product__media--preview__items--img" src="{{Storage::url($product->image)}}" alt="product-media-img">
                                         </a>
-
                                     </div>
                                 </div>
                             </div>
