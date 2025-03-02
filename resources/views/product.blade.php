@@ -72,8 +72,11 @@
                                             <form method="POST" action="{{route('subscription', $product)}}">
                                                 @csrf
                                                 <input type="text" name="email"></input>
-                                                <button type="submit">Ուղարկել</button>
+                                                <button type="submit" class="btn btn-primary btn-sm me-2">
+                                                    Ուղարկել
+                                                </button>
                                             </form>
+
                                         @endif
                                     </p>
                                 </div>
