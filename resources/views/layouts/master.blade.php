@@ -8,30 +8,13 @@
 
     <title>@lang('main.online_shop'): @yield('title')</title>
 
-    {{-- <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/starter-template.css" rel="stylesheet"> --}}
-
-    <!-- Bootstrap CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-    <!-- Сторонние библиотеки -->
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
-
-    <!-- Кастомные стили -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-    <!-- Иконка сайта -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}">
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
 
 <!--Start preloader -->
 <div id="preloader">
@@ -86,14 +69,33 @@
                     </div>
                     <div class="main_menu d-none d-lg-block">
                         <nav class="header-main-menu">
-                            <ul>
-                                <li><a href="{{route('categories')}}">@lang('main.all_categories')</a></li>
-                                <li><a  href="{{route('locale', __('main.set_lang') )}}">@lang('main.set_lang')</a></li>
+                            <ul class="d-flex">
+                                <li class="header__menu--items"><a class="header__menu--link" href="{{route('categories')}}">@lang('main.all_categories')</a></li>
+                                <li class="header__menu--items"><a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}">@lang('main.set_lang')</a></li>
+
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}">
+                                        {{ App\Services\CurrencyConversion::getCurrencySymbol() }}
+                                    </a>
+                                    <ul class="header__sub--menu">
+                                        @foreach(App\Services\CurrencyConversion::getCurrencies() as $currency)
+                                            <li class="header__sub--menu__items">
+                                                <a class="header__sub--menu__link" href="{{route('currency', $currency->code)}}">
+                                                    {{$currency->symbol}}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+
                                 @auth
                                     @admin
-                                    <li><a href="{{ route('reset') }}">@lang('main.reset_all')</a></li>
+                                    <li class="header__menu--items">
+                                        <a class="header__menu--link" href="{{ route('reset') }}">
+                                            @lang('main.reset_all')
+                                        </a>
+                                    </li>
                                     @endadmin
-                                    {{-- <li><a href="{{route('get-logout')}}">@lang('main.logout')</a></li> --}}
                                 @endauth
                             </ul>
                         </nav>
@@ -268,10 +270,13 @@
 <footer class="text-white py-5">
 
     <!-- Подключение JavaScript -->
-    <script src="{{ asset('js/popper.js') }}" defer></script>
-    <script src="{{ asset('js/swiper-bundle.min.js') }}" defer></script>
-    <script src="{{ asset('js/glightbox.min.js') }}" defer></script>
-    <script src="{{ asset('js/script.js') }}" defer></script>
+    <script src="{{ asset('js/popper.js') }}"></script>
+    <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+
     <div class="container">
         <div class="row">
             <!-- О нас -->

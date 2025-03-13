@@ -45,10 +45,10 @@
                                                 </div>
                                             </td>
                                             <td class="cart__table--body__list">
-                                                <span class="cart__price">{{ $product->price }}AMD</span>
+                                                <span class="cart__price">{{ $product->price }}{{App\Services\CurrencyConversion::getCurrencySymbol()}}</span>
                                             </td>
                                             <td class="cart__table--body__list">
-                                                <span class="cart__price end">{{ $product->getPriceForCount() }}AMD</span>
+                                                <span class="cart__price end">{{ $product->getPriceForCount() }}{{App\Services\CurrencyConversion::getCurrencySymbol()}}</span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -63,7 +63,7 @@
                                     <tbody>
                                         <tr class="cart__summary--total__list">
                                             <td class="cart__summary--total__title text-left">@lang('basket.cost')</td>
-                                            <td class="cart__summary--amount text-right">{{ $order->getFullSum() }}AMD</td>
+                                            <td class="cart__summary--amount text-right">{{ $order->getFullSum() }}{{App\Services\CurrencyConversion::getCurrencySymbol()}}</td>
                                         </tr>
                                     </tbody>
                                 </table>

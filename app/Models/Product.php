@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Traits\Translatable;
+use App\Services\CurrencyConversion;
 
 class Product extends Model
 {
@@ -71,7 +72,6 @@ class Product extends Model
         $this->attributes['recommend'] = !empty($value) ? 1 : 0;
     }
 
-    // Упрощенные методы проверки
     public function isHit(): bool
     {
         return (bool) $this->hit;
@@ -85,5 +85,10 @@ class Product extends Model
     public function isRecommend(): bool
     {
         return (bool) $this->recommend;
+    }
+
+    public function getPriceAttribute($value)
+    {
+        return round(CurrencyConversion::convert($value), 2);
     }
 }

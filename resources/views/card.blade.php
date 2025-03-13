@@ -20,7 +20,7 @@
         <div class="product__items--content text-center">
             <h3 class="product__items--content__title h4"><a href="product-details.html">{{$product->__('name')}}</a></h3>
             <div class="product__items--price">
-                <span class="current__price">{{$product->price}} AMD</span>
+                <span class="current__price">{{$product->price}} {{App\Services\CurrencyConversion::getCurrencySymbol()}} </span>
             </div>
             <form action="{{route('basket-add', $product)}}" method="POST">
                 @if($product->isAvailable())
