@@ -8,7 +8,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-
+use App\Services\sConversion;
 
 class Basket
 {
@@ -23,10 +23,17 @@ class Basket
             if (Auth::check()) {
                 $data['user_id'] = Auth::id();
             }
-            $this->order = Order::create($data);
+            $data['currency_id'] = 1;
+            $this->order = new Order($data);
             session(['order' => $this->order]);
         }
+        else
+        {
+            $this->order = $order;
+        }
     }
+
+
 
     public function getOrder()
     {
@@ -35,19 +42,23 @@ class Basket
 
     public function countAvailable($updateCount = false)
     {
-        foreach ($this->order->products as $orderProduct) {
-            if ($orderProduct->count < $this->getPivotRow($orderProduct)->count)
+        $products = collect([]);
+        foreach ($this->order->products as $orderProduct)
+        {
+            $product = Product::find($orderProduct->id);
+            if ($orderProduct->countInOrder > $product->count)
             {
                 return false;
             }
             if($updateCount)
             {
-                $orderProduct->count -= $this->getPivotRow($orderProduct)->count;
+                $product->count -= $orderProduct->countInOrder;
+                $products->push($product);
             }
         }
         if($updateCount)
         {
-            $this->order->products->map->save();
+            $products->map->save();
         }
         return true;
     }
@@ -58,47 +69,53 @@ class Basket
         {
             return false;
         }
+        $this->order->saveOrder($name, $phone);
         Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
-        return $this->order->saveOrder($name, $phone);
-    }
-
-    protected function getPivotRow($product)
-    {
-        return $this->order->products()->where('product_id', $product->id)->first()->pivot;
+        return true;
     }
 
     public function removeProduct(Product $product)
     {
-        if ($this->order->products->contains($product->id)) {
-            $pivotRow = $this->getPivotRow($product);
-            if ($pivotRow->count < 2) {
-                $this->order->products()->detach($product->id);
-            } else {
-                $pivotRow->count--;
-                $pivotRow->update();
+        if($this->order->products->contains($product))
+        {
+            $pivotRow = $this->order->products->where('id', $product->id)->first();
+            if ($pivotRow->countInOrder < 2)
+            {
+                $this->order->products->pop($product);
+            }
+            else
+            {
+                $pivotRow->countInOrder--;
             }
         }
-
-        $this->order->changeFullSum(-$product->price);
     }
+
 
     public function addProduct(Product $product)
     {
-        if ($this->order->products->contains($product->id)) {
-            $pivotRow = $this->getPivotRow($product);
-            $pivotRow->count++;
-            if ($pivotRow->count > $product->count) {
+        $orderProduct = $this->order->products->where('id', $product->id)->first();
+        if ($orderProduct)
+        {
+            $pivotRow = $this->order->products->where('id',  $product->id)->first();
+            if ($pivotRow->countInOrder >= $product->count)
+            {
                 return false;
             }
-            $pivotRow->update();
-        } else {
-            if ($product->count == 0) {
+            $pivotRow->countInOrder++;
+        }
+        else
+        {
+            if ($product->count == 0)
+            {
                 return false;
             }
-            $this->order->products()->attach($product->id, ['count' => 1]);
+            $product->countInOrder = 1;
+            $this->order->products->push($product);
+
         }
 
-        $this->order->changeFullSum($product->price);
         return true;
     }
+
+
 }

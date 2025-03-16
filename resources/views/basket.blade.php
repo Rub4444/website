@@ -19,7 +19,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="cart__table--body">
-                                    @foreach($order->products()->with('category')->get() as $product)
+                                    @foreach($order->products as $product)
                                         <tr class="cart__table--body__items">
                                             <td class="cart__table--body__list">
                                                 <a href="{{ route('product', [$product->category->code, $product->code]) }}">
@@ -36,7 +36,7 @@
                                                         <button type="submit" class="quantity__value quickview__value--quantity decrease" aria-label="quantity value" value="Decrease Value">-</button>
                                                     </form>
                                                     <label>
-                                                        <input type="number" class="quantity__number quickview__value--number" value="{{ $product->pivot->count }}" data-counter />
+                                                        <input type="number" class="quantity__number quickview__value--number" value="{{ $product->countInOrder }}" data-counter />
                                                     </label>
                                                     <form action="{{ route('basket-add', $product) }}" method="POST">
                                                         @csrf
@@ -48,7 +48,7 @@
                                                 <span class="cart__price">{{ $product->price }}{{App\Services\CurrencyConversion::getCurrencySymbol()}}</span>
                                             </td>
                                             <td class="cart__table--body__list">
-                                                <span class="cart__price end">{{ $product->getPriceForCount() }}{{App\Services\CurrencyConversion::getCurrencySymbol()}}</span>
+                                                <span class="cart__price end">{{ $product->price * $product->countInOrder }}{{App\Services\CurrencyConversion::getCurrencySymbol()}}</span>
                                             </td>
                                         </tr>
                                     @endforeach

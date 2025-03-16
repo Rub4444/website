@@ -15,7 +15,7 @@
                     </a>
                 </td>
                 <td>
-                    <span class="badge" style="color:black;">{{ $product->pivot->count }}</span>
+                    <span class="badge" style="color:black;">{{ $product->countInOrder }}</span>
                 </td>
                 <td>{{ $product->price }} AMD</td>
                 <td>{{ $product->getPriceForCount() }} AMD</td>

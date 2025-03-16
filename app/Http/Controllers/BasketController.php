@@ -29,7 +29,7 @@ class BasketController extends Controller
         } else {
             session()->flash('warning', 'Товар не доступен!');
         }
-        Order::eraseOrderSum();
+
         return redirect()->route('index');
     }
 
@@ -64,7 +64,7 @@ class BasketController extends Controller
     {
         (new Basket())->removeProduct($product);
 
-        session()->flash('warning', 'Товар удалён из корзины');
+        session()->flash('warning', 'Товар "' . $product->name . '" удалён из корзины');
         return redirect()->route('basket');
     }
 }

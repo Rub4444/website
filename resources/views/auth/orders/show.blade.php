@@ -30,13 +30,13 @@
                                     </a>
                                 </td>
                                 <td><span class="badge" style="color:black;"> {{ $product->pivot->count }}</span></td>
-                                <td>{{ $product->price }} AMD</td>
-                                <td>{{ $product->getPriceForCount() }} AMD</td>
+                                <td>{{ $product->pivot->price }} {{$order->currency->symbol}}</td>
+                                <td>{{$product->pivot->price *  $product->pivot->count}} {{$order->currency->symbol}}</td>
                             </tr>
                         @endforeach
                         <tr>
                             <td colspan="3">Общая стоимость:</td>
-                            <td>{{ $order->calculateFullSum() }}AMD</td>
+                            <td>{{ $order->sum }} {{$order->currency->symbol}}</td>
                         </tr>
                         </tbody>
                     </table>
