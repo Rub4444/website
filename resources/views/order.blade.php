@@ -9,7 +9,8 @@
                     <form action="{{route('basket-confirm')}}" method="POST">
                         <div class="checkout__content--step section__shipping--address">
                             <div class="section__header mb-25">
-                                <h2 class="section__header--title h3">Confirm Order</h2>
+                                <h2 class="section__header--title h3">Հաստատել Պատվերը՝</h2>
+                                <h4 class="section__header--title h4">{{$order->getFullSum()}} {{$currencySymbol}}</h4>
                             </div>
                             <div class="section__shipping--address__content">
                                 <div class="row">

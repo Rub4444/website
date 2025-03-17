@@ -62,6 +62,21 @@
                 </div>
             </div>
         </div>
+        <div>
+            <h2>Best Products</h2>
+            <ul>
+                @foreach($bestProducts as $bestProduct)
+                    <li>
+                        <a href="{{route('product', [$bestProduct->category->code, $bestProduct->code])}}">
+                            <img src="{{ asset('storage/' . $bestProduct->image) }}" alt="">
+                        </a>
+                        <h3 class="w-50">
+                            {{ $bestProduct->name }}
+                        </h3>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
     </section>
 
 @endsection

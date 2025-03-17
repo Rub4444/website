@@ -36,14 +36,12 @@ class MainController extends Controller
             }
         }
         $products = $productsQuery->paginate(6)->withPath("?" . $request->getQueryString());
-        $categories = Category::all();
-        return view('index', compact('products', 'categories'));
+        return view('index', compact('products'));
     }
 
     public function categories()
     {
-        $categories = Category::get();
-        return view('categories', compact('categories'));
+        return view('categories');
     }
 
     public function category($code)

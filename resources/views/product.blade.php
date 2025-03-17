@@ -25,7 +25,7 @@
                         <form action="#">
                             <h2 class="product__details--info__title mb-15">{{$product->__('name')}}</h2>
                             <div class="product__details--info__price mb-15">
-                                <span class="current__price">{{$product->price}} {{App\Services\CurrencyConversion::getCurrencySymbol()}}</span>
+                                <span class="current__price">{{$product->price}} {{ $currencySymbol}}</span>
                                 {{-- <span class="old__price">$68.00</span> --}}
                             </div>
                             <p class="product__details--info__desc mb-20">

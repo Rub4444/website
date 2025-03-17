@@ -2,7 +2,7 @@
 @section('title', 'Իջևան Մարկետ')
 @section('content')
 
-<h1>{{$category->__('name')}} {{$category->products->count()}}</h1>
+<h1>{{$category->__('name')}}</h1>
 <p>{{$category->__('description')}}</p>
 
 <div class="row">
