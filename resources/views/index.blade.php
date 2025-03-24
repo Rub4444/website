@@ -48,36 +48,80 @@
     <!-- Start product section -->
     <section class="product__section section--padding pt-0">
         <div class="container">
+            <div class="section__heading text-center mb-25">
+                <span class="section__heading--subtitle">Products</span>
+                <h2 class="section__heading--maintitle">Our Products</h2>
+            </div>
             <div class="tab_content">
                 <div id="product_all" class="tab_pane active show">
                     <div class="product__section--inner">
                         <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n28">
-                            @foreach($products as $product)
-                                @include('card', compact('product'))
+                            @foreach($skus as $sku)
+                                @include('card', compact('sku'))
                             @endforeach
-
-                            {{$products->links()}}
                         </div>
+                        {{$skus->links()}}
                     </div>
                 </div>
             </div>
         </div>
-        <div>
-            <h2>Best Products</h2>
-            <ul>
-                @foreach($bestProducts as $bestProduct)
-                    <li>
-                        <a href="{{route('product', [$bestProduct->category->code, $bestProduct->code])}}">
-                            <img src="{{ asset('storage/' . $bestProduct->image) }}" alt="">
-                        </a>
-                        <h3 class="w-50">
-                            {{ $bestProduct->name }}
-                        </h3>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    </section>
+
+        <section class="product__section section--padding pt-0">
+            <div class="container">
+                <div class="section__heading text-center mb-25">
+                    <span class="section__heading--subtitle">Recently added our store</span>
+                    <h2 class="section__heading--maintitle">Trending Products</h2>
+                </div>
+                <div class="tab_content">
+                    <div id="product_all" class="tab_pane active show">
+                        <div class="product__section--inner">
+                            <div class="row row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n28">
+                                @foreach($bestSkus as $bestSku)
+                                    <div class="col md-28">
+                                        <div class="product__items ">
+                                            <div class="product__items--thumbnail">
+                                                <a class="product__items--link" href="{{route('sku', [$bestSku->product->category->code, $bestSku->product->code, $bestSku])}}">
+                                                    <img class="product__items--img product__primary--img" src="{{ asset('storage/' . $bestSku->product->image) }}" alt="product-img">
+                                                </a>
+                                                <div class="product__badge">
+                                                    @if($bestSku->product->isNew())
+                                                        <span class="product__badge--items new">@lang('main.properties.new')</span>
+                                                    @endif
+                                                    @if($bestSku->product->isRecommend())
+                                                        <span class="product__badge--items recommend">@lang('main.properties.recommend')</span>
+                                                    @endif
+                                                    @if($bestSku->product->isHit())
+                                                        <span class="product__badge--items hit">@lang('main.properties.hit')</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="product__items--content text-center">
+                                                <form action="{{route('basket-add', $bestSku)}}" method="POST">
+                                                    @if($bestSku->isAvailable())
+                                                        <button class="add__to--cart__btn" type="submit">@lang('main.cart')</button>
+                                                    @else
+                                                        <p class="add__to--cart__btn">@lang('main.available')</p>
+                                                    @endif
+                                                    @csrf
+                                                </form>
+                                                <h3 class="product__items--content__title h4">
+                                                    <a href="{{route('sku', [$bestSku->product->category->code, $bestSku->product->code, $bestSku])}}">
+                                                        {{ $bestSku->product->__('name') }}
+                                                    </a>
+                                                </h3>
+                                                <div class="product__items--price">
+                                                    <span class="current__price">{{ $bestSku->product->price }} {{ $currencySymbol }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
 @endsection
 

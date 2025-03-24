@@ -7,18 +7,18 @@
 
 <table>
     <tbody>
-        @foreach($order->products as $product)
+        @foreach($order->skus as $sku)
             <tr>
                 <td>
-                    <a href="{{ route('product', [$product->category->code, $product->code]) }}">
-                        {{ $product->__('name') }}
+                    <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
+                        {{ $sku->product->__('name') }}
                     </a>
                 </td>
                 <td>
-                    <span class="badge" style="color:black;">{{ $product->countInOrder }}</span>
+                    <span class="badge" style="color:black;">{{ $sku->countInOrder }}</span>
                 </td>
-                <td>{{ $product->price }} AMD</td>
-                <td>{{ $product->getPriceForCount() }} AMD</td>
+                <td>{{ $sku->price }} AMD</td>
+                <td>{{ $sku->getPriceForCount() }} AMD</td>
             </tr>
         @endforeach
     </tbody>

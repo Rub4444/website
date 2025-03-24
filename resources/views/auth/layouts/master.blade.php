@@ -38,6 +38,7 @@
                     <ul class="nav navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="{{route('categories.index')}}">Категории</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('products.index')}}">Товары</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('properties.index') }}">Свойство</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Заказы</a></li>
                     </ul>
                 @endadmin

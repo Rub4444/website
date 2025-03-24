@@ -22,16 +22,21 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function skus()
+    {
+        return $this->hasMany(Sku::class);
+    }
+
+    public function properties()
+    {
+        return $this->belongsToMany(Property::class, 'property_product')->withTimestamps();
+    }
+
     public function orders()
     {
         return $this->belongsToMany(Order::class, 'order_product')
                     ->withPivot('count')
                     ->withTimestamps();
-    }
-
-    public function getPriceForCount()
-    {
-        return $this->pivot ? $this->pivot->count * $this->price : $this->price;
     }
 
     public function scopeByCode($query, $code)
@@ -52,10 +57,6 @@ class Product extends Model
         return $query->where('recommend', 1);
     }
 
-    public function isAvailable()
-    {
-        return !$this->trashed() && $this->count > 0;
-    }
     // Упрощенная обработка чекбоксов
     public function setNewAttribute($value)
     {

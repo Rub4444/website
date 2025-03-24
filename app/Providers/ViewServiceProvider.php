@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Services\CurrencyConversion;
+use App\Models\Sku;
 
 class ViewServiceProvider extends ServiceProvider
 {

@@ -8,20 +8,20 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Product; // ✅ Добавляем импорт модели Product
+use App\Models\Sku;
 
 class SendSubscriptionMessage extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $product;
+    protected $sku;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Product $product)
+    public function __construct(Sku $sku)
     {
-        $this->product = $product;
+        $this->sku = $sku;
     }
 
     /**
@@ -41,7 +41,7 @@ class SendSubscriptionMessage extends Mailable
     {
         return new Content(
             view: 'mail.subscription',
-            with: ['product' => $this->product]
+            with: ['sku' => $this->sku]
         );
 
     }

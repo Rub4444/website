@@ -6,8 +6,8 @@
 <p>{{$category->__('description')}}</p>
 
 <div class="row">
-    @foreach($category->products as $product)
-        @include('card', compact('product'))
+    @foreach($category->products->map->skus->flatten() as $sku)
+        @include('card', compact('sku'))
     @endforeach
 </div>
 

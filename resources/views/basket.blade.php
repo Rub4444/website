@@ -19,36 +19,36 @@
                                     </tr>
                                 </thead>
                                 <tbody class="cart__table--body">
-                                    @foreach($order->products as $product)
+                                    @foreach($order->skus as $sku)
                                         <tr class="cart__table--body__items">
                                             <td class="cart__table--body__list">
-                                                <a href="{{ route('product', [$product->category->code, $product->code]) }}">
+                                                <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}">
                                                     <div class="cart__thumbnail">
-                                                        <img class="border-radius-5" src="{{ Storage::url($product->image) }}" alt="cart-product">
+                                                        <img class="border-radius-5" src="{{ Storage::url($sku->product->image) }}" alt="cart-product">
                                                     </div>
-                                                    {{ $product->__('name') }}
+                                                    {{ $sku->product->__('name') }}
                                                 </a>
                                             </td>
                                             <td class="cart__table--body__list">
                                                 <div class="quantity__box">
-                                                    <form action="{{ route('basket-remove', $product) }}" method="POST">
+                                                    <form action="{{ route('basket-remove', $sku) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="quantity__value quickview__value--quantity decrease" aria-label="quantity value" value="Decrease Value">-</button>
                                                     </form>
                                                     <label>
-                                                        <input type="number" class="quantity__number quickview__value--number" value="{{ $product->countInOrder }}" data-counter />
+                                                        <input type="number" class="quantity__number quickview__value--number" value="{{ $sku->countInOrder }}" data-counter />
                                                     </label>
-                                                    <form action="{{ route('basket-add', $product) }}" method="POST">
+                                                    <form action="{{ route('basket-add', $sku) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="quantity__value quickview__value--quantity increase" aria-label="quantity value" value="Increase Value">+</button>
                                                     </form>
                                                 </div>
                                             </td>
                                             <td class="cart__table--body__list">
-                                                <span class="cart__price">{{ $product->price }} {{ $currencySymbol }}</span>
+                                                <span class="cart__price">{{ $sku->price }} {{ $currencySymbol }}</span>
                                             </td>
                                             <td class="cart__table--body__list">
-                                                <span class="cart__price end">{{ $product->price * $product->countInOrder }}{{ $currencySymbol}}</span>
+                                                <span class="cart__price end">{{ $sku->price * $sku->countInOrder }}{{ $currencySymbol}}</span>
                                             </td>
                                         </tr>
                                     @endforeach

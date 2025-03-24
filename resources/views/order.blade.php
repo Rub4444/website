@@ -4,7 +4,7 @@
 <div class="checkout__page--area">
     <div class="container">
         <div class="checkout__page--inner d-flex">
-            <div class="main checkout__mian">
+            <div class="main checkout__main">
                 <main class="main__content_wrapper section--padding pt-0">
                     <form action="{{route('basket-confirm')}}" method="POST">
                         <div class="checkout__content--step section__shipping--address">

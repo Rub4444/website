@@ -1,28 +1,31 @@
 <?php
 
 namespace App\Models;
+
 use App\Mail\SendSubscriptionMessage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 
 class Subscription extends Model
 {
-    protected $fillable = ['email', 'product_id'];
-    public function scopeActiveByProductId($query, $productId)
+    protected $fillable = ['email', 'sku_id'];
+
+    public function scopeActiveBySkuId($query, $skuId)
     {
-        return $query->where('status', 0)->where('product_id', $productId);
-    }
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
+        return $query->where('status', 0)->where('sku_id', $skuId);
     }
 
-    public static function sendEmailsBySubscription(Product $product)
+    public function sku()
     {
-        $subscriptions = self::ActiveByProductId($product->id)->get();
-        foreach($subscriptions as $subscription)
-        {
-            Mail::to($subscription->email)->send(new SendSubscriptionMessage($product));
+        return $this->belongsTo(Sku::class);
+    }
+
+    public static function sendEmailsBySubscription(Sku $sku)
+    {
+        $subscriptions = self::activeBySkuId($sku->id)->get();
+
+        foreach($subscriptions as $subscription) {
+            Mail::to($subscription->email)->send(new SendSubscriptionMessage($sku));
             $subscription->status = 1;
             $subscription->save();
         }

@@ -77,7 +77,7 @@
                                     <a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}">
                                         {{ $currencySymbol }}
                                     </a>
-                                    <ul class="header__sub--menu">
+                                    {{-- <ul class="header__sub--menu">
                                         @foreach($currencies as $currency)
                                             <li class="header__sub--menu__items">
                                                 <a class="header__sub--menu__link" href="{{route('currency', $currency->code)}}">
@@ -85,7 +85,7 @@
                                                 </a>
                                             </li>
                                         @endforeach
-                                    </ul>
+                                    </ul>--}}
                                 </li>
 
                                 @auth

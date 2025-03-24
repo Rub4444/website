@@ -29,7 +29,7 @@ class ResetController extends Controller
                 Storage::disk('public')->put($file, Storage::disk('reset')->get($file));
             }
         }
-        return redirect()->route('index');
         session()->flash('success', 'The project has been reset.');
+        return redirect()->route('index');
     }
 }
