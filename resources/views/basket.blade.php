@@ -58,12 +58,37 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="cart__summary border-radius-10">
+                            @if(!$order->hasCoupon())
+                                <div class="checkout__discount--code">
+                                    <form method="POST" class="d-flex" action="{{route('set-coupon')}}">
+                                        @csrf
+                                        <label for="coupon">
+                                            <input class="checkout__discount--code__input--field border-radius-5" placeholder="Купон" name="coupon" type="text">
+                                        </label>
+                                        <button class="checkout__discount--code__btn btn border-radius-5" type="submit">Apply</button>
+                                    </form>
+                                </div>
+                                @error('coupon')
+                                    <div class="alert alert-danger">
+                                            {{$message}}
+                                    </div>
+                                @enderror
+                            @else
+                                <div class="checkout__discount--code">
+                                    <h3>Ваш Купон {{$order->coupon->code}}</h3>
+                                </div>
+                            @endif
                             <div class="cart__summary--total mb-20">
                                 <table class="cart__summary--total__table">
                                     <tbody>
                                         <tr class="cart__summary--total__list">
                                             <td class="cart__summary--total__title text-left">@lang('basket.cost')</td>
-                                            <td class="cart__summary--amount text-right">{{ $order->getFullSum() }} {{ $currencySymbol }}</td>
+                                            @if($order->hasCoupon())
+                                                <td class="cart__summary--amount text-right"><strike>{{ $order->getFullSum(false) }} {{ $currencySymbol }}</strike></td>
+                                                <td class="cart__summary--amount text-right"><b>{{ $order->getFullSum() }} {{ $currencySymbol }}</b></td>
+                                            @else
+                                                <td class="cart__summary--amount text-right"><b>{{ $order->getFullSum() }} {{ $currencySymbol }}</b></td>
+                                            @endif
                                         </tr>
                                     </tbody>
                                 </table>

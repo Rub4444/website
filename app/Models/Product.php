@@ -88,8 +88,4 @@ class Product extends Model
         return (bool) $this->recommend;
     }
 
-    public function getPriceAttribute($value)
-    {
-        return round(CurrencyConversion::convert($value), 2);
-    }
 }

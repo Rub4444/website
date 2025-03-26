@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum'];
+    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum', 'coupon_id'];
 
     public function skus()
     {
@@ -18,6 +18,11 @@ class Order extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     public function scopeActive($query)
@@ -35,40 +40,22 @@ class Order extends Model
         return $sum;
     }
 
-    public function getFullSum()
+    public function getFullSum($withCoupon = true)
     {
         $sum = 0;
         foreach($this->skus as $sku)
         {
             $sum += $sku->price * $sku->countInOrder;
         }
+
+        if($withCoupon && $this->hasCoupon())
+        {
+            $sum = $this->coupon->applyCost($sum, $this->currency);
+        }
         return $sum;
     }
 
-    // public function saveOrder($name, $phone)
-    // {
-    //     $this->name = $name;
-    //     $this->phone = $phone;
-    //     $this->status = 1;
-    //     $this->sum = $this->getFullSum();
-    //     $this->currency_id = 1;
 
-    //     $skus = $this->skus;
-
-    //     $this->save();
-
-    //     foreach($skus as $productInOrder)
-    //     {
-    //         $this->skus()->attach($skuInOrder,
-    //         [
-    //             'count' => $skuInOrder->countInOrder,
-    //             'price' => $skuInOrder->price,
-    //         ]);
-
-    //     }
-    //     session()->forget('order');
-    //     return true;
-    // }
     public function saveOrder($name, $phone)
     {
         $this->name = $name;
@@ -90,5 +77,9 @@ class Order extends Model
         return true;
     }
 
+    public function hasCoupon()
+    {
+        return $this->coupon;
+    }
 
 }

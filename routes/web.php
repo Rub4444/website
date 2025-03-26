@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyOptionController;
-
+use App\Http\Controllers\Admin\CouponController;
 
 Auth::routes([
     'reset'=>false,
@@ -46,6 +46,7 @@ Route::middleware(['set_locale'])->group(function()
             Route::resource('products', ProductController::class);
             Route::resource('products/{product}/skus', SkuController::class);
             Route::resource('properties', PropertyController::class);
+            Route::resource('coupons', CouponController::class);
             Route::resource('properties/{property}/property-options', PropertyOptionController::class);
         });
     });
@@ -57,8 +58,8 @@ Route::middleware(['set_locale'])->group(function()
         Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
         Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
         Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
+        Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
     });
-
 
     Route::get('/', [MainController::class, 'index'])->name('index');
     Route::get('/categories', [MainController::class, 'categories'])->name('categories');

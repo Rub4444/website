@@ -74,7 +74,8 @@
                                 <li class="header__menu--items"><a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}">@lang('main.set_lang')</a></li>
 
                                 <li class="header__menu--items">
-                                    <a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}">
+                                    {{-- <a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}"> --}}
+                                    <a class="header__menu--link" href="">
                                         {{ $currencySymbol }}
                                     </a>
                                     {{-- <ul class="header__sub--menu">

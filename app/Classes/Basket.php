@@ -4,6 +4,7 @@ namespace App\Classes;
 
 use App\Models\Order;
 use App\Models\Sku;
+use App\Models\Coupon;
 use App\Mail\OrderCreated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -76,12 +77,12 @@ class Basket
 
     public function removeSku(Sku $sku)
     {
-        if($this->order->skus->contains($sku))
+        if ($this->order->skus->contains($sku))
         {
             $pivotRow = $this->order->skus->where('id', $sku->id)->first();
             if ($pivotRow->countInOrder < 2)
             {
-                $this->order->skus->pop($sku);
+                $this->order->skus->pop($sku->id);;
             }
             else
             {
@@ -89,7 +90,6 @@ class Basket
             }
         }
     }
-
 
     public function addSku(Sku $sku)
     {
@@ -110,5 +110,13 @@ class Basket
         return true;
     }
 
+    public function setCoupon(Coupon $coupon)
+    {
+        $this->order->coupon()->associate($coupon);
+    }
 
+    public function clearCoupon()
+    {
+        $this->order->coupon()->dissociate();
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Services\CurrencyConversion;
 
 class Sku extends Model
 {
@@ -29,5 +30,9 @@ class Sku extends Model
     public function getPriceForCount()
     {
         return $this->pivot ? $this->pivot->count * $this->price : $this->price;
+    }
+    public function getPriceAttribute($value)
+    {
+        return round(CurrencyConversion::convert($value), 2);
     }
 }

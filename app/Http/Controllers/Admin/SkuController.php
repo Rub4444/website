@@ -109,4 +109,9 @@ class SkuController extends Controller
         $sku->delete();
         return redirect()->route('skus.index', $product);
     }
+    // public function destroy(Product $product, Sku $skus)
+    // {
+    //     $skus->delete();
+    //     return redirect()->route('skus.index', $product);
+    // }
 }
