@@ -16,42 +16,42 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}">
     <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
 
-<!--Start preloader -->
-<div id="preloader">
-    <div id="ctn-preloader" class="ctn-preloader">
-        <div class="animation-preloader">
-            <div class="spinner"></div>
-            <div class="txt-loading">
-                <span data-text-preloader="Բ" class="letters-loading">
-                    Բ
-                </span>
+    <!--Start preloader -->
+    <div id="preloader">
+        <div id="ctn-preloader" class="ctn-preloader">
+            <div class="animation-preloader">
+                <div class="spinner"></div>
+                <div class="txt-loading">
+                    <span data-text-preloader="Բ" class="letters-loading">
+                        Բ
+                    </span>
 
-                <span data-text-preloader="Ե" class="letters-loading">
-                    Ե
-                </span>
+                    <span data-text-preloader="Ե" class="letters-loading">
+                        Ե
+                    </span>
 
-                <span data-text-preloader="Ռ" class="letters-loading">
-                    Ռ
-                </span>
+                    <span data-text-preloader="Ռ" class="letters-loading">
+                        Ռ
+                    </span>
 
-                <span data-text-preloader="Ն" class="letters-loading">
-                    Ն
-                </span>
+                    <span data-text-preloader="Ն" class="letters-loading">
+                        Ն
+                    </span>
 
-                <span data-text-preloader="ՈՒ" class="letters-loading">
-                    ՈԻ
-                </span>
+                    <span data-text-preloader="ՈՒ" class="letters-loading">
+                        ՈԻ
+                    </span>
 
-                <span data-text-preloader="Մ" class="letters-loading">
-                    Մ
-                </span>
+                    <span data-text-preloader="Մ" class="letters-loading">
+                        Մ
+                    </span>
+                </div>
             </div>
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
         </div>
-        <div class="loader-section section-left"></div>
-        <div class="loader-section section-right"></div>
     </div>
-</div>
-<!-- End preloader -->
+    <!-- End preloader -->
 
 <!-- Start header area -->
 <header class="header__section header__transparent header">

@@ -1,9 +1,9 @@
 <?php
 return [
-    'online_shop' => 'Online Shop',
+    'online_shop' => 'Ijevan Market',
     'all_categories' => 'All Categories',
     'current_lang' => 'en',
-    'set_lang' => 'ru',
+    'set_lang' => 'arm',
     'login' => 'Log In',
     'registration' => 'Registration',
     'basket' => 'Basket',
@@ -23,4 +23,6 @@ return [
     'cart' => 'Cart',
     'more' => 'More',
     'available' => 'Unavailable',
+    'dashboard' => 'Dashboard',
+    'addresses' => 'Addresses',
 ];

@@ -2,32 +2,40 @@
 @section('title', 'Իջևան Մարկետ')
 @section('content')
     @if($order)
-    <!-- cart section start -->
-    <section class="cart__section section--padding">
-        <div class="container-fluid">
-            <div class="cart__section--inner">
-                <div class="row">
-                    <div class="col-lg-8">
+        <!-- cart section start -->
+        <section class="cart__section section--padding">
+            <div class="container">
+                <div class="cart__section--inner">
+                    <form action="#">
+                        <h2 class="cart__title mb-40">@lang('main.basket')</h2>
                         <div class="cart__table">
                             <table class="cart__table--inner">
                                 <thead class="cart__table--header">
                                     <tr class="cart__table--header__items">
                                         <th class="cart__table--header__list">@lang('basket.name')</th>
                                         <th class="cart__table--header__list">@lang('basket.count')</th>
-                                        <th class="cart__table--header__list">@lang('basket.price')</th>
-                                        <th class="cart__table--header__list">@lang('basket.cost')</th>
+                                        <th class="cart__table--header__list text-center">@lang('basket.price')</th>
+                                        <th class="cart__table--header__list text-right">@lang('basket.cost')</th>
                                     </tr>
                                 </thead>
                                 <tbody class="cart__table--body">
                                     @foreach($order->skus as $sku)
                                         <tr class="cart__table--body__items">
                                             <td class="cart__table--body__list">
-                                                <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}">
+                                                <div class="cart__product d-flex align-items-center">
                                                     <div class="cart__thumbnail">
-                                                        <img class="border-radius-5" src="{{ Storage::url($sku->product->image) }}" alt="cart-product">
+                                                        <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}">
+                                                            <div class="cart__thumbnail">
+                                                                <img class="border-radius-5" src="{{ Storage::url($sku->product->image) }}" alt="cart-product">
+                                                            </div>
+                                                        </a>
                                                     </div>
-                                                    {{ $sku->product->__('name') }}
-                                                </a>
+                                                    <div class="cart__content">
+                                                        <h3 class="cart__content--title h4"><a href="product-details.html">{{ $sku->product->__('name') }}</a></h3>
+                                                        <span class="cart__content--variant">COLOR: Blue</span>
+                                                        <span class="cart__content--variant">WEIGHT: 2 Kg</span>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td class="cart__table--body__list">
                                                 <div class="quantity__box">
@@ -44,69 +52,29 @@
                                                     </form>
                                                 </div>
                                             </td>
-                                            <td class="cart__table--body__list">
-                                                <span class="cart__price">{{ $sku->price }} {{ $currencySymbol }}</span>
+                                            <td class="cart__table--body__list text-center">
+                                                <span class="in__stock text__secondary">{{ $sku->price }} {{ $currencySymbol }}</span>
                                             </td>
-                                            <td class="cart__table--body__list">
-                                                <span class="cart__price end">{{ $sku->price * $sku->countInOrder }}{{ $currencySymbol}}</span>
+                                            <td class="cart__table--body__list text-right">
+                                                <span class="in__stock text__secondary">{{ $sku->price * $sku->countInOrder }}{{ $currencySymbol}}</span>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="cart__summary border-radius-10">
-                            @if(!$order->hasCoupon())
-                                <div class="checkout__discount--code">
-                                    <form method="POST" class="d-flex" action="{{route('set-coupon')}}">
-                                        @csrf
-                                        <label for="coupon">
-                                            <input class="checkout__discount--code__input--field border-radius-5" placeholder="Купон" name="coupon" type="text">
-                                        </label>
-                                        <button class="checkout__discount--code__btn btn border-radius-5" type="submit">Apply</button>
-                                    </form>
-                                </div>
-                                @error('coupon')
-                                    <div class="alert alert-danger">
-                                            {{$message}}
-                                    </div>
-                                @enderror
-                            @else
-                                <div class="checkout__discount--code">
-                                    <h3>Ваш Купон {{$order->coupon->code}}</h3>
-                                </div>
-                            @endif
-                            <div class="cart__summary--total mb-20">
-                                <table class="cart__summary--total__table">
-                                    <tbody>
-                                        <tr class="cart__summary--total__list">
-                                            <td class="cart__summary--total__title text-left">@lang('basket.cost')</td>
-                                            @if($order->hasCoupon())
-                                                <td class="cart__summary--amount text-right"><strike>{{ $order->getFullSum(false) }} {{ $currencySymbol }}</strike></td>
-                                                <td class="cart__summary--amount text-right"><b>{{ $order->getFullSum() }} {{ $currencySymbol }}</b></td>
-                                            @else
-                                                <td class="cart__summary--amount text-right"><b>{{ $order->getFullSum() }} {{ $currencySymbol }}</b></td>
-                                            @endif
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="cart__summary--footer">
-                                <p class="cart__summary--footer__desc">Shipping & taxes calculated at checkout</p>
-                                <ul class="d-flex justify-content-between">
-                                    <li><a class="cart__summary--footer__btn btn checkout" href="{{route('basket-place')}}">@lang('basket.confirm')</a></li>
-                                </ul>
+                            <div class="continue__shopping d-flex justify-content-between">
+                                <a class="continue__shopping--link" href="{{ route('index') }}">Continue shopping</a>
+                                <a class="continue__shopping--clear" href="{{route('basket-place')}}">@lang('basket.confirm')</a>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+        <!-- cart section end -->
     @else
-        <p>Your basket is empty.</p>
+        <p>@lang('basket.basket_is_empty')</p>
     @endif
+
 @endsection
 

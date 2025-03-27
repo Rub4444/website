@@ -40,6 +40,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'merchants',
+            'hash' => true,
+            'storage_key' => 'token',
+        ],
     ],
 
     /*
@@ -65,10 +72,10 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'merchants' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Merchant::class),
+        ],
     ],
 
     /*

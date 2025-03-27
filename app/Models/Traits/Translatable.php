@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\App;
 
 trait Translatable
 {
-    protected $defaultLocale = 'ru';
+    protected $defaultLocale = 'arm';
 
     public function __($originFieldName)
     {

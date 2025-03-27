@@ -82,7 +82,7 @@ class Basket
             $pivotRow = $this->order->skus->where('id', $sku->id)->first();
             if ($pivotRow->countInOrder < 2)
             {
-                $this->order->skus->pop($sku->id);;
+                $this->order->skus->pop($sku->id);
             }
             else
             {

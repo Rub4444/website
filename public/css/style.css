@@ -12602,8 +12602,10 @@ details > summary::-webkit-details-marker {
     width: 100%;
   }
 }
-@media only screen and (max-width: 991px) {
+@media only screen and (max-width: 1500px) {
   .account__menu {
+    display: flex;
+    flex-direction: column;
     width: 250px;
     margin-right: 3rem;
   }
@@ -12611,6 +12613,8 @@ details > summary::-webkit-details-marker {
 
 @media only screen and (max-width: 479px) {
   .account__menu {
+    display: flex;
+    flex-direction: column;
     margin-right: 0;
   }
 }

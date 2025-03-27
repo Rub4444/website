@@ -23,7 +23,7 @@ class BasketIsNotEmpty
         }
 
         session()->forget('order');
-        session()->flash('warning', 'Basket Is Empty');
+        session()->flash('warning', __('basket.basket_is_empty'));
         return redirect()->route('index');
 
     }

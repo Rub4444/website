@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyOptionController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\MerchantController;
 
 Auth::routes([
     'reset'=>false,
@@ -46,6 +47,8 @@ Route::middleware(['set_locale'])->group(function()
             Route::resource('products', ProductController::class);
             Route::resource('products/{product}/skus', SkuController::class);
             Route::resource('properties', PropertyController::class);
+            Route::resource('merchants', MerchantController::class);
+            Route::get('merchant/{merchant}/update_token',  [\App\Http\Controllers\Admin\MerchantController::class, 'updateToken'])->name('merchants.update_token');
             Route::resource('coupons', CouponController::class);
             Route::resource('properties/{property}/property-options', PropertyOptionController::class);
         });
@@ -67,4 +70,9 @@ Route::middleware(['set_locale'])->group(function()
     Route::get('/{category}', [MainController::class, 'category'])->name('category');
     Route::get('/{category}/{product?}/{skus}', [MainController::class, 'sku'])->name('sku');
 
+});
+
+
+Route::prefix('api')->group(function () {
+    require base_path('routes/api.php');
 });

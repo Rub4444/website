@@ -41,7 +41,7 @@ class MainController extends Controller
                 });
             }
         }
-        $skus = $skusQuery->paginate(6)->withPath("?" . $request->getQueryString());
+        $skus = $skusQuery->paginate(8)->withPath("?" . $request->getQueryString());
         return view('index', compact('skus'));
     }
 
@@ -83,7 +83,7 @@ class MainController extends Controller
     }
     public function changeLocale($locale)
     {
-        $availableLocales = ['ru', 'en'];
+        $availableLocales = ['arm', 'en'];
         if(!in_array($locale, $availableLocales))
         {
             $locale = config('app.locale');
