@@ -52,6 +52,7 @@
   --theme-color2: #35A212;
   --theme-color3: #76A713;
   --theme-color4: #e0f1db;
+  --theme-color5:#097739;
   --yellow-color: #FFC107;
   --light-color: #707070;
   --light-color2: #AAAAAA;
@@ -2475,14 +2476,14 @@ body.overlay__active::before, .predictive__search--box_active::before, .mobile_m
 
 .offcanvas__stikcy--toolbar__btn {
     height: 100%;
-    color: var(--white-color);
+    color: var(--theme-color);
     position: relative;
     text-align: center;
 }
 
 .offcanvas__stikcy--toolbar__btn:hover .offcanvas__stikcy--toolbar__icon {
   background: var(--secondary-color);
-  color: var(--white-color);
+  color: var(--theme-color);
 }
 
 .offcanvas__stikcy--toolbar__btn > * {
@@ -2508,12 +2509,23 @@ body.overlay__active::before, .predictive__search--box_active::before, .mobile_m
           justify-content: center;
 } */
 .offcanvas__stikcy--toolbar__icon {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-}
+    width: 3rem;
+    height: 3rem;
+    text-align: center;
+    background: var(--theme-color);
+    line-height: 3.8rem;
+    border-radius: 50%;
+    color: var(--white-color);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
 
 .offcanvas__stikcy--toolbar__icon:hover {
     transform: scale(1.5); /* Увеличиваем размер иконки при наведении */
@@ -2521,12 +2533,12 @@ body.overlay__active::before, .predictive__search--box_active::before, .mobile_m
 }
 
 .offcanvas__stikcy--toolbar__label {
-    color: var(--white-color);
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 600px;
-  margin-top: 2px;
-}
+    color: black;
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 6px;
+  }
 
 .header__sticky.sticky {
   position: fixed;
@@ -3088,7 +3100,7 @@ li {
 }
 
 .categories__menu--header {
-  background: var(--theme-color2);
+  background: var(--theme-color5);
   height: 42px;
   padding: 0 14px;
   cursor: pointer;
@@ -3203,7 +3215,6 @@ li {
   margin-top: 30px;
   -webkit-transition: var(--transition);
   transition: var(--transition);
-  background: var(--white-color);
 }
 
 .dropdown__categories--menu.active {

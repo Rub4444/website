@@ -54,62 +54,32 @@
     <!-- End preloader -->
 
 <!-- Start header area -->
-<header class="header__section header__transparent header">
-        <div class="main__header header__sticky">
-            <div class="container">
-                <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
-                    <div class="offcanvas__header--menu__open d-none d-lg-block">
-                        <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
-                            <span class="visually-hidden">Offcanvas Menu Open</span>
+<header class="header__section header__transparent mb-30">
+    <div class="main__header header__sticky">
+        <div class="container">
+            <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+                <div class="offcanvas__header--menu__open d-block d-lg-none">
+                    <a class="offcanvas__header--menu__open--btn" href="javascript:void(0)" data-offcanvas>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon offcanvas__header--menu__open--svg" viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M80 160h352M80 256h352M80 352h352"/></svg>
+                        <span class="visually-hidden">Offcanvas Menu Open</span>
+                    </a>
+                </div>
+                <div class="main__logo">
+                    <h1 class="main__logo--title">
+                        <a class="main__logo--link" href="{{route('index')}}">
+                            <img class="main__logo--img" src="{{ asset('img/logo/nav-log.png') }}" alt="logo-img">
                         </a>
-                    </div>
-                    <div class="main__logo d-none d-lg-block">
-                        <h1 class="main__logo--title"><a class="main__logo--link" href="{{route('index')}}"><img class="main__logo--img" src="{{ asset('img/logo/nav-log.png') }}" alt="logo-img"></a></h1>
-                    </div>
-                    <div class="main_menu d-none d-lg-block">
-                        <nav class="header-main-menu">
-                            <ul class="d-flex">
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{route('categories')}}">@lang('main.all_categories')</a></li>
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}">@lang('main.set_lang')</a></li>
-
-                                <li class="header__menu--items">
-                                    {{-- <a class="header__menu--link" href="{{route('locale', __('main.set_lang') )}}"> --}}
-                                    <a class="header__menu--link" href="">
-                                        {{ $currencySymbol }}
-                                    </a>
-                                    {{-- <ul class="header__sub--menu">
-                                        @foreach($currencies as $currency)
-                                            <li class="header__sub--menu__items">
-                                                <a class="header__sub--menu__link" href="{{route('currency', $currency->code)}}">
-                                                    {{$currency->symbol}}
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>--}}
-                                </li>
-
-                                @auth
-                                    @admin
-                                    <li class="header__menu--items">
-                                        <a class="header__menu--link" href="{{ route('reset') }}">
-                                            @lang('main.reset_all')
-                                        </a>
-                                    </li>
-                                    @endadmin
-                                @endauth
-                            </ul>
-                        </nav>
-                    </div>
+                    </h1>
+                </div>
+                <div class="header__account header__sticky--block">
                     <ul class="d-flex">
-                        <li class="header__account--items  header__account--search__items  d-none d-lg-block">
+                        <li class="header__account--items  header__account--search__items d-sm-2-none">
                             <a class="header__account--btn search__open--btn" href="javascript:void(0)" data-offcanvas>
                                 <svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>
                                 <span class="visually-hidden">Search</span>
                             </a>
                         </li>
-                        {{-- <li><a href="{{route('basket')}}">@lang('main.basket')</a></li> --}}
-                        <li class="header__account--items  d-none d-lg-block">
+                        <li class="header__account--items">
                             <a class="header__account--btn minicart__open--btn" href="{{route('basket')}}" data-offcanvas>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16.706" height="15.534" viewBox="0 0 14.706 13.534">
                                     <g  transform="translate(0 0)">
@@ -120,12 +90,10 @@
                                         </g>
                                     </g>
                                 </svg>
-                                {{-- <span class="items__count">3</span> --}}
+                                <span class="items__count">3</span>
                             </a>
                         </li>
                         @guest
-                            {{-- <li><a href="{{route('login')}}">@lang('main.login')</a></li> --}}
-                            {{-- <li><a href="{{route('register')}}">@lang('main.registration')</a></li> --}}
                             <li class="header__account--items d-none d-lg-block">
                                 <a class="header__account--btn" href="{{route('register')}}">
                                     <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
@@ -141,7 +109,6 @@
                                         <span class="visually-hidden">Admin Panel</span>
                                     </a>
                                 </li>
-                                {{-- <li><a href="{{route('home')}}">@lang('main.admin_panel')</a></li> --}}
                             @else
                                 <li class="header__account--items d-none d-lg-block">
                                     <a class="header__account--btn" href="{{route('person.orders.index')}}">
@@ -149,113 +116,208 @@
                                         <span class="visually-hidden">My Account</span>
                                     </a>
                                 </li>
-                                {{-- <li><a href="{{route('person.orders.index')}}">@lang('main.my_account')</a></li> --}}
-                            @endadmin
-                                {{-- <li><a href="{{route('get-logout')}}">@lang('main.logout')</a></li> --}}
-                        @endauth
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Start serch box area -->
-        <div class="predictive__search--box ">
-            <div class="predictive__search--box__inner">
-                <h2 class="predictive__search--title">Ապրանքների որոնում</h2>
-                <form class="predictive__search--form" action="#">
-                    <label>
-                        <input class="predictive__search--input" placeholder="Ապրանքների որոնում" type="text">
-                    </label>
-                    <button class="predictive__search--button" aria-label="search button"><svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  </button>
-                </form>
-            </div>
-            <button class="predictive__search--close__btn" aria-label="search close" data-offcanvas>
-                <svg class="predictive__search--close__icon" xmlns="http://www.w3.org/2000/svg" width="40.51" height="30.443"  viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 368L144 144M368 144L144 368"/></svg>
-            </button>
-        </div>
-        <!-- End serch box area -->
-        <!-- Mobile -->
-        <div class="container menu-container d-block d-lg-none">
-            <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
-                <div class="main__logo d-block d-lg-none parent d-flex justify-content-center bg-white">
-                    <h1 class="main__logo--title child"><a class="main__logo--link" href="{{route('index')}}"><img class="main__logo--img" src="{{ asset('img/logo/nav-log.png') }}" alt="logo-img"></a></h1>
-                </div>
-                <div class="header__account">
-                    <ul class="d-flex">
-                        <li class="offcanvas__stikcy--toolbar__list  mobile-menu-li header__account--items  header__account--search__items">
-                            <a class="offcanvas__stikcy--toolbar__btn search__open--btn mobile_menu" href="javascript:void(0)" data-offcanvas>
-                                <span class="offcanvas__stikcy--toolbar__icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"  width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>
-                                </span>
-                            </a>
-                        </li>
-                        <li class="offcanvas__stikcy--toolbar__list  mobile-menu-li header__account--items">
-                            <a class="offcanvas__stikcy--toolbar__btn minicart__open--btn mobile_menu"  href="{{route('basket')}}" data-offcanvas>
-                                <span class="offcanvas__stikcy--toolbar__icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18.51" height="15.443" viewBox="0 0 18.51 15.443">
-                                    <path  d="M79.963,138.379l-13.358,0-.56-1.927a.871.871,0,0,0-.6-.592l-1.961-.529a.91.91,0,0,0-.226-.03.864.864,0,0,0-.226,1.7l1.491.4,3.026,10.919a1.277,1.277,0,1,0,1.844,1.144.358.358,0,0,0,0-.049h6.163c0,.017,0,.034,0,.049a1.277,1.277,0,1,0,1.434-1.267c-1.531-.247-7.783-.55-7.783-.55l-.205-.8h7.8a.9.9,0,0,0,.863-.651l1.688-5.943h.62a.936.936,0,1,0,0-1.872Zm-9.934,6.474H68.568c-.04,0-.1.008-.125-.085-.034-.118-.082-.283-.082-.283l-1.146-4.037a.061.061,0,0,1,.011-.057.064.064,0,0,1,.053-.025h1.777a.064.064,0,0,1,.063.051l.969,4.34,0,.013a.058.058,0,0,1,0,.019A.063.063,0,0,1,70.03,144.853Zm3.731-4.41-.789,4.359a.066.066,0,0,1-.063.051h-1.1a.064.064,0,0,1-.063-.051l-.789-4.357a.064.064,0,0,1,.013-.055.07.07,0,0,1,.051-.025H73.7a.06.06,0,0,1,.051.025A.064.064,0,0,1,73.76,140.443Zm3.737,0L76.26,144.8a.068.068,0,0,1-.063.049H74.684a.063.063,0,0,1-.051-.025.064.064,0,0,1-.013-.055l.973-4.357a.066.066,0,0,1,.063-.051h1.777a.071.071,0,0,1,.053.025A.076.076,0,0,1,77.5,140.448Z" transform="translate(-62.393 -135.3)" fill="currentColor"/>
-                                    </svg>
-                                </span>
-                            </a>
-                        </li>
-                        @guest
-                        <li class="offcanvas__stikcy--toolbar__list  mobile-menu-li header__account--items">
-                            <a class="offcanvas__stikcy--toolbar__btn minicart__open--btn mobile_menu" href="{{route('register')}}">
-                                <span class="offcanvas__stikcy--toolbar__icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
-                                </span>
-                                <span class="visually-hidden">Registration</span>
-                            </a>
-                        </li>
-                        @endguest
-                        @auth
-                            @admin
-                                <li class="offcanvas__stikcy--toolbar__list  mobile-menu-li header__account--items">
-                                    <a class="offcanvas__stikcy--toolbar__btn minicart__open--btn mobile_menu" href="{{route('home')}}">
-                                        <span class="offcanvas__stikcy--toolbar__icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
-                                        </span>
-                                        <span class="visually-hidden">Admin Panel</span>
-                                    </a>
-                                </li>
-                            @else
-                                <li class="offcanvas__stikcy--toolbar__list  mobile-menu-li header__account--items">
-                                    <a class="offcanvas__stikcy--toolbar__btn minicart__open--btn mobile_menu" href="{{route('person.orders.index')}}">
-                                        <span class="offcanvas__stikcy--toolbar__icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
-                                        </span>
-                                        <span class="visually-hidden">My Account</span>
-                                    </a>
-                                </li>
                             @endadmin
                         @endauth
                     </ul>
                 </div>
             </div>
         </div>
-
-        <!-- Start Offcanvas header menu -->
-        <div class="offcanvas__header">
-            <div class="offcanvas__inner">
-                <div class="offcanvas__logo">
-                    <a class="offcanvas__logo_link" href="">
-                        <img src="{{ asset('img/logo/nav-log.png') }}" alt="Grocee Logo" width="158" height="36">
-                    </a>
-                    <button class="offcanvas__close--btn" data-offcanvas>close</button>
+    </div>
+    <div class="header__bottom bg__secondary">
+        <div class="container">
+            <div class="header__bottom--inner position__relative d-flex align-items-center">
+                <div class="categories__menu d-none d-lg-block">
+                    <div class="categories__menu--header text-white d-flex align-items-center">
+                        <svg class="categories__list--icon" xmlns="http://www.w3.org/2000/svg" width="21.007" height="16.831" viewBox="0 0 21.007 16.831">
+                            <path id="listine-dots" d="M20.66,99.786a1.036,1.036,0,0,0-.347-.13H4.227a2.013,2.013,0,0,1,0,3.012q7.988,0,15.976,0h.063a.7.7,0,0,0,.454-.162.9.9,0,0,0,.286-.452v-1.765A.861.861,0,0,0,20.66,99.786ZM3.323,101.162A1.662,1.662,0,1,1,1.662,99.5,1.661,1.661,0,0,1,3.323,101.162Zm16.99,3H4.227a2.013,2.013,0,0,1,0,3.012q7.988,0,15.976,0h.063a.7.7,0,0,0,.454-.164.9.9,0,0,0,.286-.452v-1.765a.861.861,0,0,0-.347-.5A1.082,1.082,0,0,0,20.314,104.161Zm-16.99,1.506a1.662,1.662,0,1,1-1.662-1.662A1.663,1.663,0,0,1,3.323,105.668Zm16.99,3H4.227a2.013,2.013,0,0,1,0,3.012q7.988,0,15.976,0h.063a.7.7,0,0,0,.454-.164.9.9,0,0,0,.286-.45v-1.767a.861.861,0,0,0-.347-.5A1.083,1.083,0,0,0,20.314,108.663Zm-16.99,1.506a1.662,1.662,0,1,1-1.662-1.662A1.663,1.663,0,0,1,3.323,110.169Zm16.99,2.993H4.227a2.013,2.013,0,0,1,0,3.012q7.988,0,15.976,0h.063a.687.687,0,0,0,.454-.162.9.9,0,0,0,.286-.452v-1.765a.861.861,0,0,0-.347-.5A1.035,1.035,0,0,0,20.314,113.163Zm-16.99,1.506a1.662,1.662,0,1,1-1.662-1.662A1.661,1.661,0,0,1,3.323,114.669Z" transform="translate(0 -99.5)" fill="currentColor"/>
+                        </svg>
+                        <span class="categories__menu--title">@lang('main.all_categories')</span>
+                        <svg class="categories__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12.355" height="8.394" viewBox="0 0 10.355 6.394">
+                            <path  d="M15.138,8.59l-3.961,3.952L7.217,8.59,6,9.807l5.178,5.178,5.178-5.178Z" transform="translate(-6 -8.59)" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="dropdown__categories--menu">
+                        <ul class="d-none d-lg-block">
+                            @foreach($categories as $category)
+                                <li class="categories__menu--items">
+                                    <a  class="categories__menu--link" href="{{route('category', $category->code)}}">{{$category->__('name')}}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <nav class="category__mobile--menu">
+                            <ul class="category__mobile--menu_ul">
+                                @foreach($categories as $category)
+                                    <li class="categories__menu--items">
+                                        <a class="categories__menu--link" href="{{route('category', $category->code)}}">{{$category->__('name')}}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
-                <ul class="offcanvas__menu2_ul">
+                <div class="header__right--info d-none d-lg-flex align-items-center ms-auto">
+                    <div class="account__currency">
+                            <a class="account__currency--link text-white" href="javascript:void(0)">
+                                <span>{{ $currencySymbol }}</span>
+                            </a>
+                        </div>
+                        <div class="account__currency">
+                            <a class="account__currency--link text-white" href="{{route('locale', __('main.set_lang') )}}">
+                                <span>@lang('main.set_lang')</span>
+                            </a>
+                        </div>
+                        <div class="account__currency">
+                            @auth
+                                @admin
+                                    <a class="account__currency--link text-white" href="{{ route('reset') }}">
+                                        <span>@lang('main.reset_all')</span>
+                                    </a>
+                                @endadmin
+                            @endauth
+                        </div>
+                        <div class="suport__contact d-flex align-items-center">
+                            <svg class="suport__contact--icon text-white" xmlns="http://www.w3.org/2000/svg" width="36.725" height="36.743" viewBox="0 0 36.725 36.743">
+                                <path id="headphone-alt-2" d="M28.893,18.469c-.026-2.873.1-5.754-.761-8.565-1.587-5.21-5.306-7.742-10.781-7.272-4.681.4-7.588,2.715-8.785,7.573a24.031,24.031,0,0,0,.2,13.3,11.447,11.447,0,0,0,6.254,7.253c.658.3,1.091.408,1.595-.356a3.732,3.732,0,0,1,4.38-1.334,3.931,3.931,0,1,1-4.582,5.82,2.989,2.989,0,0,0-1.782-1.466c-4.321-1.573-6.842-4.869-8.367-9.032a1.686,1.686,0,0,0-1.238-1.275,7.046,7.046,0,0,1-3.718-2.447A5.739,5.739,0,0,1,3.242,11.83,5.338,5.338,0,0,0,6.318,7.957C7.644,3.033,11.62.193,16.845.02a19.923,19.923,0,0,1,6.324.544c4.479,1.3,6.783,4.52,7.72,8.881a1.966,1.966,0,0,0,1.389,1.723,6.235,6.235,0,0,1,4.439,6.324,5.211,5.211,0,0,1-1.33,3.27,7.98,7.98,0,0,1-5.449,2.774c-.731.077-1.124-.051-1.069-.952.085-1.367.022-2.745.026-4.115Z" transform="translate(0.006 0.01)" fill="currentColor"/>
+                            </svg>
+                            <p class="suport__contact--text text-white">
+                                <span class="suport__text--24">24/7 Suport</span>
+                                <a class="suport__contact--number" href="tel:09786542214">+374 44 464 412</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Offcanvas header menu -->
+    <div class="offcanvas__header">
+        <div class="offcanvas__inner">
+            <div class="offcanvas__logo">
+                <a class="offcanvas__logo_link" href="index.html">
+                    <img src="{{ asset('img/logo/nav-log.png') }}" alt="Grocee Logo" width="158" height="36">
+                </a>
+                <button class="offcanvas__close--btn" data-offcanvas>close</button>
+            </div>
+            <nav class="offcanvas__menu">
+                <ul class="offcanvas__menu_ul">
                     @foreach($categories as $category)
-                        <li class="offcanvas__menu2_li">
-                            <a href="{{route('category', $category->code)}}">{{$category->__('name')}}</a>
+
+                        <li class="offcanvas__menu_li">
+                            <a class="offcanvas__menu_item" href="{{route('category', $category->code)}}">
+                                {{$category->__('name')}}
+                            </a>
                         </li>
                     @endforeach
                 </ul>
-            </div>
+                <div class="offcanvas__account--items">
+                    @guest
+                        <a class="offcanvas__account--items__btn d-flex align-items-center"  href="{{route('register')}}">
+                            <span class="offcanvas__account--items__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
+                            </span>
+                            <span class="offcanvas__account--items__label">Registration</span>
+                        </a>
+                    @endguest
+                    @auth
+                        @admin
+                            <a class="offcanvas__account--items__btn d-flex align-items-center" href="{{route('home')}}">
+                                <span class="offcanvas__account--items__icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
+                                </span>
+                                <span class="offcanvas__account--items__label">Admin Panel</span>
+                            </a>
+                        @else
+                            <a class="offcanvas__account--items__btn d-flex align-items-center" href="{{route('person.orders.index')}}">
+                                <span class="offcanvas__account--items__icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
+                                </span>
+                                <span class="offcanvas__account--items__label">My Account</span>
+                            </a>
+                        @endadmin
+                    @endauth
+                </div>
+                <div class="offcanvas__account--currency">
+                    <a class="offcanvas__account--currency__menu text-black" href="javascript:void(0)">
+                        <span>{{ $currencySymbol }}</span>
+                    </a>
+                </div>
+                <div class="offcanvas__account--currency">
+                    <a class="offcanvas__account--currency__menu text-black" href="{{route('locale', __('main.set_lang') )}}">
+                        <span>@lang('main.set_lang')</span>
+                    </a>
+                </div>
+            </nav>
         </div>
-        <!-- End Offcanvas header menu -->
-    </header>
-    <!-- End header area -->
+    </div>
+    <!-- End Offcanvas header menu -->
+
+    <!-- Start Offcanvas stikcy toolbar -->
+    <div class="offcanvas__stikcy--toolbar">
+        <ul class="d-flex justify-content-between">
+            <li class="offcanvas__stikcy--toolbar__list">
+                <a class="offcanvas__stikcy--toolbar__btn" href="{{route('index')}}">
+                <span class="offcanvas__stikcy--toolbar__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="21.51" height="21.443" viewBox="0 0 22 17"><path fill="currentColor" d="M20.9141 7.93359c.1406.11719.2109.26953.2109.45703 0 .14063-.0469.25782-.1406.35157l-.3516.42187c-.1172.14063-.2578.21094-.4219.21094-.1406 0-.2578-.04688-.3515-.14062l-.9844-.77344V15c0 .3047-.1172.5625-.3516.7734-.2109.2344-.4687.3516-.7734.3516h-4.5c-.3047 0-.5742-.1172-.8086-.3516-.2109-.2109-.3164-.4687-.3164-.7734v-3.6562h-2.25V15c0 .3047-.11719.5625-.35156.7734-.21094.2344-.46875.3516-.77344.3516h-4.5c-.30469 0-.57422-.1172-.80859-.3516-.21094-.2109-.31641-.4687-.31641-.7734V8.46094l-.94922.77344c-.11719.09374-.24609.14062-.38672.14062-.16406 0-.30468-.07031-.42187-.21094l-.35157-.42187C.921875 8.625.875 8.50781.875 8.39062c0-.1875.070312-.33984.21094-.45703L9.73438.832031C10.1094.527344 10.5312.375 11 .375s.8906.152344 1.2656.457031l8.6485 7.101559zm-3.7266 6.50391V7.05469L11 1.99219l-6.1875 5.0625v7.38281h3.375v-3.6563c0-.3046.10547-.5624.31641-.7734.23437-.23436.5039-.35155.80859-.35155h3.375c.3047 0 .5625.11719.7734.35155.2344.211.3516.4688.3516.7734v3.6563h3.375z"></path></svg>
+                    </span>
+                    <span class="offcanvas__stikcy--toolbar__label">Home</span>
+                </a>
+            </li>
+            <li class="offcanvas__stikcy--toolbar__list">
+                <a class="offcanvas__stikcy--toolbar__btn" href="shop.html">
+                <span class="offcanvas__stikcy--toolbar__icon">
+                    <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="18.51" height="17.443" viewBox="0 0 448 512"><path d="M416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-16 48v152H248V80zm-200 0v152H48V80zM48 432V280h152v152zm200 0V280h152v152z"></path></svg>
+                    </span>
+                <span class="offcanvas__stikcy--toolbar__label">Shop</span>
+                </a>
+            </li>
+            <li class="offcanvas__stikcy--toolbar__list ">
+                <a class="offcanvas__stikcy--toolbar__btn search__open--btn" href="javascript:void(0)" data-offcanvas>
+                    <span class="offcanvas__stikcy--toolbar__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg"  width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>
+                    </span>
+                <span class="offcanvas__stikcy--toolbar__label">Search</span>
+                </a>
+            </li>
+            <li class="offcanvas__stikcy--toolbar__list">
+                <a class="offcanvas__stikcy--toolbar__btn minicart__open--btn" href="{{route('basket')}}" data-offcanvas>
+                    <span class="offcanvas__stikcy--toolbar__icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18.51" height="15.443" viewBox="0 0 18.51 15.443">
+                        <path  d="M79.963,138.379l-13.358,0-.56-1.927a.871.871,0,0,0-.6-.592l-1.961-.529a.91.91,0,0,0-.226-.03.864.864,0,0,0-.226,1.7l1.491.4,3.026,10.919a1.277,1.277,0,1,0,1.844,1.144.358.358,0,0,0,0-.049h6.163c0,.017,0,.034,0,.049a1.277,1.277,0,1,0,1.434-1.267c-1.531-.247-7.783-.55-7.783-.55l-.205-.8h7.8a.9.9,0,0,0,.863-.651l1.688-5.943h.62a.936.936,0,1,0,0-1.872Zm-9.934,6.474H68.568c-.04,0-.1.008-.125-.085-.034-.118-.082-.283-.082-.283l-1.146-4.037a.061.061,0,0,1,.011-.057.064.064,0,0,1,.053-.025h1.777a.064.064,0,0,1,.063.051l.969,4.34,0,.013a.058.058,0,0,1,0,.019A.063.063,0,0,1,70.03,144.853Zm3.731-4.41-.789,4.359a.066.066,0,0,1-.063.051h-1.1a.064.064,0,0,1-.063-.051l-.789-4.357a.064.064,0,0,1,.013-.055.07.07,0,0,1,.051-.025H73.7a.06.06,0,0,1,.051.025A.064.064,0,0,1,73.76,140.443Zm3.737,0L76.26,144.8a.068.068,0,0,1-.063.049H74.684a.063.063,0,0,1-.051-.025.064.064,0,0,1-.013-.055l.973-4.357a.066.066,0,0,1,.063-.051h1.777a.071.071,0,0,1,.053.025A.076.076,0,0,1,77.5,140.448Z" transform="translate(-62.393 -135.3)" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span class="offcanvas__stikcy--toolbar__label">Cart</span>
+                    <span class="items__count">3</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- End Offcanvas stikcy toolbar -->
+
+    <!-- Start serch box area -->
+    <div class="predictive__search--box ">
+        <div class="predictive__search--box__inner">
+            <h2 class="predictive__search--title">Ապրանքների որոնում</h2>
+            <form class="predictive__search--form" action="#">
+                <label>
+                    <input class="predictive__search--input" placeholder="Ապրանքների որոնում" type="text">
+                </label>
+                <button class="predictive__search--button" aria-label="search button"><svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  </button>
+            </form>
+        </div>
+        <button class="predictive__search--close__btn" aria-label="search close" data-offcanvas>
+            <svg class="predictive__search--close__icon" xmlns="http://www.w3.org/2000/svg" width="40.51" height="30.443"  viewBox="0 0 512 512"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 368L144 144M368 144L144 368"/></svg>
+        </button>
+    </div>
+    <!-- End serch box area -->
+
+
+
+
+<!-- End Offcanvas header menu -->
+</header>
+<!-- End header area -->
+
 <body>
     @if(session()->has('success'))
         <p class="alert alert-success">{{session()->get('success')}}</p>
