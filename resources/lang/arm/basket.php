@@ -23,5 +23,6 @@ return [
     'shipping_cost_not_calculated' => 'Առաքման արժեքը հաշվարկված չէ պատվերի ձևակերպման ժամանակ',
     'order_confirmed' => 'Հաստատել Պատվերը',
     'my_profile' => 'Իմ հաշիվը',
+    'continue_shopping' => 'Շարունակել գնումները',
 
 ];

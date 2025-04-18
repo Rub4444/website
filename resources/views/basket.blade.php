@@ -3,11 +3,11 @@
 @section('content')
     @if($order)
         <!-- cart section start -->
-        <section class="cart__section section--padding">
+        <section class="cart__section section--padding bg-white" style="border-radius: 15px 15px 0 0;">
             <div class="container">
                 <div class="cart__section--inner">
                     <form action="#">
-                        <h2 class="cart__title mb-40">@lang('main.basket')</h2>
+                        {{-- <h2 class="cart__title mb-40 text-center">@lang('main.basket')</h2> --}}
                         <div class="cart__table">
                             <table class="cart__table--inner">
                                 <thead class="cart__table--header">
@@ -63,7 +63,7 @@
                                 </tbody>
                             </table>
                             <div class="continue__shopping d-flex justify-content-between">
-                                <a class="continue__shopping--link" href="{{ route('index') }}">Continue shopping</a>
+                                <a class="continue__shopping--link" href="{{ route('index') }}">@lang('basket.continue_shopping')</a>
                                 <a class="continue__shopping--clear" href="{{route('basket-place')}}">@lang('basket.confirm')</a>
                             </div>
                         </div>

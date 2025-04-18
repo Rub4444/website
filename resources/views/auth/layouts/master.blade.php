@@ -9,6 +9,9 @@
 
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -51,47 +54,153 @@
             </div>
         </div>
         <!-- End preloader -->
-</head>
-<header class="header__section header__transparent header">
-    <div class="main__header header__sticky">
-        <div class="container">
-            <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
-                <div class="main__logo d-none d-lg-block">
-                    <h1 class="main__logo--title"><a class="main__logo--link" href="{{route('index')}}"><img class="main__logo--img" src="{{ asset('img/logo/nav-log.png') }}" alt="logo-img"></a></h1>
-                </div>
-                <div class="main_menu d-none d-lg-block">
-                    <nav class="header-main-menu">
-                        <ul class="d-flex">
-                            @admin
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{route('categories.index')}}">Категории</a></li>
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{route('products.index')}}">Товары</a></li>
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{ route('properties.index') }}">Свойство</a></li>
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{ route('coupons.index') }}">Купоны</a></li>
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{ route('merchants.index') }}">Поставшики</a></li>
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{ route('home') }}">Заказы</a></li>
-                            @endadmin
-                            @guest
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{ route('login') }}">@lang('main.login')</a></li>
-                                <li class="header__menu--items"><a class="header__menu--link" href="{{ route('register') }}">@lang('main.registration')</a></li>
-                            @endguest
-                            @auth
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        Выйти
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </div>
-                            @endauth
-                        </ul>
-                    </nav>
+
+        <header class="header__section header__transparent header">
+            <div class="main__header header__sticky">
+                <div class="container">
+                    <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
+                        <!-- Logo Section -->
+                        <div class="main__logo d-none d-lg-block">
+                            <h1 class="main__logo--title">
+                                <a class="main__logo--link" href="{{route('index')}}">
+                                    <img class="main__logo--img" src="{{ asset('img/logo/nav-log.png') }}" alt="logo-img">
+                                </a>
+                            </h1>
+                        </div>
+
+                        <!-- Navbar Menu Section -->
+                        <div class="main_menu d-none d-lg-block">
+                            <nav class="header-main-menu">
+                                <ul class="d-flex">
+                                    @admin
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{route('categories.index')}}">Կատեգորիաներ</a>
+                                        </li>
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{route('products.index')}}">Ապրանքներ</a>
+                                        </li>
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{ route('properties.index') }}">Հատկանիշներ</a>
+                                        </li>
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{ route('coupons.index') }}">Կուպոններ</a>
+                                        </li>
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{ route('merchants.index') }}">Մատակարարներ</a>
+                                        </li>
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{ route('home') }}">Պատվերներ</a>
+                                        </li>
+                                    @endadmin
+                                    @guest
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{ route('login') }}">Մուտք</a>
+                                        </li>
+                                        <li class="header__menu--items">
+                                            <a class="header__menu--link" href="{{ route('register') }}">Գրանցվել</a>
+                                        </li>
+                                    @endguest
+                                    @auth
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Ելք
+                                            </a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                @csrf
+                                            </form>
+                                        </div>
+                                    @endauth
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</header>
+        </header>
+
+        <style>
+            /* Sticky header */
+            .header__sticky {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                transition: background-color 0.3s ease;
+            }
+
+            /* Logo section styling */
+            .main__logo {
+                font-size: 2rem;
+                font-weight: bold;
+                transition: transform 0.3s ease;
+            }
+
+            .main__logo:hover {
+                transform: scale(1.1);
+            }
+
+            /* Navbar menu styling */
+            .header-main-menu ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                gap: 20px;
+            }
+
+            .header__menu--items {
+                margin: 0;
+            }
+
+            .header__menu--link {
+                font-size: 1rem;
+                text-decoration: none;
+                padding: 10px 15px;
+                display: block;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                border-radius: 5px;
+            }
+
+
+            /* Mobile menu (Hamburger) */
+            @media (max-width: 992px) {
+                .main_menu {
+                    display: none;
+                }
+
+                .header__menu--items {
+                    display: block;
+                    margin: 10px 0;
+                }
+
+                .header__menu--link {
+                    display: inline-block;
+                    padding: 15px;
+                    font-size: 1.2rem;
+                }
+            }
+
+
+            /* Add active state for mobile menu */
+            .main_menu.active {
+                display: block;
+            }
+        </style>
+
+        <script>
+            // Add scroll effect for sticky navbar
+            window.addEventListener('scroll', function () {
+                const header = document.querySelector('.header__sticky');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        </script>
+
+</head>
+
 <body>
     @yield('content')
 </body>
@@ -190,7 +299,7 @@
         </div>
         <hr class="text-white">
         <div class="text-center">
-            <p class="mb-0">&copy; 2024 <a href="">Իջևան Մարկետ</a>. Բոլոր իրավունքները պաշտպանված են</p>
+            <p class="mb-0">&copy; 2024 <a href="">5 Մարկետ</a>. Բոլոր իրավունքները պաշտպանված են</p>
         </div>
     </div>
     <!-- Scroll top bar -->

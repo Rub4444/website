@@ -23,5 +23,6 @@ return [
     'shipping_cost_not_calculated' => 'The shipping cost is not calculated when placing an order',
     'order_confirmed' => 'Confirm the Order',
     'my_profile' => 'My Profile',
+    'continue_shopping' => 'Continue Shopping',
 ];
 

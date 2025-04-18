@@ -3100,11 +3100,13 @@ li {
 }
 
 .categories__menu--header {
-  /* background: var(--theme-color5); */
+  background: var(--theme-color);
   height: 42px;
   padding: 0 14px;
   cursor: pointer;
   position: relative;
+  border-left: 2px solid var(--theme-color5); /* Линия слева */
+  border-right: 2px solid var(--theme-color5); /* Линия справа */
 }
 
 @media only screen and (min-width: 768px) {
