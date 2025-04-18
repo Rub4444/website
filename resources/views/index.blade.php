@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Իջեվան Մարկետ')
+@section('title', 'Իջևան Մարկետ')
 @section('content')
     <div class="container py-5">
         {{-- <!-- Кнопка для раскрытия/скрытия фильтров -->
