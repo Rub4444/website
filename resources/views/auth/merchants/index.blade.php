@@ -7,7 +7,7 @@
     <!-- Add Supplier Button -->
     <div class="mt-4">
         <a class="btn btn-success" href="{{ route('merchants.create') }}">
-            <i class="fas fa-plus text-white"></i> Добавить поставщика
+            <i class="fas fa-plus text-white"></i> Ավելացնել Մատակարար
         </a>
     </div>
 
@@ -23,9 +23,9 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Название</th>
-                        <th>Email</th>
-                        <th>Действия</th>
+                        <th>Անուն</th>
+                        <th>Էլ-հասցե</th>
+                        <th>Գործողություններ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,25 +37,24 @@
                         <td>
                             <div class="btn-group" role="group">
                                 <!-- View Button -->
-                                <a class="btn btn-success" href="{{ route('merchants.show', $merchant) }}" data-toggle="tooltip" title="Открыть поставщика">
-                                    <i class="fas fa-eye text-white"></i> Открыть
+                                <a class="btn btn-success" href="{{ route('merchants.show', $merchant) }}" data-toggle="tooltip" title="Բացել">
+                                    <i class="fas fa-eye text-white"></i> Բացել
                                 </a>
 
                                 <!-- Edit Button -->
-                                <a class="btn btn-warning" href="{{ route('merchants.edit', $merchant) }}" data-toggle="tooltip" title="Редактировать поставщика">
-                                    <i class="fas fa-edit text-white"></i> Редактировать
+                                <a class="btn btn-warning" href="{{ route('merchants.edit', $merchant) }}" data-toggle="tooltip" title="Փոփոխել">
+                                    <i class="fas fa-edit text-white"></i> Փոփոխել
                                 </a>
 
                                 <!-- Update Token Button -->
-                                <a class="btn btn-primary" href="{{ route('merchants.update_token', $merchant) }}" data-toggle="tooltip" title="Обновить токен">
-                                    <i class="fas fa-sync-alt text-white"></i> Обновить токен
+                                <a class="btn btn-primary" href="{{ route('merchants.update_token', $merchant) }}" data-toggle="tooltip" title="Թարմացնել տոկենը">
+                                    <i class="fas fa-sync-alt text-white"></i> Թարմացնել տոկենը
                                 </a>
-
-                                <!-- Delete Button -->
                                 <form action="{{ route('merchants.destroy', $merchant) }}" method="POST" style="display:inline;">
+                                    <!-- Delete Button -->
                                     @csrf
                                     @method('DELETE')
-                                    <input class="btn btn-danger" type="submit" value="Удалить" data-toggle="tooltip" title="Удалить поставщика">
+                                    <input class="btn btn-danger" type="submit" value="Հեռացնել" data-toggle="tooltip" title="Հեռացնել">
                                 </form>
                             </div>
                         </td>

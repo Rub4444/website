@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
 
         <!--Start preloader -->
@@ -60,7 +59,7 @@
                 <div class="container">
                     <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
                         <!-- Logo Section -->
-                        <div class="main__logo d-none d-lg-block">
+                        <div class="main__logo">
                             <h1 class="main__logo--title">
                                 <a class="main__logo--link" href="{{route('index')}}">
                                     <img class="main__logo--img" src="{{ asset('img/logo/nav-log.png') }}" alt="logo-img">
@@ -69,7 +68,7 @@
                         </div>
 
                         <!-- Navbar Menu Section -->
-                        <div class="main_menu d-none d-lg-block">
+                        <div class="main_menu">
                             <nav class="header-main-menu">
                                 <ul class="d-flex">
                                     @admin
@@ -160,45 +159,7 @@
                 transition: background-color 0.3s ease, color 0.3s ease;
                 border-radius: 5px;
             }
-
-
-            /* Mobile menu (Hamburger) */
-            @media (max-width: 992px) {
-                .main_menu {
-                    display: none;
-                }
-
-                .header__menu--items {
-                    display: block;
-                    margin: 10px 0;
-                }
-
-                .header__menu--link {
-                    display: inline-block;
-                    padding: 15px;
-                    font-size: 1.2rem;
-                }
-            }
-
-
-            /* Add active state for mobile menu */
-            .main_menu.active {
-                display: block;
-            }
         </style>
-
-        <script>
-            // Add scroll effect for sticky navbar
-            window.addEventListener('scroll', function () {
-                const header = document.querySelector('.header__sticky');
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-        </script>
-
 </head>
 
 <body>

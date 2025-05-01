@@ -12,13 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <!-- Font Awesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
 
     <!--Start preloader -->
@@ -315,9 +315,18 @@
     </div>
     <!-- End serch box area -->
 
+    <style>
+        /* Logo section styling */
+        .main__logo {
+            font-size: 2rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
 
-
-
+        .main__logo:hover {
+            transform: scale(1.1);
+        }
+    </style>
 <!-- End Offcanvas header menu -->
 </header>
 <!-- End header area -->
@@ -361,20 +370,17 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <h5 class="text-uppercase">Օգտակար հղումներ</h5>
                 <ul class="list-unstyled">
-                    <li><a href="" class="text-white text-decoration-none mb-4">Գլխավոր</a></li>
+                    <li><a href="{{ route('howToUse') }}" class="text-white text-decoration-none mb-4">Ինչպես օգտվել</a></li>
                 </ul>
                 <ul class="list-unstyled">
-                    <li><a href="" class="text-white text-decoration-none mb-4">Ինչպես օգտվել</a></li>
+                    <li><a href="{{ route('offer') }}" class="text-white text-decoration-none mb-4">Օֆերտա</a></li>
                 </ul>
                 <ul class="list-unstyled">
-                    <li><a href="" class="text-white text-decoration-none mb-4">Օֆերտա</a></li>
+                    <li><a href="{{ route('delivery') }}" class="text-white text-decoration-none mb-4">Առաքում և վճարում</a></li>
                 </ul>
-                <ul class="list-unstyled">
-                    <li><a href="" class="text-white text-decoration-none mb-4">Առաքում և վճարում</a></li>
-                </ul>
-                <ul class="list-unstyled">
-                    <li><a href="" class="text-white text-decoration-none mb-4">Գաղտնիության քաղաքականություն</a></li>
-                </ul>
+                {{-- <ul class="list-unstyled">
+                    <li><a href="{{ route('privacy') }}" class="text-white text-decoration-none mb-4">Գաղտնիության քաղաքականություն</a></li>
+                </ul> --}}
             </div>
             <style>
                 .fas{

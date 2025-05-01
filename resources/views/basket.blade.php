@@ -37,18 +37,40 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="cart__table--body__list">
+                                            {{-- <td class="cart__table--body__list">
                                                 <div class="quantity__box">
+                                                    <!-- Уменьшить количество товара -->
                                                     <form action="{{ route('basket-remove', $sku) }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="quantity__value quickview__value--quantity decrease" aria-label="quantity value" value="Decrease Value">-</button>
+                                                    </form>
+
+                                                    <label>
+                                                        <input type="number" class="quantity__number quickview__value--number" value="{{ $sku->countInOrder }}" data-counter />
+                                                    </label>
+
+                                                    <!-- Увеличить количество товара -->
+                                                    <form action="{{ route('basket-add', $sku) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="quantity__value quickview__value--quantity increase" aria-label="quantity value" value="Increase Value">+</button>
+                                                    </form>
+                                                </div>
+                                            </td> --}}
+                                            <td>
+                                                <div class="btn-group form-inline">
+                                                    <form action="{{ route('basket-remove', $sku) }}" method="POST">
+                                                        <button type="submit" class="btn btn-danger" href=""><span
+                                                                class="glyphicon glyphicon-minus" aria-hidden="true">-</span></button>
+                                                        @csrf
                                                     </form>
                                                     <label>
                                                         <input type="number" class="quantity__number quickview__value--number" value="{{ $sku->countInOrder }}" data-counter />
                                                     </label>
                                                     <form action="{{ route('basket-add', $sku) }}" method="POST">
+                                                        <button type="submit" class="btn btn-success"
+                                                                href=""><span
+                                                                class="glyphicon glyphicon-plus" aria-hidden="true">+</span></button>
                                                         @csrf
-                                                        <button type="submit" class="quantity__value quickview__value--quantity increase" aria-label="quantity value" value="Increase Value">+</button>
                                                     </form>
                                                 </div>
                                             </td>

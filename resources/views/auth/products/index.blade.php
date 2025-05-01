@@ -7,7 +7,7 @@
    <!-- Add Product Button -->
    <div class="mt-4">
         <a class="btn btn-success" href="{{ route('products.create') }}">
-            <i class="fas fa-plus text-white"></i> Добавить товар
+            <i class="fas fa-plus text-white"></i> Ավելացնել Ապրանք
         </a>
     </div>
     <!-- Card for the Table -->
@@ -17,11 +17,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Код</th>
-                        <th>Название</th>
-                        <th>Категория</th>
-                        <th>Кол-во товарных предложений</th>
-                        <th>Действия</th>
+                        <th>Կոդ</th>
+                        <th>Անուն</th>
+                        <th>Կատեգորիա</th>
+                        <th>Քանակ</th>
+                        <th>Գործողություններ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,48 +36,25 @@
                             <div class="btn-group" role="group">
                                 <!-- View Button -->
                                 <a class="btn btn-success" href="{{ route('products.show', $product) }}" data-toggle="tooltip" title="Открыть товар">
-                                    <i class="fas fa-eye text-white"></i> Открыть
+                                    <i class="fas fa-eye text-white"></i> Բացել
                                 </a>
 
                                 <!-- Skus Button -->
                                 <a class="btn btn-info" href="{{ route('skus.index', $product) }}" data-toggle="tooltip" title="Смотреть SKU">
-                                    <i class="fas fa-box text-white"></i> Skus
+                                    <i class="fas fa-box text-white"></i> ՍԿՈՒՍ
                                 </a>
 
                                 <!-- Edit Button -->
                                 <a class="btn btn-warning" href="{{ route('products.edit', $product) }}" data-toggle="tooltip" title="Редактировать товар">
-                                    <i class="fas fa-edit text-white"></i> Редактировать
+                                    <i class="fas fa-edit text-white"></i> Փոփոխել
                                 </a>
 
-                                <!-- Delete Button - Open Modal -->
-                                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $product->id }}" data-toggle="tooltip" title="Удалить товар">
-                                    <i class="fas fa-trash-alt text-white"></i> Удалить
-                                </button>
-                            </div>
+                                <form action="{{ route('products.destroy', $product) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Հեռացնել</button>
+                                </form>
 
-                            <!-- Modal for Deletion -->
-                            <div class="modal fade" id="deleteModal{{ $product->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ $product->id }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ $product->id }}">Удалить товар</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Вы уверены, что хотите удалить товар «{{ $product->name }}»?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                                            <form action="{{ route('products.destroy', $product) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Удалить</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </td>
                     </tr>

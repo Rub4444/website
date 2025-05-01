@@ -1,95 +1,93 @@
 @extends('auth.layouts.master')
 
 @section('content')
-    <div class="col-md-12">
-        @isset($category)
-            <h1>Редактировать Категорию <b>{{ $category->name }}</b></h1>
-        @else
-            <h1>Добавить Категорию</h1>
-        @endisset
-        <form method="POST" enctype="multipart/form-data"
-                    @isset($category)
-                        action="{{ route('categories.update', $category) }}"
-                    @else
-                        action="{{ route('categories.store') }}"
-                    @endisset
-                >
-            <div>
-                @isset($category)
-                    @method('PUT')
-                @endisset
-                @csrf
-                <div class="input-group row">
-                    <label for="code" class="col-sm-2 col-form-label">Код: </label>
-                    <div class="col-sm-6">
-                        @error('code')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                        <input type="text" class="form-control" name="code" id="code"
-                               value="{{ old('code', isset($category) ? $category->code : null) }}">
-                    </div>
-                </div>
-                <br>
-                <div class="input-group row">
-                    <label for="name" class="col-sm-2 col-form-label">Название: </label>
-                    <div class="col-sm-6">
-                        @error('name')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                        <input type="text" class="form-control" name="name" id="name"
-                               value="{{ old('name', isset($category) ? $category->name : null) }}">
-                    </div>
-                </div>
-                <br>
-                <div class="input-group row">
-                    <label for="name_en" class="col-sm-2 col-form-label">Название en: </label>
-                    <div class="col-sm-6">
-                        @error('name_en')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                        <input type="text" class="form-control" name="name_en" id="name_en"
-                               value="{{ old('name_en', isset($category) ? $category->name_en : null) }}">
-                    </div>
-                </div>
-                <br>
-                <div class="input-group row">
-                    <label for="description" class="col-sm-2 col-form-label">Описание: </label>
-                    <div class="col-sm-6">
-                        @error('description')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                        <textarea name="description" id="description" cols="72" rows="7">{{ old('description', isset($category) ? $category->description : null) }}</textarea>
-                    </div>
-                </div>
-                <br>
-                <div class="input-group row">
-                    <label for="description_en" class="col-sm-2 col-form-label">Описание en: </label>
-                    <div class="col-sm-6">
-                        @error('description_en')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                        <textarea name="description_en" id="description_en" cols="72" rows="7">{{ old('description_en', isset($category) ? $category->description_en : null) }}</textarea>
-                    </div>
-                </div>
-                <br>
-                <div class="input-group row">
-                    <label for="image" class="col-sm-2 col-form-label">Картинка: </label>
-                    <div class="col-sm-10">
-                        @isset($category->image)
-                            <div>
-                                <img src="{{ asset('storage/' . $category->image) }}" alt="Категория" width="100">
-                                <br>
-                                <span>Текущее изображение</span>
-                            </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header text-white rounded-top-4" style="background-color:#2E8B57;">
+                    <h4 class="mb-0">
+                        @isset($category)
+                            Փոփոխել Կատեգորիա <b>{{ $category->name }}</b>
+                        @else
+                            Ավելացնել Կատեգորիա
                         @endisset
-                        <label class="btn btn-default btn-file">
-                            Загрузить <input type="file" style="display: none;" name="image" id="image">
-                        </label>
-                    </div>
+                    </h4>
                 </div>
-                <br>
-                <button class="btn btn-success">Сохранить</button>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data"
+                        @isset($category)
+                            action="{{ route('categories.update', $category) }}"
+                        @else
+                            action="{{ route('categories.store') }}"
+                        @endisset
+                    >
+                        @csrf
+                        @isset($category)
+                            @method('PUT')
+                        @endisset
+
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Կոդ</label>
+                            <input type="text" class="form-control @error('code') is-invalid @enderror" name="code" id="code"
+                                   value="{{ old('code', isset($category) ? $category->code : '') }}">
+                            @error('code')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Անուն</label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name"
+                                   value="{{ old('name', isset($category) ? $category->name : '') }}">
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name_en" class="form-label">Անուն en</label>
+                            <input type="text" class="form-control @error('name_en') is-invalid @enderror" name="name_en" id="name_en"
+                                   value="{{ old('name_en', isset($category) ? $category->name_en : '') }}">
+                            @error('name_en')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Նկարագրություն</label>
+                            <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description" rows="4">{{ old('description', isset($category) ? $category->description : '') }}</textarea>
+                            @error('description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description_en" class="form-label">Նկարագրություն en</label>
+                            <textarea class="form-control @error('description_en') is-invalid @enderror" name="description_en" id="description_en" rows="4">{{ old('description_en', isset($category) ? $category->description_en : '') }}</textarea>
+                            @error('description_en')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="image" class="form-label d-block">Նկար</label>
+                            @isset($category->image)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $category->image) }}" alt="Категория" width="120" class="rounded shadow-sm">
+                                    <p class="text-muted mt-1">Տեղադրված նկար</p>
+                                </div>
+                            @endisset
+                            <input class="form-control" type="file" name="image" id="image">
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i>Պահպանել
+                        </button>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
+</div>
 @endsection

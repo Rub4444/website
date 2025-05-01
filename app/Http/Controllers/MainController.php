@@ -20,27 +20,26 @@ class MainController extends Controller
     public function index(ProductFilterRequest $request)
     {
         $skusQuery = Sku::with(['product', 'product.category']);
-
         // $productsQuery = Product::with('category');
 
-        if ($request->filled('price_from'))
-        {
-            $skusQuery->where('price', '>=', $request->price_from);
-        }
-        if ($request->filled('price_to'))
-        {
-            $skusQuery->where('price', '<=', $request->price_to);
-        }
+        // if ($request->filled('price_from'))
+        // {
+        //     $skusQuery->where('price', '>=', $request->price_from);
+        // }
+        // if ($request->filled('price_to'))
+        // {
+        //     $skusQuery->where('price', '<=', $request->price_to);
+        // }
 
-        foreach (['hit', 'new', 'recommend'] as $field)
-        {
-            if ($request->has($field))
-            {
-                $skusQuery->whereHas('product', function ($query) use ($field) {
-                    $query->where( $field);
-                });
-            }
-        }
+        // foreach (['hit', 'new', 'recommend'] as $field)
+        // {
+        //     if ($request->has($field))
+        //     {
+        //         $skusQuery->whereHas('product', function ($query) use ($field) {
+        //             $query->where( $field);
+        //         });
+        //     }
+        // }
         $skus = $skusQuery->paginate(8)->withPath("?" . $request->getQueryString());
         return view('index', compact('skus'));
     }
@@ -98,5 +97,25 @@ class MainController extends Controller
         $currency = Currency::byCode($currencyCode)->firstOrFail();
         session(['currency' => $currency->code]);
         return redirect()->back();
+    }
+
+    public function howToUse()
+    {
+        return view('how-to-use');
+    }
+
+    public function offer()
+    {
+        return view('offer');
+    }
+
+    public function delivery()
+    {
+        return view('delivery');
+    }
+
+    public function privacy()
+    {
+        return view('privacy');
     }
 }

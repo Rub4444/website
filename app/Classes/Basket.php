@@ -74,22 +74,30 @@ class Basket
         Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
         return true;
     }
-
     public function removeSku(Sku $sku)
     {
-        if ($this->order->skus->contains($sku))
-        {
-            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-            if ($pivotRow->countInOrder < 2)
-            {
-                $this->order->skus->pop($sku->id);
-            }
-            else
-            {
-                $pivotRow->countInOrder--;
+        $skus = $this->order->skus;
+
+        foreach ($skus as $key => $item) {
+            if ($item->id == $sku->id) {
+                if ($item->countInOrder > 1) {
+                    $item->countInOrder--;
+                } else {
+                    $skus->forget($key); // удаляем из коллекции
+                }
+                break;
             }
         }
+
+        // Обязательно пересохраняем!
+        $this->order->skus = $skus->values(); // сбрасываем ключи
+        session(['order' => $this->order]);
+
+        return true;
     }
+
+
+
 
     public function addSku(Sku $sku)
     {

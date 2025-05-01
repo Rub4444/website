@@ -1,106 +1,92 @@
 @extends('auth.layouts.master')
 
 @isset($coupon)
-    @section('title', 'Редактировать Купон ' . $coupon->id)
+    @section('title', 'Խմբագրել կտրոն ' . $coupon->id)
 @else
-    @section('title', 'Создать Купон')
+    @section('title', 'Ստեղծել կտրոն')
 @endisset
 
 @section('content')
-    <div class="col-md-12">
-        @isset($coupon)
-            <h1>Редактировать Купон <b>{{ $coupon->id }}</b></h1>
-        @else
-            <h1>Добавить Купон</h1>
-        @endisset
-        <form method="POST"
-              @isset($coupon)
-                action="{{ route('coupons.update', $coupon) }}"
-              @else
-                action="{{ route('coupons.store') }}"
-            @endisset
-        >
-            <div>
-                @isset($coupon)
-                    @method('PUT')
-                @endisset
-                @csrf
-                <div class="input-group row">
-                    <label for="code" class="col-sm-2 col-form-label">Код: </label>
-                    <div class="col-sm-6">
+    <div class="container mt-5">
+        <div class="card shadow rounded-4">
+            <div class="card-body p-5">
+                <h2 class="mb-4">
+                    @isset($coupon)
+                        Խմբագրել Կուպոնը <strong>#{{ $coupon->id }}</strong>
+                    @else
+                        Ավելացնել Նոր Կուպոն
+                    @endisset
+                </h2>
+
+                <form method="POST"
+                      @isset($coupon)
+                          action="{{ route('coupons.update', $coupon) }}"
+                      @else
+                          action="{{ route('coupons.store') }}"
+                      @endisset
+                >
+                    @csrf
+                    @isset($coupon)
+                        @method('PUT')
+                    @endisset
+
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Կուպոն կոդ</label>
                         @include('auth.layouts.error', ['fieldName' => 'code'])
                         <input type="text" class="form-control" name="code" id="code"
-                               value="@isset($coupon){{ $coupon->code }}@endisset">
+                               value="{{ old('code', $coupon->code ?? '') }}">
                     </div>
-                </div>
-                <br>
-                <div class="input-group row">
-                    <label for="value" class="col-sm-2 col-form-label">Номинал: </label>
-                    <div class="col-sm-6">
+
+                    <div class="mb-3">
+                        <label for="value" class="form-label">Արժեք</label>
                         @include('auth.layouts.error', ['fieldName' => 'value'])
                         <input type="text" class="form-control" name="value" id="value"
-                               value="@isset($coupon){{ $coupon->value }}@endisset">
+                               value="{{ old('value', $coupon->value ?? '') }}">
                     </div>
-                </div>
-                <br>
-                <div class="input-group row">
-                    <label for="currency_id" class="col-sm-2 col-form-label">Валюта: </label>
-                    <div class="col-sm-6">
+
+                    <div class="mb-3">
+                        <label for="currency_id" class="form-label">Արժույթ</label>
                         @include('auth.layouts.error', ['fieldName' => 'currency_id'])
-                        <select name="currency_id" id="currency_id" class="form-control">
-                            <option value="">Без валюты</option>
+                        <select name="currency_id" id="currency_id" class="form-select">
+                            <option value="">Առանց արժույթի</option>
                             @foreach($currencies as $currency)
                                 <option value="{{ $currency->id }}"
-                                        @isset($coupon)
-                                        @if($coupon->currency_id == $currency->id)
-                                        selected
-                                    @endif
-                                    @endisset
-                                >{{ $currency->code }}</option>
+                                        @selected(isset($coupon) && $coupon->currency_id == $currency->id)>
+                                    {{ $currency->code }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <br>
-                @foreach ([
-                'type' => 'Абсолютное значение',
-                'only_once' => 'Купон может быть использован только один раз',
-                ] as $field => $title)
-                    <div class="form-group row">
-                        <label for="code" class="col-sm-2 col-form-label">{{ $title }}: </label>
-                        <div class="col-sm-10">
-                            <input type="checkbox" name="{{$field}}" id="{{$field}}"
-                                   @if(isset($coupon) && $coupon->$field === 1)
-                                   checked="'checked"
-                                @endif
-                            >
+
+                    @foreach ([
+                        'type' => 'Աբսոլյուտ արժեք',
+                        'only_once' => 'Կտրոնը կարող է օգտագործվել միայն մեկ անգամ',
+                    ] as $field => $label)
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" name="{{ $field }}" id="{{ $field }}"
+                                   @checked(isset($coupon) && $coupon->$field === 1)>
+                            <label class="form-check-label" for="{{ $field }}">
+                                {{ $label }}
+                            </label>
                         </div>
-                    </div>
-                    <br>
-                @endforeach
-                <br>
-                <div class="input-group row">
-                    <label for="expired_at" class="col-sm-2 col-form-label">Использовать до: </label>
-                    <div class="col-sm-6">
+                    @endforeach
+
+                    <div class="mb-3">
+                        <label for="expired_at" class="form-label">Վավեր է մինչև</label>
                         @include('auth.layouts.error', ['fieldName' => 'expired_at'])
                         <input type="date" class="form-control" name="expired_at" id="expired_at"
-                               value="@if(isset($coupon) && !is_null($coupon->expired_at))
-                               {{ $coupon->expired_at->format('Y-m-d') }}@endif">
+                               value="{{ old('expired_at', isset($coupon) && $coupon->expired_at ? $coupon->expired_at->format('Y-m-d') : '') }}">
                     </div>
-                </div>
 
-                <br>
-                <div class="input-group row">
-                    <label for="description" class="col-sm-2 col-form-label">Описание: </label>
-                    <div class="col-sm-6">
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Նկարագրություն</label>
                         @include('auth.layouts.error', ['fieldName' => 'description'])
-                        <textarea name="description" id="description" cols="72"
-                                  rows="7">@isset($coupon){{ $coupon->description }}@endisset</textarea>
+                        <textarea name="description" id="description" class="form-control" rows="5">{{ old('description', $coupon->description ?? '') }}</textarea>
                     </div>
-                </div>
-                <br>
-                <button class="btn btn-success">Сохранить</button>
+
+                    <button type="submit" class="btn btn-success w-100 py-2 rounded-3">Պահպանել</button>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 @endsection

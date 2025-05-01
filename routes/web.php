@@ -55,21 +55,25 @@ Route::middleware(['set_locale'])->group(function()
     });
 
     Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
+    Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
+
     Route::group(['middleware' => 'basket_not_empty'], function()
     {
         Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
         Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
-        Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
         Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
         Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
     });
+    Route::get('/how-to-use', [MainController::class, 'howToUse'])->name('howToUse');
+    Route::get('/offer', [MainController::class, 'offer'])->name('offer');
+    Route::get('/delivery', [MainController::class, 'delivery'])->name('delivery');
+    // Route::get('/privacy', [MainController::class, 'privacy'])->name('privacy');
 
     Route::get('/', [MainController::class, 'index'])->name('index');
     Route::get('/categories', [MainController::class, 'categories'])->name('categories');
     Route::post('/subscription/{sku}', [MainController::class, 'subscribe'])->name('subscription');
     Route::get('/{category}', [MainController::class, 'category'])->name('category');
     Route::get('/{category}/{product?}/{skus}', [MainController::class, 'sku'])->name('sku');
-
 });
 
 

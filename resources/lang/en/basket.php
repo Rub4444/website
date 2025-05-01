@@ -24,5 +24,6 @@ return [
     'order_confirmed' => 'Confirm the Order',
     'my_profile' => 'My Profile',
     'continue_shopping' => 'Continue Shopping',
+    'cant_find_product' => 'The product is unavailable',
 ];
 

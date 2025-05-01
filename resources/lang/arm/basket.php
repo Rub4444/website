@@ -24,5 +24,5 @@ return [
     'order_confirmed' => 'Հաստատել Պատվերը',
     'my_profile' => 'Իմ հաշիվը',
     'continue_shopping' => 'Շարունակել գնումները',
-
+    'cant_find_product' => 'Ապրանքը հասանելի չէ',
 ];

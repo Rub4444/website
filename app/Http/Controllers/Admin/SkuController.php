@@ -7,111 +7,68 @@ use App\Http\Requests\SkuRequest;
 use App\Models\Product;
 use App\Models\Sku;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class SkuController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  Product  $product
-     * @return \Illuminate\Http\Response
-     */
     public function index(Product $product)
     {
-        $skus = $product->skus()->paginate(10);
+        $skus = $product->skus()->with('propertyOptions.property')->paginate(10);
         return view('auth.skus.index', compact('skus', 'product'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @param  Product  $product
-     * @return void
-     */
     public function create(Product $product)
     {
         return view('auth.skus.form', compact('product'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Product  $product
-     * @return void
-     */
     public function store(SkuRequest $request, Product $product)
     {
-        $params = $request->all();
-        $params['product_id'] = $request->product->id;
-        $skus = Sku::create($params);
-        $skus->propertyOptions()->sync($request->property_id);
-        return redirect()->route('skus.index', $product);
+        $params = $request->validated();
+        $params['price'] =  $params['price'];
+        $params['product_id'] = $product->id;
+
+        $sku = Sku::create($params);
+
+        if ($request->has('property_id')) {
+            $sku->propertyOptions()->sync($request->property_id);
+        }
+
+        return redirect()->route('skus.show', [$product, $sku->id])
+                         ->with('success', 'Ապրանքային առաջարկը հաջողությամբ ստեղծվեց։');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  Product  $product
-     * @param  Sku  $skus
-     * @return void
-     */
     public function show(Product $product, Sku $sku)
     {
+        $sku->load('propertyOptions.property');
 
         return view('auth.skus.show', compact('product', 'sku'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  Product  $product
-     * @param  Sku  $skus
-     * @return void
-     */
     public function edit(Product $product, Sku $sku)
     {
         return view('auth.skus.form', compact('product', 'sku'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Product  $product
-     * @param  Sku  $skus
-     * @return void
-     */
-    public function update(Request $request, Product $product, Sku $sku)
+    public function update(SkuRequest $request, Product $product, Sku $sku)
     {
-        $params = $request->all();
-
+        $params = $request->validated();
         $params['product_id'] = $product->id;
 
-        $params['sku_id'] = $sku->id;
-
         $sku->update($params);
-        $sku->propertyOptions()->sync($request->property_id);
-        return redirect()->route('skus.index', $product);
+
+        if ($request->has('property_id'))
+        {
+            $sku->propertyOptions()->sync($request->property_id);
+        }
+
+        return redirect()->route('skus.show', [$product, $sku->id])
+                         ->with('success', 'Ապրանքային առաջարկը հաջողությամբ թարմացվեց։');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  Product  $product
-     * @param  Sku  $skus
-     * @return void
-     * @throws \Exception
-     */
     public function destroy(Product $product, Sku $sku)
     {
         $sku->delete();
-        return redirect()->route('skus.index', $product);
+        return redirect()->route('skus.index', $product)
+                         ->with('success', 'Ապրանքային առաջարկը հաջողությամբ հեռացվեց։');
     }
-    // public function destroy(Product $product, Sku $skus)
-    // {
-    //     $skus->delete();
-    //     return redirect()->route('skus.index', $product);
-    // }
 }

@@ -38,8 +38,10 @@ class BasketController extends Controller
         if ($basket->saveOrder($request->name, $request->phone, $email))
         {
             session()->flash('success', __('basket.your_order_confirmed'));
-        } else {
-            session()->flash('warning', 'Товар не доступен!');
+        }
+        else
+        {
+            session()->flash('warning', __('basket.cant_find_product'));
         }
 
         return redirect()->route('index');
@@ -51,7 +53,7 @@ class BasketController extends Controller
         $order = $basket->getOrder();
         if(!$basket->countAvailable())
         {
-            session()->flash('warning', 'Товар не доступен!');
+            session()->flash('warning', __('basket.cant_find_product'));
             return redirect()->route('basket');
         }
         $categories = Category::all();
@@ -76,9 +78,11 @@ class BasketController extends Controller
     {
         (new Basket())->removeSku($skus);
 
-        session()->flash('warning', __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_deleted'));
+        session()->flash('warning', __('basket.removed').$skus->product->__('name'));
+
         return redirect()->route('basket');
     }
+
 
     public function setCoupon(AddCouponRequest $request)
     {

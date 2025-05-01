@@ -39,35 +39,12 @@
                                     <i class="fas fa-edit text-white"></i> Խմբագրել
                                 </a>
 
-                                <!-- Delete Button - Open Modal -->
-                                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteModal{{$category->id}}" data-toggle="tooltip" title="Удалить категорию">
-                                    <i class="fas fa-trash-alt text-white"></i> Ջնջել
-                                </button>
-                            </div>
+                                <form action="{{ route('categories.destroy', $category) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Հեռացնել</button>
+                                </form>
 
-                            <!-- Modal for Deletion -->
-                            <div class="modal fade" id="deleteModal{{$category->id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{$category->id}}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{$category->id}}">Ջնջել կատեգորիան</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Համոզված եք, որ ցանկանում եք հեռացնել կատեգորիան «{{$category->name}}»?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Չեղարկել</button>
-                                            <form action="{{route('categories.destroy', $category)}}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Ջնջել</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </td>
                     </tr>

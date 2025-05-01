@@ -8,7 +8,7 @@
    <!-- Add Coupon Button -->
    <div class="mt-4">
         <a class="btn btn-success" href="{{ route('coupons.create') }}">
-            <i class="fas fa-plus text-white"></i> Добавить Купон
+            <i class="fas fa-plus text-white"></i> Ավելացնել կուպոն
         </a>
     </div>
    <!-- Coupons Table -->
@@ -18,9 +18,9 @@
                <thead>
                    <tr>
                        <th>#</th>
-                       <th>Код</th>
-                       <th>Описание</th>
-                       <th>Действия</th>
+                       <th>Կոդ</th>
+                       <th>Նկարագրություն</th>
+                       <th>Գործողություններ</th>
                    </tr>
                </thead>
                <tbody>
@@ -31,22 +31,22 @@
                        <td>{{ $coupon->description }}</td>
                        <td>
                            <div class="btn-group" role="group">
-                               <form action="{{ route('coupons.destroy', $coupon) }}" method="POST">
-                                   <!-- Open Button -->
-                                   <a class="btn btn-success" href="{{ route('coupons.show', $coupon) }}" data-toggle="tooltip" title="Открыть купон">
-                                       <i class="fas fa-eye text-white"></i> Открыть
-                                   </a>
+                                <!-- Open Button -->
+                                <a class="btn btn-success" href="{{ route('coupons.show', $coupon) }}" data-toggle="tooltip" title="Բացել">
+                                    <i class="fas fa-eye text-white"></i> Բացել
+                                </a>
 
-                                   <!-- Edit Button -->
-                                   <a class="btn btn-warning" href="{{ route('coupons.edit', $coupon) }}" data-toggle="tooltip" title="Редактировать купон">
-                                       <i class="fas fa-edit text-white"></i> Редактировать
-                                   </a>
+                                <!-- Edit Button -->
+                                <a class="btn btn-warning" href="{{ route('coupons.edit', $coupon) }}" data-toggle="tooltip" title="Փոփոխել">
+                                    <i class="fas fa-edit text-white"></i> Փոփոխել
+                                </a>
 
-                                   <!-- Delete Button -->
-                                   @csrf
-                                   @method('DELETE')
-                                   <input class="btn btn-danger" type="submit" value="Удалить" data-toggle="tooltip" title="Удалить купон">
-                               </form>
+                                <!-- Delete Button -->
+                                <form action="{{ route('coupons.destroy', $coupon) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input class="btn btn-danger" type="submit" value="Հեռացնել" data-toggle="tooltip" title="Հեռացնել">
+                                </form>
                            </div>
                        </td>
                    </tr>

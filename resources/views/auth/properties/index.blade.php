@@ -7,7 +7,7 @@
    <!-- Add Property Button -->
    <div class="mt-4">
         <a class="btn btn-success" href="{{ route('properties.create') }}">
-            <i class="fas fa-plus text-white"></i> Добавить свойство
+            <i class="fas fa-plus text-white"></i> Ավելացնել հատկանիշ
         </a>
     </div>
     <!-- Card for the Table -->
@@ -17,8 +17,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Название</th>
-                        <th>Действия</th>
+                        <th>Անուն</th>
+                        <th>Գործողություններ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,48 +30,24 @@
                             <div class="btn-group" role="group">
                                 <!-- View Button -->
                                 <a class="btn btn-success" href="{{ route('properties.show', $property) }}" data-toggle="tooltip" title="Открыть свойство">
-                                    <i class="fas fa-eye text-white"></i> Открыть
+                                    <i class="fas fa-eye text-white"></i> Բացել
                                 </a>
 
                                 <!-- Edit Button -->
                                 <a class="btn btn-warning" href="{{ route('properties.edit', $property) }}" data-toggle="tooltip" title="Редактировать свойство">
-                                    <i class="fas fa-edit text-white"></i> Редактировать
+                                    <i class="fas fa-edit text-white"></i> Փոփոխել
                                 </a>
 
                                 <!-- Property Options Button -->
                                 <a class="btn btn-primary" href="{{ route('property-options.index', $property) }}" data-toggle="tooltip" title="Значение свойства">
-                                    <i class="fas fa-cogs text-white"></i> Значение свойства
+                                    <i class="fas fa-cogs text-white"></i> Նշանակությունը
                                 </a>
 
-                                <!-- Delete Button - Open Modal -->
-                                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ $property->id }}" data-toggle="tooltip" title="Удалить свойство">
-                                    <i class="fas fa-trash-alt text-white"></i> Удалить
-                                </button>
-                            </div>
-
-                            <!-- Modal for Deletion -->
-                            <div class="modal fade" id="deleteModal{{ $property->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ $property->id }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel{{ $property->id }}">Удалить свойство</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Вы уверены, что хотите удалить свойство «{{ $property->name }}»?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                                            <form action="{{ route('properties.destroy', $property) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Удалить</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                <form action="{{ route('properties.destroy', $property) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Հեռացնել</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

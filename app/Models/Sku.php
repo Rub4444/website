@@ -36,11 +36,6 @@ class Sku extends Model
     {
         return $this->pivot ? $this->pivot->count * $this->price : $this->price;
     }
-    public function getPriceAttribute($value)
-    {
-        return round(CurrencyConversion::convert($value), 2);
-    }
-
     public function getProductNameAttribute()
     {
         return $this->product->name;
