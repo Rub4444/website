@@ -17,7 +17,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
 Auth::routes([
-    'reset'=>false,
+    'reset'=>true,
     'confirm'=>false,
     'verify'=>true
 ]);
@@ -37,7 +37,7 @@ Route::middleware(['set_locale'])->group(function()
 {
     Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
-    Route::middleware(['auth', 'verified'])->group(function ()
+    Route::middleware(['auth'])->group(function ()
     {
         Route::prefix('person')->as('person.')->group(function ()
         {

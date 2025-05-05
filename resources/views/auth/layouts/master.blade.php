@@ -71,6 +71,7 @@
                         <div class="main_menu">
                             <nav class="header-main-menu">
                                 <ul class="d-flex">
+
                                     @admin
                                         <li class="header__menu--items">
                                             <a class="header__menu--link" href="{{route('categories.index')}}">Կատեգորիաներ</a>
@@ -90,6 +91,7 @@
                                         <li class="header__menu--items">
                                             <a class="header__menu--link" href="{{ route('home') }}">Պատվերներ</a>
                                         </li>
+
                                     @endadmin
                                     @guest
                                         <li class="header__menu--items">

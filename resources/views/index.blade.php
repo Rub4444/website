@@ -2,7 +2,7 @@
 @section('title', 'Իջևան Մարկետ')
 @section('content')
 
-    @if (!auth()->user()->hasVerifiedEmail())
+    @if (auth()->check() && !auth()->user()->hasVerifiedEmail())
         <div class="alert alert-warning d-flex justify-content-between align-items-center shadow-sm px-4 py-3 mb-4 rounded-3">
             <div>
                 <strong>⚠️ Ուշադրություն:</strong>

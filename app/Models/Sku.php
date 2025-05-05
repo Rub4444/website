@@ -40,4 +40,18 @@ class Sku extends Model
     {
         return $this->product->name;
     }
+
+    protected static function booted()
+{
+    static::updated(function ($sku) {
+        // Проверяем: было <= 0, стало > 0
+        if ($sku->wasChanged('count') && $sku->count > 0) {
+            $original = $sku->getOriginal('count');
+            if ($original <= 0) {
+                \App\Models\Subscription::sendEmailsBySubscription($sku);
+            }
+        }
+    });
+}
+
 }

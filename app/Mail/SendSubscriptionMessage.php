@@ -30,7 +30,7 @@ class SendSubscriptionMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Subscription Message',
+            subject: 'Ապրանքը արդեն առկա է',
         );
     }
 

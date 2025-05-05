@@ -1,25 +1,26 @@
-<p>
-Հարգելի {{$name}}
-Ձեր պատվերը գրանցված է
-Ընդհանուր արժեքը՝ {{$fullSum}} դրամ
-Շնորհակալություն գնումների համար
-</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Պատվերի հաստատում</title>
+</head>
+<body>
+    <h2>Հարգելի {{ $name }},</h2>
 
-<table>
-    <tbody>
-        @foreach($order->skus as $sku)
-            <tr>
-                <td>
-                    <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                        {{ $sku->product->__('name') }}
-                    </a>
-                </td>
-                <td>
-                    <span class="badge" style="color:black;">{{ $sku->countInOrder }}</span>
-                </td>
-                <td>{{ $sku->price }} AMD</td>
-                <td>{{ $sku->getPriceForCount() }} AMD</td>
-            </tr>
+    <p>Ձեր պատվերը հաջողությամբ գրանցվել է։</p>
+
+    <p><strong>Ընդհանուր գումարը՝</strong> {{ number_format($fullSum, 0, '.', ' ') }} դրամ</p>
+
+    <h3>Պատվերի մանրամասները՝</h3>
+    <ul>
+        @foreach ($order->skus as $sku)
+            <li>
+                {{ $sku->product->name }} - {{ $sku->count }} հատ -
+                {{ number_format($sku->price * $sku->count, 0, '.', ' ') }} դրամ
+            </li>
         @endforeach
-    </tbody>
-</table>
+    </ul>
+
+    <p>Շնորհակալություն գնումների համար։</p>
+</body>
+</html>

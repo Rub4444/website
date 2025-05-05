@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Classes\Basket;
 use App\Models\Category;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderCreated;
 
 
 class BasketController extends Controller
@@ -37,6 +39,9 @@ class BasketController extends Controller
         $email = Auth::check() ? Auth::user()->email : $request->email;
         if ($basket->saveOrder($request->name, $request->phone, $email))
         {
+            $order = $basket->getOrder();
+            Mail::to($email)->send(new OrderCreated($request->name, $order));
+
             session()->flash('success', __('basket.your_order_confirmed'));
         }
         else
