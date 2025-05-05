@@ -1,6 +1,31 @@
 @extends('layouts.master')
 @section('title', 'Իջևան Մարկետ')
 @section('content')
+
+    @if (!auth()->user()->hasVerifiedEmail())
+        <div class="alert alert-warning d-flex justify-content-between align-items-center shadow-sm px-4 py-3 mb-4 rounded-3">
+            <div>
+                <strong>⚠️ Ուշադրություն:</strong>
+                <span>Ձեր Էլ-հասցեն հաստատված չէ:</span>
+            </div>
+            <form method="POST" action="{{ route('verification.send') }}">
+                @csrf
+                <button id="resendBtn" type="submit" class="btn btn-sm btn-outline-dark ms-3">
+                    <i class="bi bi-send"></i> Կրկին ուղարկել
+                </button>
+            </form>
+        </div>
+
+        <script>
+            const resendBtn = document.getElementById('resendBtn');
+            resendBtn.addEventListener('click', () => {
+                resendBtn.disabled = true;
+                resendBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Ուղարկվում է...`;
+            });
+        </script>
+    @endif
+
+
     <div class="container py-5">
         {{-- <!-- Кнопка для раскрытия/скрытия фильтров -->
         <button class="btn btn-outline-dark mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterBox" aria-expanded="false" aria-controls="filterBox">

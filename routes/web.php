@@ -13,24 +13,31 @@ use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\PropertyOptionController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\MerchantController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 Auth::routes([
     'reset'=>false,
     'confirm'=>false,
-    'verify'=>false
+    'verify'=>true
 ]);
+
+Route::get('/email/verify', function ()
+{
+    return view('auth.verify');
+})->name('verification.notice');
 
 Route::get('/locale/{locale}', [MainController::class, 'changeLocale'])->name('locale');
 
 Route::get('/currency/{currencyCode}', [MainController::class, 'changeCurrency'])->name('currency');
 
-Route::get('/logout', [LoginController::class, 'logout'])->name('get-logout');
+Route::get('/logout', [LoginController::class, 'logout'])->name('get-logout')->middleware('auth');
 
 Route::middleware(['set_locale'])->group(function()
 {
     Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
-    Route::middleware(['auth'])->group(function ()
+    Route::middleware(['auth', 'verified'])->group(function ()
     {
         Route::prefix('person')->as('person.')->group(function ()
         {
@@ -54,16 +61,31 @@ Route::middleware(['set_locale'])->group(function()
         });
     });
 
+    // Повторная отправка письма подтверждения
+    Route::post('/email/verification-notification', function (Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail())
+        {
+            return redirect()->intended('/');
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('message', 'Ссылка подтверждения отправлена на ваш email.');
+    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
     Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
     Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
 
-    Route::group(['middleware' => 'basket_not_empty'], function()
-    {
+    Route::group([
+        'middleware' => ['auth', 'verified', 'basket_not_empty']
+    ], function () {
         Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
         Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
         Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
         Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
     });
+
     Route::get('/how-to-use', [MainController::class, 'howToUse'])->name('howToUse');
     Route::get('/offer', [MainController::class, 'offer'])->name('offer');
     Route::get('/delivery', [MainController::class, 'delivery'])->name('delivery');
