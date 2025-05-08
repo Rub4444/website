@@ -25,5 +25,8 @@ return [
     'my_profile' => 'My Profile',
     'continue_shopping' => 'Continue Shopping',
     'cant_find_product' => 'The product is unavailable',
+    'choose_type' => 'Choose the type of delivery',
+    'from_store' => 'Pick up from the store',
+    'to_address' => 'Delivery to the address',
 ];
 

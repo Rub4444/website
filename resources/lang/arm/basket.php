@@ -25,4 +25,7 @@ return [
     'my_profile' => 'Իմ հաշիվը',
     'continue_shopping' => 'Շարունակել գնումները',
     'cant_find_product' => 'Ապրանքը հասանելի չէ',
+    'choose_type' => 'Ընտրեք առաքման տեսակը',
+    'from_store' => 'Վերցնել խանութից',
+    'to_address' => 'Առաքում հասցեով',
 ];

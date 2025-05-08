@@ -26,31 +26,42 @@ class BasketController extends Controller
     }
 
     public function basketConfirm(Request $request)
-    {
-        $basket = new Basket();
+{
+    $basket = new Basket();
 
-        if($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
-        {
-            $basket->clearCoupon();
-            session()->flash('warning', 'Купон не доступен!');
-            return redirect()->route('basket');
-        }
-
-        $email = Auth::check() ? Auth::user()->email : $request->email;
-        if ($basket->saveOrder($request->name, $request->phone, $email))
-        {
-            $order = $basket->getOrder();
-            Mail::to($email)->send(new OrderCreated($request->name, $order));
-
-            session()->flash('success', __('basket.your_order_confirmed'));
-        }
-        else
-        {
-            session()->flash('warning', __('basket.cant_find_product'));
-        }
-
-        return redirect()->route('index');
+    if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse()) {
+        $basket->clearCoupon();
+        session()->flash('warning', 'Купон не доступен!');
+        return redirect()->route('basket');
     }
+
+    $email = Auth::check() ? Auth::user()->email : $request->email;
+    $deliveryType = $request->delivery_type;
+    $address = $deliveryType === 'courier' ? $request->address : null;
+    $latitude = $request->latitude;
+    $longitude = $request->longitude;
+
+    if ($basket->saveOrder(
+        $request->name,
+        $request->phone,
+        $email,
+        $deliveryType,
+        $address,
+        $latitude,
+        $longitude ))
+    {
+        $order = $basket->getOrder();
+        Mail::to($email)->send(new OrderCreated($request->name, $order));
+        session()->flash('success', __('basket.your_order_confirmed'));
+    }
+    else
+    {
+        session()->flash('warning', __('basket.cant_find_product'));
+    }
+
+    return redirect()->route('index');
+}
+
 
     public function basketPlace()
     {

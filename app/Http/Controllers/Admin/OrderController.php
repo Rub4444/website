@@ -9,7 +9,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::active()->paginate(10);
+        $orders = Order::where('status', '!=', 0)->paginate(10);
 
         return view('auth.orders.index', compact('orders'));
     }
@@ -19,4 +19,32 @@ class OrderController extends Controller
         $skus = $order->skus()->withTrashed()->get();
         return view('auth.orders.show', compact('order', 'skus'));
     }
+
+    public function confirm(Order $order)
+    {
+        if ($order->status != 1) {
+            return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
+        }
+
+        $order->status = 2; // 2 = подтверждён, в пути
+        $order->save();
+
+        return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է և առաքիչը ճանապարհին է։');
+    }
+
+    public function cancel(Request $request, Order $order)
+    {
+        $request->validate([
+            'cancellation_comment' => 'required|string|max:1000',
+        ]);
+
+        $order->update([
+            'status' => 3, // статус 3 = отменён
+            'cancellation_comment' => $request->cancellation_comment,
+        ]);
+
+        return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է։');
+    }
+
+
 }

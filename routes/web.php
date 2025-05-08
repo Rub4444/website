@@ -49,6 +49,8 @@ Route::middleware(['set_locale'])->group(function()
         {
             Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('home');
             Route::get('/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
+            Route::post('/admin/orders/{order}/confirm', [App\Http\Controllers\Admin\OrderController::class, 'confirm'])->name('admin.orders.confirm');
+            Route::put('/admin/orders/{order}/cancel', [App\Http\Controllers\Admin\OrderController::class, 'cancel'])->name('admin.orders.cancel');
 
             Route::resource('categories', CategoryController::class);
             Route::resource('products', ProductController::class);

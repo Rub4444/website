@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum', 'coupon_id'];
+    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum', 'coupon_id', 'delivery_type', 'address', 'latitude', 'longitude', 'cancellation_comment',];
 
     public function skus()
     {
@@ -56,17 +56,22 @@ class Order extends Model
     }
 
 
-    public function saveOrder($name, $phone)
+    public function saveOrder($name, $phone, $deliveryType = null, $address = null, $latitude = null, $longitude = null)
     {
         $this->name = $name;
         $this->phone = $phone;
         $this->status = 1;
         $this->sum = $this->getFullSum();
+        $this->delivery_type = $deliveryType;
+        $this->address = $address;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
 
         $skus = $this->skus;
         $this->save();
 
-        foreach ($skus as $skuInOrder) {
+        foreach ($skus as $skuInOrder)
+        {
             $this->skus()->attach($skuInOrder, [
                 'count' => $skuInOrder->countInOrder,
                 'price' => $skuInOrder->price,
@@ -76,6 +81,7 @@ class Order extends Model
         session()->forget('order');
         return true;
     }
+
 
     public function hasCoupon()
     {
