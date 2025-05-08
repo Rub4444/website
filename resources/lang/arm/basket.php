@@ -28,4 +28,9 @@ return [
     'choose_type' => 'Ընտրեք առաքման տեսակը',
     'from_store' => 'Վերցնել խանութից',
     'to_address' => 'Առաքում հասցեով',
+    'use_my_location' => 'Օգտագործել իմ գտնվելու վայրը',
+    'pick_up_from_the_store' => 'Վերցնել խանութից',
+    'delivery_to_the_address' => 'Առաքում հասցեով',
+    'address' => 'Հասցե',
+    'enter_the_address' => 'Մուտքագրեք հասցեն',
 ];

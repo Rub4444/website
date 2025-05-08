@@ -39,14 +39,18 @@
                             <div class="col-lg-12 mb-12">
                                 <label for="delivery_type" class="form-label">@lang('basket.choose_type')</label>
                                 <select name="delivery_type" id="delivery_type" class="form-control">
-                                    <option value="pickup">Վերցնել խանութից</option>
-                                    <option value="courier">Առաքում հասցեով</option>
+                                    <option value="pickup">@lang('basket.pick_up_from_the_store')</option>
+                                    <option value="courier">@lang('basket.delivery_to_the_address')</option>
                                 </select>
                             </div>
 
                             <div class="col-lg-12 mb-12 mt-3" id="address_block" style="display: none;">
-                                <label for="address" class="form-label">Հասցե</label>
-                                <input type="text" name="address" id="address" class="form-control" placeholder="Մուտքագրեք հասցեն">
+                                <label for="address" class="form-label">@lang('basket.address')</label>
+                                <input type="text" name="address" id="address" class="form-control" placeholder="@lang('basket.enter_the_address')">
+
+                                <button type="button" class="btn btn-outline-secondary mt-2" onclick="getMyLocation()">
+                                    @lang('basket.use_my_location')
+                                </button>
                             </div>
 
                             <div id="map" style="width: 100%; height: 400px; margin-top: 20px;"></div>
@@ -74,77 +78,98 @@
         function initMap() {
             const defaultCoords = { lat: 40.8785, lng: 45.1535 };
 
-    map = new google.maps.Map(document.getElementById("map"), {
-        center: defaultCoords,
-        zoom: 14,
-    });
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: defaultCoords,
+                zoom: 14,
+            });
 
-    marker = new google.maps.Marker({
-        position: defaultCoords,
-        map: map,
-        draggable: true
-    });
+            marker = new google.maps.Marker({
+                position: defaultCoords,
+                map: map,
+                draggable: true
+            });
 
-    // Обновить координаты при перетаскивании маркера
-    marker.addListener('dragend', function () {
-        const pos = marker.getPosition();
-        updateLatLngInputs(pos.lat(), pos.lng());
-    });
+            // Обновить координаты при перетаскивании маркера
+            marker.addListener('dragend', function () {
+                const pos = marker.getPosition();
+                updateLatLngInputs(pos.lat(), pos.lng());
+            });
 
-    // Обновить координаты при клике по карте
-    map.addListener('click', function (e) {
-        const clickedLat = e.latLng.lat();
-        const clickedLng = e.latLng.lng();
+            // Обновить координаты при клике по карте
+            map.addListener('click', function (e) {
+                const clickedLat = e.latLng.lat();
+                const clickedLng = e.latLng.lng();
 
-        marker.setPosition({ lat: clickedLat, lng: clickedLng });
-        updateLatLngInputs(clickedLat, clickedLng);
-    });
+                marker.setPosition({ lat: clickedLat, lng: clickedLng });
+                updateLatLngInputs(clickedLat, clickedLng);
+            });
 
-    // Установить координаты по умолчанию
-    updateLatLngInputs(defaultCoords.lat, defaultCoords.lng);
-}
-
-function updateLatLngInputs(lat, lng) {
-    document.getElementById("latitude").value = lat;
-    document.getElementById("longitude").value = lng;
-}
-
-
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     const deliveryType = document.getElementById('delivery_type');
-        //     const addressBlock = document.getElementById('address_block');
-
-        //     if (deliveryType && addressBlock) {
-        //         deliveryType.addEventListener('change', function () {
-        //         addressBlock.style.display = this.value === 'courier' ? 'block' : 'none';
-        //         });
-
-        //         if (deliveryType.value === 'courier') {
-        //         addressBlock.style.display = 'block';
-        //         }
-        //     }
-
-        // });
-        document.addEventListener('DOMContentLoaded', function () {
-        const deliveryType = document.getElementById('delivery_type');
-        const addressBlock = document.getElementById('address_block');
-        const mapBlock = document.getElementById('map');
-
-        function handleDeliveryChange() {
-            const isCourier = deliveryType.value === 'courier';
-            addressBlock.style.display = isCourier ? 'block' : 'none';
-            mapBlock.style.display = isCourier ? 'block' : 'none';
-
-            if (isCourier && !mapInitialized) {
-                initMap();
-            }
+            // Установить координаты по умолчанию
+            updateLatLngInputs(defaultCoords.lat, defaultCoords.lng);
         }
 
-        if (deliveryType && addressBlock && mapBlock) {
-            deliveryType.addEventListener('change', handleDeliveryChange);
-            handleDeliveryChange(); // при загрузке
+        function getMyLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    document.getElementById('latitude').value = lat;
+                    document.getElementById('longitude').value = lng;
+
+                    initMap(lat, lng);
+                },
+                function () {
+                    alert('Չհաջողվեց ստանալ տեղադրությունը։');
+                }
+            );
+        } else {
+            alert('Ձեր զննիչը չի աջակցում տեղադրության ֆունկցիային։');
         }
-    });
+        }
+
+        function updateLatLngInputs(lat, lng) {
+            document.getElementById("latitude").value = lat;
+            document.getElementById("longitude").value = lng;
+        }
+
+
+                // document.addEventListener('DOMContentLoaded', function () {
+                //     const deliveryType = document.getElementById('delivery_type');
+                //     const addressBlock = document.getElementById('address_block');
+
+                //     if (deliveryType && addressBlock) {
+                //         deliveryType.addEventListener('change', function () {
+                //         addressBlock.style.display = this.value === 'courier' ? 'block' : 'none';
+                //         });
+
+                //         if (deliveryType.value === 'courier') {
+                //         addressBlock.style.display = 'block';
+                //         }
+                //     }
+
+                // });
+                document.addEventListener('DOMContentLoaded', function () {
+                const deliveryType = document.getElementById('delivery_type');
+                const addressBlock = document.getElementById('address_block');
+                const mapBlock = document.getElementById('map');
+
+                function handleDeliveryChange() {
+                    const isCourier = deliveryType.value === 'courier';
+                    addressBlock.style.display = isCourier ? 'block' : 'none';
+                    mapBlock.style.display = isCourier ? 'block' : 'none';
+
+                    if (isCourier && !mapInitialized) {
+                        initMap();
+                    }
+                }
+
+                if (deliveryType && addressBlock && mapBlock) {
+                    deliveryType.addEventListener('change', handleDeliveryChange);
+                    handleDeliveryChange(); // при загрузке
+                }
+        });
       </script>
     @endpush
 

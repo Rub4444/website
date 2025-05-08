@@ -28,5 +28,11 @@ return [
     'choose_type' => 'Choose the type of delivery',
     'from_store' => 'Pick up from the store',
     'to_address' => 'Delivery to the address',
+    'use_my_location' => 'Use my location',
+    'pick_up_from_the_store' => 'Pick up from the store',
+    'delivery_to_the_address' => 'Delivery to the address',
+    'address' => 'Address',
+    'enter_the_address' => 'Enter the address',
+
 ];
 
