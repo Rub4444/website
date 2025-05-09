@@ -26,13 +26,13 @@
                 @method('PUT')
             @endisset
 
-            <!-- Price Input -->
+           <!-- Price Input -->
             <div class="input-group row mb-3">
                 <label for="price" class="col-sm-2 col-form-label">Գինը:</label>
                 <div class="col-sm-2">
                     @include('auth.layouts.error', ['fieldName' => 'price'])
                     <input type="number" class="form-control" name="price"
-                    value="{{ old('price', $sku->getRawOriginal('price')) }}">
+                        value="{{ old('price', isset($sku) ? $sku->price : '') }}">
                 </div>
             </div>
 
@@ -46,24 +46,45 @@
                 </div>
             </div>
 
-            <!-- Properties -->
-            @foreach ($product->properties as $property)
-                <div class="input-group row mb-3">
-                    <label class="col-sm-2 col-form-label">{{ $property->name }}:</label>
-                    <div class="col-sm-6">
-                        <select name="property_id[{{ $property->id }}]" class="form-control">
-                            @foreach ($property->propertyOptions as $propertyOption)
-                                <option value="{{ $propertyOption->id }}"
-                                    @if (old("property_id.{$property->id}", $sku->propertyOptions->pluck('id', 'property_id')[$property->id] ?? null) == $propertyOption->id)
-                                        selected
-                                    @endif>
-                                    {{ $propertyOption->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+           <!-- Properties -->
+            {{-- @foreach ($product->properties as $property)
+            <div class="input-group row mb-3">
+                <label class="col-sm-2 col-form-label">{{ $property->name }}:</label>
+                <div class="col-sm-6">
+                    <select name="property_id[{{ $property->id }}]" class="form-control">
+                        @foreach ($property->propertyOptions as $propertyOption)
+                            <option value="{{ $propertyOption->id }}"
+                                @if (old("property_id.{$property->id}", isset($sku) ? $sku->propertyOptions->pluck('id', 'property_id')[$property->id] ?? null : null) == $propertyOption->id)
+                                    selected
+                                @endif>
+                                {{ $propertyOption->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-            @endforeach
+            </div>
+            @endforeach --}}
+            @foreach ($product->properties as $property)
+
+                    <div class="input-group row">
+                        <label for="property_id[{{ $property->id }}]" class="col-sm-2 col-form-label">{{ $property->name }}: </label>
+                        <div class="col-sm-6">
+                            <select name="property_id[{{ $property->id }}]" class="form-control">
+                                @foreach($property->propertyOptions as $propertyOption)
+                                    <option value="{{ $propertyOption->id }}"
+                                        @isset($skus)
+                                        @if($skus->propertyOptions->contains($propertyOption->id))
+                                            selected
+                                        @endif
+                                        @endisset
+                                    >{{ $propertyOption->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                @endforeach
+
+
 
             <!-- Submit -->
             <div class="row">

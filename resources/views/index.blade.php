@@ -16,13 +16,13 @@
             </form>
         </div>
 
-        <script>
+        {{-- <script>
             const resendBtn = document.getElementById('resendBtn');
             resendBtn.addEventListener('click', () => {
                 resendBtn.disabled = true;
                 resendBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Ուղարկվում է...`;
             });
-        </script>
+        </script> --}}
     @endif
 
 
@@ -80,13 +80,20 @@
             @foreach($skus as $sku)
                 {{-- @if($sku->product && $sku->product->category) --}}
                     <div class="col mb-1">
-                        <div class="card h-100 shadow-sm">
+                        <div class="card shadow-sm">
                             <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                                <img src="{{ asset('storage/' . $sku->product->image) }}" class="card-img-top" alt="Product">
+                                <img src="{{ asset('storage/' . $sku->product->image) }}"
+                                class="card-img-top img-fluid"
+                                style="height: 150px; object-fit: contain; background-color: #f8f9fa;"
+                                alt="{{ $sku->product->__('name') }}">
+
                             </a>
+                            {{-- @php
+                                dd($sku);
+                            @endphp --}}
                             <div class="card-body text-center">
                                 <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}" class="text-decoration-none text-dark">
-                                    <h5 class="card-title">{{ $sku->product->__('name') }}</h5>
+                                    <h5 class="card-title">{{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}</h5>
                                 </a>
                                 <p class="card-text fw-bold">{{ $sku->price }} {{ $currencySymbol }}</p>
                                 <form action="{{ route('basket-add', $sku) }}" method="POST">
@@ -105,6 +112,7 @@
                 {{-- @endif --}}
             @endforeach
         </div>
+
         <!-- Pagination -->
         <nav class="d-flex justify-content-center">
             {{ $skus->links('pagination::bootstrap-5') }}
@@ -142,4 +150,18 @@
             @endforeach
         </div> --}}
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menu2OpenBtn = document.getElementById("menu2OpenBtn");
+            const menu2 = document.getElementById("menu2");
+
+            if (menu2OpenBtn && menu2) {
+                menu2OpenBtn.addEventListener("click", function () {
+                    menu2.classList.add("open");
+                    document.body.classList.add("mobile_menu_open");
+                });
+            }
+        });
+    </script>
+
 @endsection

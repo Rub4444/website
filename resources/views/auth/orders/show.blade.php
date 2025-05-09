@@ -145,9 +145,9 @@
                 });
             }
 
-            document.addEventListener('DOMContentLoaded', function () {
+            // document.addEventListener('DOMContentLoaded', function () {
                 initMap();  // Инициализация карты
-            });
+            // });
         </script>
 
         <script async defer

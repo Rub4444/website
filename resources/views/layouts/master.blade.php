@@ -12,13 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.png') }}">
-    <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('css/all.min.css') }}"> --}}
 
     <!--Start preloader -->
     <div id="preloader">
@@ -94,9 +94,9 @@
                                         </g>
                                     </g>
                                 </svg>
-                                <span class="items__count">3</span>
                             </a>
                         </li>
+
                         @guest
                             <li class="header__account--items d-none d-lg-block">
                                 <a class="header__account--btn" href="{{route('register')}}">
@@ -144,7 +144,7 @@
                         <ul class="d-none d-lg-block">
                             @foreach($categories as $category)
                                 <li class="categories__menu--items">
-                                    <a  class="categories__menu--link" href="{{route('category', $category->code)}}">{{$category->__('name')}}</a>
+                                    <a  class="categories__menu--link" href="{{route('category', $category->code)}}"><i class="{{ $category->icon }}"></i>{{$category->__('name')}}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -170,7 +170,7 @@
                                 <span>@lang('main.set_lang')</span>
                             </a>
                         </div>
-                        <div class="account__currency">
+                        {{-- <div class="account__currency">
                             @auth
                                 @admin
                                     <a class="account__currency--link text-white" href="{{ route('reset') }}">
@@ -178,7 +178,7 @@
                                     </a>
                                 @endadmin
                             @endauth
-                        </div>
+                        </div> --}}
                         <div class="suport__contact d-flex align-items-center">
                             <svg class="suport__contact--icon text-white" xmlns="http://www.w3.org/2000/svg" width="36.725" height="36.743" viewBox="0 0 36.725 36.743">
                                 <path id="headphone-alt-2" d="M28.893,18.469c-.026-2.873.1-5.754-.761-8.565-1.587-5.21-5.306-7.742-10.781-7.272-4.681.4-7.588,2.715-8.785,7.573a24.031,24.031,0,0,0,.2,13.3,11.447,11.447,0,0,0,6.254,7.253c.658.3,1.091.408,1.595-.356a3.732,3.732,0,0,1,4.38-1.334,3.931,3.931,0,1,1-4.582,5.82,2.989,2.989,0,0,0-1.782-1.466c-4.321-1.573-6.842-4.869-8.367-9.032a1.686,1.686,0,0,0-1.238-1.275,7.046,7.046,0,0,1-3.718-2.447A5.739,5.739,0,0,1,3.242,11.83,5.338,5.338,0,0,0,6.318,7.957C7.644,3.033,11.62.193,16.845.02a19.923,19.923,0,0,1,6.324.544c4.479,1.3,6.783,4.52,7.72,8.881a1.966,1.966,0,0,0,1.389,1.723,6.235,6.235,0,0,1,4.439,6.324,5.211,5.211,0,0,1-1.33,3.27,7.98,7.98,0,0,1-5.449,2.774c-.731.077-1.124-.051-1.069-.952.085-1.367.022-2.745.026-4.115Z" transform="translate(0.006 0.01)" fill="currentColor"/>

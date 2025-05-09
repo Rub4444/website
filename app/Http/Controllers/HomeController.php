@@ -25,4 +25,6 @@ class HomeController extends Controller
         $orders = Order::paginate(10);
         return view('auth.orders.index');
     }
+
+
 }

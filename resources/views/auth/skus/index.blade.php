@@ -17,7 +17,11 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     @foreach($skus as $sku)
+                    {{-- @php
+                        dd($sku->propertyOptions);
+                    @endphp --}}
                         <tr>
                             <td>{{ $sku->id }}</td>
                             <td>{{ $sku->propertyOptions->map->name->implode(', ') }}</td>

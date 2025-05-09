@@ -55,33 +55,63 @@
            </table>
        </div>
 
-       <!-- Custom Pagination -->
-       <div class="card-footer text-center">
-           <nav aria-label="Page navigation example">
-               <ul class="pagination justify-content-center">
-                   <!-- Previous Button -->
-                   <li class="page-item {{ $coupons->onFirstPage() ? 'disabled' : '' }}">
-                       <a class="page-link" href="{{ $coupons->previousPageUrl() }}" aria-label="Previous">
-                           <span aria-hidden="true">&laquo;</span>
-                       </a>
-                   </li>
+       <div class="pagination__area bg__gray--color">
+        <nav class="pagination justify-content-center">
+            <ul class="pagination__wrapper d-flex align-items-center justify-content-center">
+                {{-- Кнопка "назад" --}}
+                @if ($coupons->onFirstPage())
+                    <li class="pagination__list disabled">
+                        <span class="pagination__item--arrow link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
+                                      d="M244 400L100 256l144-144M120 256h292"/>
+                            </svg>
+                        </span>
+                    </li>
+                @else
+                    <li class="pagination__list">
+                        <a href="{{ $coupons->previousPageUrl() }}" class="pagination__item--arrow link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
+                                      d="M244 400L100 256l144-144M120 256h292"/>
+                            </svg>
+                        </a>
+                    </li>
+                @endif
 
-                   <!-- Page Numbers -->
-                   @foreach ($coupons->getUrlRange(1, $coupons->lastPage()) as $page => $url)
-                       <li class="page-item {{ $page == $coupons->currentPage() ? 'active' : '' }}">
-                           <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                       </li>
-                   @endforeach
+                {{-- Номера страниц --}}
+                @foreach ($coupons->getUrlRange(1, $coupons->lastPage()) as $page => $url)
+                    @if ($page == $coupons->currentPage())
+                        <li class="pagination__list"><span class="pagination__item pagination__item--current">{{ $page }}</span></li>
+                    @else
+                        <li class="pagination__list"><a href="{{ $url }}" class="pagination__item link">{{ $page }}</a></li>
+                    @endif
+                @endforeach
 
-                   <!-- Next Button -->
-                   <li class="page-item {{ $coupons->hasMorePages() ? '' : 'disabled' }}">
-                       <a class="page-link" href="{{ $coupons->nextPageUrl() }}" aria-label="Next">
-                           <span aria-hidden="true">&raquo;</span>
-                       </a>
-                   </li>
-               </ul>
-           </nav>
-       </div>
+                {{-- Кнопка "вперёд" --}}
+                @if ($coupons->hasMorePages())
+                    <li class="pagination__list">
+                        <a href="{{ $coupons->nextPageUrl() }}" class="pagination__item--arrow link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
+                                      d="M268 112l144 144-144 144M392 256H100"/>
+                            </svg>
+                        </a>
+                    </li>
+                @else
+                    <li class="pagination__list disabled">
+                        <span class="pagination__item--arrow link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
+                                      d="M268 112l144 144-144 144M392 256H100"/>
+                            </svg>
+                        </span>
+                    </li>
+                @endif
+            </ul>
+        </nav>
+    </div>
+
    </div>
 </div>
 @endsection

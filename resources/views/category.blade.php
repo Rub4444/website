@@ -2,7 +2,7 @@
 @section('title', 'Իջևան Մարկետ')
 @section('content')
 
-<h1>{{$category->__('name')}}</h1>
+<h1>{{$category->__('name')}} <i class="{{ $category->icon }}"></i></h1>
 <p>{{$category->__('description')}}</p>
 
 <div class="row">
