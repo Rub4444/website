@@ -88,9 +88,17 @@
                                 alt="{{ $sku->product->__('name') }}">
 
                             </a>
-                            {{-- @php
-                                dd($sku);
-                            @endphp --}}
+                           <div class="product__badge">
+                                @if($sku->product->isNew())
+                                    <span class="product__badge--items new">@lang('main.properties.new')</span>
+                                @endif
+                                @if($sku->product->isRecommend())
+                                    <span class="product__badge--items recommend">@lang('main.properties.recommend')</span>
+                                @endif
+                                @if($sku->product->isHit())
+                                    <span class="product__badge--items hit">@lang('main.properties.hit')</span>
+                                @endif
+                            </div>
                             <div class="card-body text-center">
                                 <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}" class="text-decoration-none text-dark">
                                     <h5 class="card-title">{{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}</h5>

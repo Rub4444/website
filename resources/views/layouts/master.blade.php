@@ -290,7 +290,6 @@
                         </svg>
                     </span>
                     <span class="offcanvas__stikcy--toolbar__label">Cart</span>
-                    <span class="items__count">3</span>
                 </a>
             </li>
         </ul>

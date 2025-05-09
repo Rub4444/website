@@ -11,6 +11,15 @@
                         <h3 class="account__content--title h3 mb-20">{{ Auth::user()->name }}</h3>
                         <h3 class="account__content--title h3 mb-20">{{ Auth::user()->email }}</h3>
                     </div>
+                    {{-- <h5 class="account__content--title h5 mb-20">
+                        <a href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            @lang('main.logout')
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </h5> --}}
                 </div>
             </div>
         </section>
@@ -26,15 +35,7 @@
                             <li class="account__menu--list active"><a href="my-account.html">@lang('main.dashboard')</a></li>
                             {{-- <li class="account__menu--list"><a href="my-account-2.html">@lang('main.addresses')</a></li> --}}
                             <li class="account__menu--list"><a href="{{route('basket')}}">@lang('main.basket')</a></li>
-                            <li class="account__menu--list">
-                                <a href="{{ route('logout') }}"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    @lang('main.logout')
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </li>
+
                         </ul>
                     </div>
                     <div class="account__wrapper">

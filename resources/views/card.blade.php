@@ -1,44 +1,50 @@
-<div class="col md-28">
-    <div class="product__items ">
-        <div class="product__items--thumbnail">
-            <a class="product__items--link"
-                href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}">
-                <img class="product__items--img product__primary--img" src="{{ asset('storage/' . $sku->product->image) }}" alt="product-img">
+<div class="col">
+    <div class="card shadow-sm h-100 border-0">
+        <div class="position-relative bg-light" style="height: 200px;">
+            <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}">
+                <img src="{{ asset('storage/' . $sku->product->image) }}"
+                    class="card-img-top p-3"
+                    style="height: 100%; object-fit: contain;"
+                    alt="{{ $sku->product->__('name') }}">
             </a>
-            <div class="product__badge">
+
+            <div class="position-absolute top-0 start-0 m-2">
                 @if($sku->product->isNew())
-                    <span class="product__badge--items new">@lang('main.properties.new')</span>
+                    <span class="badge bg-success">@lang('main.properties.new')</span>
                 @endif
                 @if($sku->product->isRecommend())
-                    <span class="product__badge--items recommend">@lang('main.properties.recommend')</span>
+                    <span class="badge bg-primary">@lang('main.properties.recommend')</span>
                 @endif
                 @if($sku->product->isHit())
-                    <span class="product__badge--items hit">@lang('main.properties.hit')</span>
+                    <span class="badge bg-danger">@lang('main.properties.hit')</span>
                 @endif
             </div>
         </div>
-        <div class="product__items--content text-center">
-            <h3 class="product__items--content__title h4">
-                <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}">
-                    {{$sku->product->__('name')}}
+
+        <div class="card-body text-center d-flex flex-column justify-content-between">
+            <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}"
+                class="text-decoration-none text-dark">
+                <h6 class="card-title fw-semibold">
+                    {{ $sku->product->__('name') }}
                     @isset ($sku->product->properties)
                         @foreach ($sku->propertyOptions as $propertyOption)
-                                {{$propertyOption->__('name')}}
+                            {{ $propertyOption->__('name') }}
                         @endforeach
                     @endisset
-                </a>
-            </h3>
-            <div class="product__items--price">
-                <span class="current__price">{{$sku->price}} {{ $currencySymbol }} </span>
-                {{-- <span class="current__price">{{$sku->count}} հատ</span> --}}
-            </div>
-            <form action="{{route('basket-add', $sku)}}" method="POST">
-                @if($sku->isAvailable())
-                    <button class="add__to--cart__btn" type="submit">@lang('main.cart')</button>
-                @else
-                    <p class="add__to--cart__btn">@lang('main.available')</p>
-                @endif
+                </h6>
+            </a>
+
+            <p class="fw-bold mb-2">{{ $sku->price }} {{ $currencySymbol }}</p>
+
+            <form action="{{ route('basket-add', $sku) }}" method="POST" class="mt-auto">
                 @csrf
+                @if($sku->isAvailable())
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-cart-plus"></i> @lang('main.basket')
+                    </button>
+                @else
+                    <button class="btn btn-outline-danger w-100" disabled>@lang('main.available')</button>
+                @endif
             </form>
         </div>
     </div>

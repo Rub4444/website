@@ -16,151 +16,145 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.png') }}">
 
-        <!--Start preloader -->
-        <div id="preloader">
-            <div id="ctn-preloader" class="ctn-preloader">
-                <div class="animation-preloader">
-                    <div class="spinner"></div>
-                    <div class="txt-loading">
-                        <span data-text-preloader="Բ" class="letters-loading">
-                            Բ
-                        </span>
+    <!--Start preloader -->
+    <div id="preloader">
+        <div id="ctn-preloader" class="ctn-preloader">
+            <div class="animation-preloader">
+                <div class="spinner"></div>
+                <div class="txt-loading">
+                    <span data-text-preloader="Բ" class="letters-loading">
+                        Բ
+                    </span>
 
-                        <span data-text-preloader="Ե" class="letters-loading">
-                            Ե
-                        </span>
+                    <span data-text-preloader="Ե" class="letters-loading">
+                        Ե
+                    </span>
 
-                        <span data-text-preloader="Ռ" class="letters-loading">
-                            Ռ
-                        </span>
+                    <span data-text-preloader="Ռ" class="letters-loading">
+                        Ռ
+                    </span>
 
-                        <span data-text-preloader="Ն" class="letters-loading">
-                            Ն
-                        </span>
+                    <span data-text-preloader="Ն" class="letters-loading">
+                        Ն
+                    </span>
 
-                        <span data-text-preloader="ՈՒ" class="letters-loading">
-                            ՈԻ
-                        </span>
+                    <span data-text-preloader="ՈՒ" class="letters-loading">
+                        ՈԻ
+                    </span>
 
-                        <span data-text-preloader="Մ" class="letters-loading">
-                            Մ
-                        </span>
-                    </div>
+                    <span data-text-preloader="Մ" class="letters-loading">
+                        Մ
+                    </span>
                 </div>
-                <div class="loader-section section-left"></div>
-                <div class="loader-section section-right"></div>
             </div>
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
         </div>
-        <!-- End preloader -->
+    </div>
+    <!-- End preloader -->
 
-        <header class="header__section header__transparent header">
-            <div class="main__header header__sticky">
-                <div class="container">
-                    <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
-                        <!-- Logo Section -->
-                        <div class="main__logo">
-                            <h1 class="main__logo--title">
-                                <a class="main__logo--link" href="{{route('index')}}">
-                                    <img class="main__logo--img" src="{{ asset('img/logo/nav-log.png') }}" alt="logo-img">
+    <header class="header__section  bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container">
+                <!-- Логотип -->
+                <a class="navbar-brand d-flex align-items-center" href="{{ route('index') }}">
+                    <img src="{{ asset('img/logo/nav-log.png') }}" alt="Logo" height="40">
+                </a>
+
+                <!-- Бургер-кнопка -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Меню -->
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                        @admin
+                            <li class="nav-item"><a class="nav-link" href="{{route('categories.index')}}">Կատեգորիաներ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('products.index')}}">Ապրանքներ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('properties.index')}}">Հատկանիշներ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('coupons.index')}}">Կուպոններ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('merchants.index')}}">Մատակարարներ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('home')}}">Պատվերներ</a></li>
+                        @endadmin
+
+                        @guest
+                            <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Մուտք</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Գրանցվել</a></li>
+                        @endguest
+
+                        @auth
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ Auth::user()->name }}
                                 </a>
-                            </h1>
-                        </div>
-
-                        <!-- Navbar Menu Section -->
-                        <div class="main_menu">
-                            <nav class="header-main-menu">
-                                <ul class="d-flex">
-
-                                    @admin
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{route('categories.index')}}">Կատեգորիաներ</a>
-                                        </li>
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{route('products.index')}}">Ապրանքներ</a>
-                                        </li>
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{ route('properties.index') }}">Հատկանիշներ</a>
-                                        </li>
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{ route('coupons.index') }}">Կուպոններ</a>
-                                        </li>
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{ route('merchants.index') }}">Մատակարարներ</a>
-                                        </li>
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{ route('home') }}">Պատվերներ</a>
-                                        </li>
-
-                                    @endadmin
-                                    @guest
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{ route('login') }}">Մուտք</a>
-                                        </li>
-                                        <li class="header__menu--items">
-                                            <a class="header__menu--link" href="{{ route('register') }}">Գրանցվել</a>
-                                        </li>
-                                    @endguest
-                                    @auth
-                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                Ելք
-                                            </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                @csrf
-                                            </form>
-                                        </div>
-                                    @endauth
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    {{-- <li>
+                                        <a class="dropdown-item" href="#">{{ __('Պրոֆիլ') }}</a>
+                                    </li> --}}
+                                    {{-- <li>
+                                        <hr class="dropdown-divider">
+                                    </li> --}}
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            {{ __('Ելք') }}
+                                        </a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
+                                    </li>
                                 </ul>
-                            </nav>
-                        </div>
-                    </div>
+                            </li>
+                        @endauth
+
+                    </ul>
                 </div>
             </div>
-        </header>
+        </nav>
+    </header>
 
-        <style>
-            /* Sticky header */
-            .header__sticky {
-                position: sticky;
-                top: 0;
-                z-index: 1000;
-                transition: background-color 0.3s ease;
-            }
 
-            /* Logo section styling */
-            .main__logo {
-                font-size: 2rem;
-                font-weight: bold;
-                transition: transform 0.3s ease;
-            }
 
-            .main__logo:hover {
-                transform: scale(1.1);
-            }
+    <style>
+        .navbar-brand img {
+            max-height: 40px;
+        }
 
-            /* Navbar menu styling */
-            .header-main-menu ul {
-                list-style: none;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                gap: 20px;
-            }
+        /* Logo section styling */
+        .main__logo {
+            font-size: 2rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
 
-            .header__menu--items {
-                margin: 0;
-            }
+        .main__logo:hover {
+            transform: scale(1.1);
+        }
 
-            .header__menu--link {
-                font-size: 1rem;
-                text-decoration: none;
-                padding: 10px 15px;
-                display: block;
-                transition: background-color 0.3s ease, color 0.3s ease;
-                border-radius: 5px;
-            }
-        </style>
+        /* Navbar menu styling */
+        .header-main-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .header__menu--items {
+            margin: 0;
+        }
+
+        .header__menu--link {
+            font-size: 2rem;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -177,6 +171,7 @@
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <div class="container">
         <div class="row">
@@ -265,8 +260,6 @@
             <p class="mb-0">&copy; 2024 <a href="">5 Մարկետ</a>. Բոլոր իրավունքները պաշտպանված են</p>
         </div>
     </div>
-    <!-- Scroll top bar -->
-    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
 </footer>
 </html>
 

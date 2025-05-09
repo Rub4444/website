@@ -5,21 +5,29 @@
     <section class="product__details--section section--padding">
         <div class="container">
             <div class="row row-cols-lg-2 row-cols-md-2">
-                <div class="col">
-                    <div class="product__details--media">
-                        <div class="product__media--preview  swiper">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide">
-                                    <div class="product__media--preview__items">
-                                        <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview">
-                                            <img class="product__media--preview__items--img" src="{{ Storage::url($skus->product->image) }}" alt="product-media-img">
-                                        </a>
-                                    </div>
-                                </div>
+               <div class="col">
+    <div class="card shadow-sm">
+        <div class="card-body p-3 text-center">
+            <div class="product__details--media">
+                <div class="product__media--preview swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="product__media--preview__items">
+                                <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="{{ Storage::url($skus->product->image) }}">
+                                    <img src="{{ Storage::url($skus->product->image) }}"
+                                         alt="product-media-img"
+                                         class="img-fluid rounded"
+                                         style="max-height: 400px; object-fit: contain;">
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                 <div class="col">
                     <div class="product__details--info">
                             <h2 class="product__details--info__title mb-15">{{ $skus->product->__('name') }}</h2>
