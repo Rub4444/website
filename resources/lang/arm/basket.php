@@ -33,4 +33,5 @@ return [
     'delivery_to_the_address' => 'Առաքում հասցեով',
     'address' => 'Հասցե',
     'enter_the_address' => 'Մուտքագրեք հասցեն',
+    'edit_my_profile' => 'Հաշվի խմբագրում',
 ];

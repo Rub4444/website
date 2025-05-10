@@ -133,7 +133,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     <li>
-                                        <a class="dropdown-item" href="{{route('profile.index')}}">@lang('basket.my_profile')</a>
+                                        <a class="dropdown-item" href="{{route('profile.index')}}">@lang('main.my_account')</a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>

@@ -70,7 +70,10 @@
         </div>
     </div>
 
-    @push('scripts')
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6h1Jk2Rsc910Guq2HV8y9yZSU-57D0PU&callback=initMap">
+    </script>
+
     <script>
         let map, marker;
 
@@ -171,8 +174,5 @@
                 }
         });
       </script>
-    @endpush
-
-
 
     @endsection

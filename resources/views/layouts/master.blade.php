@@ -5,15 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@lang('main.online_shop'): @yield('title')</title>
+    <title>@lang('main.online_shop')</title>
 
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.png') }}">
 
@@ -31,14 +32,6 @@
     </style>
 </head>
 <body>
-    @if(session()->has('success'))
-        <p class="alert alert-success">{{session()->get('success')}}</p>
-    @endif
-
-    @if(session()->has('warning'))
-        <p class="alert alert-warning">{{session()->get('warning')}}</p>
-    @endif
-
     <!--Start preloader -->
     <div id="preloader" aria-live="polite">
         <div id="ctn-preloader" class="ctn-preloader">
@@ -333,8 +326,17 @@
     <!-- End Offcanvas header menu -->
     </header>
     <!-- End header area -->
+
+    @if(session()->has('success'))
+        <p class="alert alert-success">{{session()->get('success')}}</p>
+    @endif
+
+    @if(session()->has('warning'))
+        <p class="alert alert-warning">{{session()->get('warning')}}</p>
+    @endif
+
     @yield('content')
-    @stack('scripts')
+    {{-- @stack('scripts') --}}
 
 </body>
 
@@ -346,12 +348,8 @@
     <script src="{{ asset('js/script.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6h1Jk2Rsc910Guq2HV8y9yZSU-57D0PU&callback=initMap">
-    </script>
-
 
     <div class="container">
         <div class="row">

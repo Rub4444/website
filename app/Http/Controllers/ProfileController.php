@@ -25,6 +25,9 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
+            'delivery_address' => $request->delivery_address,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
 
