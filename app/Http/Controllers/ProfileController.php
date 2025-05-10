@@ -19,19 +19,27 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = Auth::user();
-
-        $validated = $request->validate([
+       // Валидация
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
-            'delivery_address' => $request->delivery_address,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
+            'delivery_address' => 'required|string|max:255', // Адрес должен быть строкой
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
+        // Обновление данных пользователя
+        $user = auth()->user();
+        $user->update([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'phone' => $validatedData['phone'],
+            'delivery_address' => $validatedData['delivery_address'],
+            'latitude' => $validatedData['latitude'],
+            'longitude' => $validatedData['longitude'],
+        ]);
 
-        $user->update($validated);
 
         return redirect()->route('profile.index')->with('success', 'Profile updated');
     }
