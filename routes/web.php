@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\MerchantController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ProfileController;
 
 Auth::routes([
     'reset'=>true,
@@ -44,6 +45,10 @@ Route::middleware(['set_locale'])->group(function()
             Route::get('/orders', [\App\Http\Controllers\Person\OrderController::class, 'index'])->name('orders.index');
             Route::get('/orders/{order}', [\App\Http\Controllers\Person\OrderController::class, 'show'])->name('orders.show');
         });
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/view', [ProfileController::class, 'index'])->name('profile.index');
 
         Route::prefix('admin')->middleware('is_admin')->group(function ()
         {

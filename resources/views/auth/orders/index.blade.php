@@ -4,35 +4,13 @@
 
 @section('content')
     <main class="main__content_wrapper">
-        <section class="my__account--section section--padding">
-            <div class="container">
-                <div class="my__account--section__inner border-radius-10 d-flex">
-                    <div class="account__wrapper">
-                        <h3 class="account__content--title h3 mb-20">{{ Auth::user()->name }}</h3>
-                        <h3 class="account__content--title h3 mb-20">{{ Auth::user()->email }}</h3>
-                    </div>
-                    {{-- <h5 class="account__content--title h5 mb-20">
-                        <a href="{{ route('logout') }}"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            @lang('main.logout')
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </h5> --}}
-                </div>
-            </div>
-        </section>
-    </main>
-    <main class="main__content_wrapper">
         <!-- my account section start -->
         <section class="my__account--section section--padding">
             <div class="container">
                 <div class="my__account--section__inner border-radius-10 d-flex">
                     <div class="account__left--sidebar">
-                        <h2 class="account__content--title h3 mb-20">@lang('basket.my_profile')</h2>
                         <ul class="account__menu">
-                            <li class="account__menu--list active"><a href="my-account.html">@lang('main.dashboard')</a></li>
+                            <li class="account__menu--list active"><a href="my-account.html">@lang('basket.orders')</a></li>
                             {{-- <li class="account__menu--list"><a href="my-account-2.html">@lang('main.addresses')</a></li> --}}
                             <li class="account__menu--list"><a href="{{route('basket')}}">@lang('main.basket')</a></li>
 
@@ -40,7 +18,6 @@
                     </div>
                     <div class="account__wrapper">
                         <div class="account__content">
-                            <h3 class="account__content--title h3 mb-20">@lang('basket.orders')</h3>
                             <div class="account__table--area">
                                 <table class="account__table">
                                     <thead class="account__table--header">
