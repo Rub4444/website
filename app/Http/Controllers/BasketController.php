@@ -27,6 +27,17 @@ class BasketController extends Controller
 
     public function basketConfirm(Request $request)
 {
+
+     $request->validate([
+        'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:50',
+        'email' => 'required|email',
+        'delivery_type' => 'required|in:pickup,courier',
+        'address' => 'required_if:delivery_type,courier|max:255',
+        'latitude' => 'required_if:delivery_type,courier|numeric',
+        'longitude' => 'required_if:delivery_type,courier|numeric',
+    ]);
+
     $basket = new Basket();
 
     if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse()) {

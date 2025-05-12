@@ -1,11 +1,11 @@
 @extends('auth.layouts.master')
 
 @section('content')
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-    <div class="col-md-6">
+<div class="container d-flex align-items-center justify-content-center mt-2">
+    <div class="col-12 col-md-6">
         <div class="card shadow-lg rounded-4">
             <div class="card-header text-center text-white bg-success rounded-top-4 py-3">
-                <h4><i class="bi bi-person-circle me-2"></i>Մուտք համակարգ</h4>
+                <h4><i class="bi bi-person-circle me-2"></i>@lang('main.login')</h4>
             </div>
 
             <div class="card-body p-4">
@@ -13,7 +13,7 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Էլ․ հասցե</label>
+                        <label for="email" class="form-label">@lang('basket.email')</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
                             <input id="email" type="email"
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="form-label">Գաղտնաբառ</label>
+                        <label for="password" class="form-label">@lang('main.password')</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
                             <input id="password" type="password"
@@ -42,19 +42,26 @@
                         <input class="form-check-input" type="checkbox" name="remember" id="remember"
                                {{ old('remember') ? 'checked' : '' }}>
                         <label class="form-check-label" for="remember">
-                            Հիշել ինձ
+                            @lang('main.remember_me')
                         </label>
                     </div>
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-success">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Մուտք
+                            <i class="bi bi-box-arrow-in-right me-1"></i>@lang('main.login')
                         </button>
-                        @if (Route::has('password.request'))
-                            <a class="btn btn-link text-decoration-none text-center" href="{{ route('password.request') }}">
-                                Մոռացել եք գաղտնաբառը?
-                            </a>
-                        @endif
+                        <a class="btn btn-link text-decoration-none text-center" href="{{ route('register') }}">
+                            @lang('main.registration')
+                        </a>
+                        <div class="text-center mt-2">
+                            @if (Route::has('password.request'))
+                                <a class="text-decoration-none" href="{{ route('password.request') }}">
+                                    @lang('main.forgot_password')
+                                </a>
+                            @endif
+                        </div>
+
+
                     </div>
                 </form>
             </div>

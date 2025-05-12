@@ -3,20 +3,19 @@
 @section('title', 'Իջևան Մարկետ')
 
 @section('content')
-<div class="container my-4">
-    <!-- Заголовок категории -->
-    <div class="text-center mb-4" style="color: #2E8B57;">
-        <h3 class="display-5 fw-bold">
-
-            {{ $category->__('name') }}
-        </h3>
-        <p class="text-muted">{{ $category->__('description') }}</p>
+<div class="container py-4">
+    <!-- Категория: Заголовок -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-success display-5">{{ $category->__('name') }}</h1>
+        <p class="text-muted fs-5">{{ $category->__('description') }}</p>
     </div>
 
     <!-- Список товаров -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    <div class="row g-4">
         @foreach($category->products->map->skus->flatten() as $sku)
-            @include('card', compact('sku'))
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                @include('card', compact('sku'))
+            </div>
         @endforeach
     </div>
 </div>

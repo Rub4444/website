@@ -49,15 +49,15 @@
                                 <input type="text"  value="{{ old('delivery_address', auth()->user()?->delivery_address) }}" name="delivery_address" id="delivery_address" class="form-control" placeholder="@lang('basket.enter_the_address')">
                             </div>
                             <div class="mt-3">
-                                <label>Փնտրել հասցեն</label>
-                                <input type="text" id="search-input" placeholder="Որոնել հասցեն...">
+                                <label>@lang('main.find_the_address')</label>
+                                <input type="text" id="search-input" placeholder="@lang('main.find_the_address')...">
 
                                 <button type="button" class="btn btn-outline-secondary mt-2" onclick="getMyLocation()">
                                     @lang('basket.use_my_location')
                                 </button>
                             </div>
 
-                            <small class="text-muted">Եթե նշված տեղադրությունը սխալ է, շարժեք մարկերը քարտեզի վրա կամ փնտրեք հասցեն վերևից:</small>
+                            <small class="text-muted">@lang('main.if_this_address_incorrect')</small>
                             <div id="map" style="width: 100%; height: 400px; margin-top: 20px;"></div>
 
                             <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', auth()->user()?->latitude) }}">                            <input type="hidden" value="{{ old('longitude', auth()->user()?->longitude) }}" name="longitude" id="longitude">

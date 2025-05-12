@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Գտեք լավագույն ապրանքները առցանց մեր օնլայն խանութում։ Արագ առաքում, մատչելի գներ և որակյալ սպասարկում։">
+    <meta name="keywords" content="առաքում, իջևան, պատվեր, խանութ, օնլայն խանութ, առցանց գնումներ, մթերքներ, հագուստ, կենցաղային ապրանքներ, առաքում, հայկական խանութ">
 
     <title>@lang('main.online_shop')</title>
 
@@ -88,13 +90,13 @@
                     </div>
                     <div class="header__account header__sticky--block">
                         <ul class="d-flex">
-                            <li class="header__account--items  header__account--search__items d-sm-2-none">
+                            <li class="header__account--items  header__account--search__items d-none d-lg-block">
                                 <a class="header__account--btn search__open--btn" href="javascript:void(0)" data-offcanvas>
                                     <svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>
                                     <span class="visually-hidden">Search</span>
                                 </a>
                             </li>
-                            <li class="header__account--items">
+                            <li class="header__account--items d-none d-lg-block">
                                 <a class="header__account--btn minicart__open--btn" href="{{route('basket')}}" data-offcanvas>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16.706" height="15.534" viewBox="0 0 14.706 13.534">
                                         <g  transform="translate(0 0)">
@@ -195,7 +197,7 @@
                                     <path id="headphone-alt-2" d="M28.893,18.469c-.026-2.873.1-5.754-.761-8.565-1.587-5.21-5.306-7.742-10.781-7.272-4.681.4-7.588,2.715-8.785,7.573a24.031,24.031,0,0,0,.2,13.3,11.447,11.447,0,0,0,6.254,7.253c.658.3,1.091.408,1.595-.356a3.732,3.732,0,0,1,4.38-1.334,3.931,3.931,0,1,1-4.582,5.82,2.989,2.989,0,0,0-1.782-1.466c-4.321-1.573-6.842-4.869-8.367-9.032a1.686,1.686,0,0,0-1.238-1.275,7.046,7.046,0,0,1-3.718-2.447A5.739,5.739,0,0,1,3.242,11.83,5.338,5.338,0,0,0,6.318,7.957C7.644,3.033,11.62.193,16.845.02a19.923,19.923,0,0,1,6.324.544c4.479,1.3,6.783,4.52,7.72,8.881a1.966,1.966,0,0,0,1.389,1.723,6.235,6.235,0,0,1,4.439,6.324,5.211,5.211,0,0,1-1.33,3.27,7.98,7.98,0,0,1-5.449,2.774c-.731.077-1.124-.051-1.069-.952.085-1.367.022-2.745.026-4.115Z" transform="translate(0.006 0.01)" fill="currentColor"/>
                                 </svg>
                                 <p class="suport__contact--text text-white">
-                                    <a class="suport__contact--number" href="tel:09786542214">+374 44 464 412</a>
+                                    <a class="suport__contact--number" href="tel:+374 44 464 412">+374 44 464 412</a>
                                 </p>
                             </div>
                         </div>
@@ -219,7 +221,7 @@
 
                             <li class="offcanvas__menu_li">
                                 <a class="offcanvas__menu_item" href="{{route('category', $category->code)}}">
-                                    {{$category->__('name')}}
+                                    <i class="{{ $category->icon }}"></i> {{$category->__('name')}}
                                 </a>
                             </li>
                         @endforeach
@@ -354,29 +356,28 @@
     <div class="container">
         <div class="row">
             <!-- О нас -->
-            <div class="col-lg-3 col-md-6 mb-4">
+            <div class="col-lg-3 col-md-6 mb-4 d-none d-lg-block">
                 <h5 class="text-uppercase">
                         <a class="main__logo--link" href="">
                             <img class=" footer__logo" src="{{ asset('img/logo/footer-log.png') }}" alt="logo-img">
                         </a>
                 </h5>
-                <p>
-                    Մեր կայքում կգտնեք մթերային ապրանքներ, կենցաղային պարագաներ, հագուստ և զարդեր:
-                    Գործում է <a href="">առաքում</a> քաղաք Իջևանի տարածքում։
+                <p class="d-none d-lg-block">
+                    @lang('main.how_to_use_desc')
                 </p>
             </div>
 
             <!-- Полезные ссылки -->
             <div class="col-lg-3 col-md-6 mb-4">
-                <h5 class="text-uppercase">Օգտակար հղումներ</h5>
+                <h5 class="text-uppercase mb-2">@lang('main.useful_links')</h5>
                 <ul class="list-unstyled">
-                    <li><a href="{{ route('howToUse') }}" class="text-white text-decoration-none mb-4">Ինչպես օգտվել</a></li>
+                    <li><a href="{{ route('howToUse') }}" class="text-white text-decoration-none mb-4">@lang('main.how_to_use')</a></li>
                 </ul>
                 <ul class="list-unstyled">
-                    <li><a href="{{ route('offer') }}" class="text-white text-decoration-none mb-4">Օֆերտա</a></li>
+                    <li><a href="{{ route('offer') }}" class="text-white text-decoration-none mb-4">@lang('main.offer')</a></li>
                 </ul>
                 <ul class="list-unstyled">
-                    <li><a href="{{ route('delivery') }}" class="text-white text-decoration-none mb-4">Առաքում և վճարում</a></li>
+                    <li><a href="{{ route('delivery') }}" class="text-white text-decoration-none mb-4">@lang('main.delivery_and_payment')</a></li>
                 </ul>
                 {{-- <ul class="list-unstyled">
                     <li><a href="{{ route('privacy') }}" class="text-white text-decoration-none mb-4">Գաղտնիության քաղաքականություն</a></li>
@@ -389,12 +390,12 @@
             </style>
             <!-- Контакты -->
             <div class="col-lg-3 col-md-6 mb-4">
-                <h5 class="text-uppercase">Կապ</h5>
+                <h5 class="text-uppercase mb-2">@lang('main.contact')</h5>
                 <ul class="list-unstyled">
                     <li><i class="fa fa-location-arrow me-2 mb-4 text-success" style="font-size: 1.5rem;"></i>ք․ Իջևան,փ.Մետաղագործնորի 6/7</li>
                 </ul>
                 <ul class="list-unstyled">
-                    <li><i class="fas fa-phone-alt me-2 mb-4"></i><a href="tel:+37444464412">+374 44 464-412</a></li>
+                    <li><i class="fas fa-phone-alt me-2 mb-4"></i><a href="tel:+37444464412">+374 44 464 412</a></li>
                 </ul>
                 <ul class="list-unstyled">
                     <li><i class="fas fa-envelope me-2 mb-4"></i><a href="ijevanmarket@gmail.com">ijevanmarket@gmail.com</a></li>
@@ -403,9 +404,9 @@
 
             <!-- Подписка на новости -->
             <div class="col-lg-3 col-md-6 mb-4">
-                <h5 class="text-uppercase">Բաժանորդագրվիր նորությունների համար</h5>
+                <h5 class="text-uppercase mb-2">@lang('main.subscribe_to_the_news')</h5>
                 <form class="d-flex">
-                    <input type="email" class="form-control me-2" placeholder="Ձեր էլ․ հասցեն">
+                    <input type="email" class="form-control me-2" placeholder="@lang('basket.email')">
                     <button type="submit" class="btn btn-primary">OK</button>
                 </form>
                 <div class="mt-3">
@@ -432,10 +433,10 @@
         </div>
         <hr class="text-white">
         <div class="text-center">
-            <p class="mb-0">&copy; 2025 <a href="">Իջևան Մարկետ</a>. Բոլոր իրավունքները պաշտպանված են</p>
+            <p class="mb-0">&copy; 2025 <a href="">@lang('main.online_shop')</a>. @lang('main.all_right')</p>
         </div>
     </div>
-    <!-- Scroll top bar -->
-    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+    {{-- <!-- Scroll top bar -->
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button> --}}
 </footer>
 </html>

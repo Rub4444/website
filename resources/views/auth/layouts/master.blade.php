@@ -121,8 +121,13 @@
                         @endadmin
 
                         @guest
-                            <li class="nav-item"><a class="btn btn-outline-primary" href="{{ route('login') }}">Մուտք</a></li>
-                            <li class="nav-item"><a class="btn btn-primary ms-lg-2" href="{{ route('register') }}">Գրանցվել</a></li>
+                            <div class="account__currency mb-2">
+                                <a class="account__currency--link " href="{{route('locale', __('main.set_lang') )}}">
+                                    <span>@lang('main.set_lang')</span>
+                                </a>
+                            </div>
+                            <li class="nav-item mb-2"><a class="btn btn-outline-primary" href="{{ route('login') }}">@lang('main.login')</a></li>
+                            <li class="nav-item mb-2"><a class="btn btn-primary ms-lg-2" href="{{ route('register') }}">@lang('main.registration')</a></li>
                         @endguest
 
                         @auth
@@ -170,13 +175,13 @@
     <div class="container">
         <div class="row">
             <!-- О нас -->
-            <div class="col-lg-3 col-md-6 mb-4">
+            <div class="col-lg-3 col-md-6 mb-4 d-none d-lg-block">
                 <h5 class="text-uppercase">
                         <a class="main__logo--link" href="">
                             <img class=" footer__logo" src="{{ asset('img/logo/footer-log.png') }}" alt="logo-img">
                         </a>
                 </h5>
-                <p>
+                <p class="d-none d-lg-block">
                     Մեր կայքում կգտնեք մթերային ապրանքներ, կենցաղային պարագաներ, հագուստ և զարդեր:
                     Գործում է <a href="">առաքում</a> քաղաք Իջևանի տարածքում։
                 </p>

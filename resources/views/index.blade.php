@@ -79,52 +79,16 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
             @foreach($skus as $sku)
                 {{-- @if($sku->product && $sku->product->category) --}}
-                    <div class="col mb-1">
-                        <div class="card shadow-sm">
-                            <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                                <img src="{{ asset('storage/' . $sku->product->image) }}"
-                                class="card-img-top img-fluid"
-                                style="height: 150px; object-fit: contain; background-color: #f8f9fa;"
-                                alt="{{ $sku->product->__('name') }}">
-
-                            </a>
-                           <div class="product__badge">
-                                @if($sku->product->isNew())
-                                    <span class="product__badge--items new">@lang('main.properties.new')</span>
-                                @endif
-                                @if($sku->product->isRecommend())
-                                    <span class="product__badge--items recommend">@lang('main.properties.recommend')</span>
-                                @endif
-                                @if($sku->product->isHit())
-                                    <span class="product__badge--items hit">@lang('main.properties.hit')</span>
-                                @endif
-                            </div>
-                            <div class="card-body text-center">
-                                <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}" class="text-decoration-none text-dark">
-                                    <h5 class="card-title">{{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}</h5>
-                                </a>
-                                <p class="card-text fw-bold">{{ $sku->price }} {{ $currencySymbol }}</p>
-                                <form action="{{ route('basket-add', $sku) }}" method="POST">
-                                    @csrf
-                                    @if($sku->isAvailable())
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="bi bi-cart-plus"></i> @lang('main.basket')
-                                        </button>
-                                    @else
-                                        <span class="btn btn-outline-danger w-100 disabled">@lang('main.available')</span>
-                                    @endif
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                     @include('card', compact('sku'))
                 {{-- @endif --}}
             @endforeach
         </div>
 
         <!-- Pagination -->
         <nav class="d-flex justify-content-center">
-            {{ $skus->links('pagination::bootstrap-5') }}
+            {{ $skus->links('vendor.custom') }}
         </nav>
+
 
         <!-- Best Sellers -->
         {{-- <h2 class="text-center mt-5 mb-4">Թոփ Վաճառք</h2>

@@ -35,22 +35,22 @@
                 </div>
 
                 <div class="mb-3">
-                    <label>Ընտրեք առաքման հասցեն քարտեզի վրա կամ գրեք այն</label>
+                    <label>@lang('main.select_delivery_address')</label>
                     <div class="mb-3">
-                        <label>Առաքման հասցե</label>
+                        <label>@lang('main.delivery_address')</label>
                         <input type="text" name="delivery_address" value="{{ old('delivery_address', $user->delivery_address) }}" class="form-control">
                     </div>
 
                     <div class="mt-3">
-                        <label>Փնտրել հասցեն</label>
-                        <input id="search-input" type="text" class="form-control" placeholder="Начните вводить адрес">
+                        <label>@lang('main.search_the_address')</label>
+                        <input id="search-input" type="text" class="form-control" placeholder="@lang('main.search_the_address')">
 
                         <button type="button" class="btn btn-outline-secondary mt-2" onclick="getMyLocation()">
                             @lang('basket.use_my_location')
                         </button>
                     </div>
 
-                    <small class="text-muted">Եթե նշված տեղադրությունը սխալ է, շարժեք մարկերը քարտեզի վրա կամ փնտրեք հասցեն վերևից:</small>
+                    <small class="text-muted">@lang('main.if_this_address_incorrect')</small>
 
                     <div id="map" style="height: 300px; border-radius: 8px; border: 1px solid #ced4da;" class="mt-3"></div>
                     <div id="current-address" class="text-muted small mt-2"></div>
