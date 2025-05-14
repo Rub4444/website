@@ -392,7 +392,7 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <h5 class="text-uppercase mb-2">@lang('main.contact')</h5>
                 <ul class="list-unstyled">
-                    <li><i class="fa fa-location-arrow me-2 mb-4 text-success" style="font-size: 1.5rem;"></i>ք․ Իջևան,փ.Մետաղագործնորի 6/7</li>
+                    <li><i class="fa fa-location-arrow me-2 mb-4 text-success" style="font-size: 1.5rem;"></i>ք․ Իջևան,փ.Մետաղագործների 6/7</li>
                 </ul>
                 <ul class="list-unstyled">
                     <li><i class="fas fa-phone-alt me-2 mb-4"></i><a href="tel:+37444464412">+374 44 464 412</a></li>

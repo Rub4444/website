@@ -42,5 +42,11 @@ return [
     'remember_me' => 'Remember Me',
     'forgot_password' => 'Forgot your password',
     'repeat_password' => 'Repeat the password',
-    'already_have_account' => 'You already have an account'
+    'already_have_account' => 'You already have an account',
+    'password_confirm' => 'Confirm Password',
+    'please_confirm' => 'Please confirm your password before continuing',
+    'forgot_password' => 'Forgot Your Password?',
+    'reset_password' => 'Reset password',
+    'send_reset_link' => 'Send Password Reset Link',
+
 ];
