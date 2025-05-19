@@ -11,10 +11,20 @@ class Sku extends Model
     use SoftDeletes;
 
     protected $fillable = ['product_id', 'count', 'price'];
+
     protected $visible = ['id', 'count', 'price', 'product_name'];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function relatedSkus($limit = 4)
+    {
+        return Sku::where('product_id', $this->product_id)
+                ->where('id', '!=', $this->id)
+                ->take($limit)
+                ->get();
     }
 
     public function scopeAvailable($query)

@@ -74,16 +74,100 @@
             </div>
         </div> --}}
 
-        <!-- Product Listing -->
-        <h2 class="text-center mb-4">Պատվիրեք հիմա</h2>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
-            @foreach($skus as $sku)
-                {{-- @if($sku->product && $sku->product->category) --}}
-                     @include('card', compact('sku'))
-                {{-- @endif --}}
-            @endforeach
+
+        <style>
+            .category-card {
+                width: 150px;
+                height: 75px;
+                padding: 0.25rem;
+            }
+
+            .category-card .card-body {
+                padding: 0;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .category-card i {
+                font-size: 1.25rem;
+                color: #35A212;
+                flex-shrink: 0;
+            }
+
+            .category-card span {
+                font-size: 1.25rem;
+                font-weight: 500;
+                color: #333;
+                text-align: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .carousel-row > .col {
+                padding: 2px;
+                display: flex;
+                justify-content: center;
+            }
+            .carousel-control-prev {
+                left: -90px; /* или -50px, чтобы сдвинуть ещё левее */
+            }
+
+            .carousel-control-next {
+                right: -90px;
+            }
+            /* Опционально: скрыть стрелки на маленьких экранах */
+            @media (max-width: 576px) {
+                .carousel-control-prev,
+                .carousel-control-next {
+                    display: none;
+                }
+            }
+        </style>
+        <h2 class="text-center mb-4">@lang('main.all_categories')</h2>
+
+        <div id="categoryCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @foreach($categories->chunk(6) as $chunkIndex => $chunk)
+                    <div class="carousel-item @if($chunkIndex == 0) active @endif">
+                        <div class="row row-cols-3 row-cols-lg-6 carousel-row gx-1 gy-1">
+                            @foreach($chunk as $category)
+                                <div class="col">
+                                    <a href="{{ route('category', $category->code) }}" class="text-decoration-none">
+                                        <div class="card shadow-sm category-card">
+                                            <div class="card-body">
+                                                <i class="{{ $category->icon }}"></i>
+                                                <span>{{ $category->__('name') }}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                <span class="visually-hidden">Նախորդ</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                <span class="visually-hidden">Հաջորդ</span>
+            </button>
         </div>
 
+        <!-- Product Listing -->
+        <h2 class="text-center mb-4">@lang('main.order_now')</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+            @foreach($skus as $sku)
+                @include('card', compact('sku'))
+            @endforeach
+        </div>
         <!-- Pagination -->
         <nav class="d-flex justify-content-center">
             {{ $skus->links('vendor.custom') }}
@@ -91,6 +175,14 @@
 
 
         <!-- Best Sellers -->
+        <h2 class="text-center mb-4">@lang('main.best_sales')</h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+            @foreach($bestSkus as $bestSku)
+                @include('card', compact('bestSku'))
+            @endforeach
+        </div>
+
+
         {{-- <h2 class="text-center mt-5 mb-4">Թոփ Վաճառք</h2>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach($bestSkus as $bestSku)

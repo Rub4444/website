@@ -294,6 +294,7 @@
                         </span>
                     <span class="offcanvas__stikcy--toolbar__label">Search</span>
                     </a>
+
                 </li>
                 <li class="offcanvas__stikcy--toolbar__list">
                     <a class="offcanvas__stikcy--toolbar__btn minicart__open--btn" href="{{route('basket')}}" data-offcanvas>
@@ -312,12 +313,12 @@
         <!-- Start serch box area -->
         <div class="predictive__search--box ">
             <div class="predictive__search--box__inner">
-                <h2 class="predictive__search--title">Ապրանքների որոնում</h2>
-                <form class="predictive__search--form" action="#">
+                <h2 class="predictive__search--title">@lang('main.product_search')</h2>
+                <form action="{{ route('products.search') }}" method="GET" class="predictive__search--form">
                     <label>
-                        <input class="predictive__search--input" placeholder="Ապրանքների որոնում" type="text">
+                        <input type="text" name="query" class="predictive__search--input" placeholder="@lang('main.product_search')..." value="{{ request('query') }}">
                     </label>
-                    <button class="predictive__search--button" aria-label="search button"><svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  </button>
+                    <button type="submit" class="predictive__search--button" aria-label="search button"><svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="30.51" height="25.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>  </button>
                 </form>
             </div>
             <button class="predictive__search--close__btn" aria-label="search close" data-offcanvas>
@@ -392,7 +393,7 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <h5 class="text-uppercase mb-2">@lang('main.contact')</h5>
                 <ul class="list-unstyled">
-                    <li><i class="fa fa-location-arrow me-2 mb-4 text-success" style="font-size: 1.5rem;"></i>ք․ Իջևան,փ.Մետաղագործների 6/7</li>
+                    <li><i class="fa fa-location-arrow me-2 mb-4 text-success" style="font-size: 1.5rem;"></i>@lang('main.ijevan_market_address')</li>
                 </ul>
                 <ul class="list-unstyled">
                     <li><i class="fas fa-phone-alt me-2 mb-4"></i><a href="tel:+37444464412">+374 44 464 412</a></li>

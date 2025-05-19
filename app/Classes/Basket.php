@@ -19,9 +19,11 @@ class Basket
     {
         $order = session('order');
 
-        if (is_null($order) && $createOrder) {
+        if (is_null($order) && $createOrder)
+        {
             $data = [];
-            if (Auth::check()) {
+            if (Auth::check())
+            {
                 $data['user_id'] = Auth::id();
             }
             $data['currency_id'] = 1;
@@ -129,8 +131,10 @@ class Basket
         $this->order->coupon()->associate($coupon);
     }
 
+
     public function clearCoupon()
     {
         $this->order->coupon()->dissociate();
     }
+
 }

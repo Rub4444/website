@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Coupon;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\CouponRequest;
+use App\Models\Coupon;
 
 class CouponController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -20,6 +21,8 @@ class CouponController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -28,6 +31,9 @@ class CouponController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(CouponRequest $request)
     {
@@ -41,10 +47,6 @@ class CouponController extends Controller
         if (!$request->has('type')) {
             unset($params['currency_id']);
         }
-        if(!$request->has('type'))
-        {
-            unset($params['currency_id']);
-        }
 
         Coupon::create($params);
         return redirect()->route('coupons.index');
@@ -52,6 +54,9 @@ class CouponController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param  \App\Models\Coupon  $coupon
+     * @return \Illuminate\Http\Response
      */
     public function show(Coupon $coupon)
     {
@@ -60,6 +65,9 @@ class CouponController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Coupon  $coupon
+     * @return \Illuminate\Http\Response
      */
     public function edit(Coupon $coupon)
     {
@@ -68,23 +76,24 @@ class CouponController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  CouponRequest  $request
+     * @param  \App\Models\Coupon  $coupon
+     * @return void
      */
     public function update(CouponRequest $request, Coupon $coupon)
     {
         $params = $request->all();
         foreach (['type', 'only_once'] as $fieldName) {
-            if (isset($params[$fieldName]))
-            {
+            if (isset($params[$fieldName])) {
                 $params[$fieldName] = 1;
-            }
-            else
-            {
+            } else {
                 $params[$fieldName] = 0;
             }
         }
 
         if (!$request->has('type')) {
-            unset($params['currency_id']);
+            $params['currency_id'] = null;
         }
 
         $coupon->update($params);
@@ -93,6 +102,9 @@ class CouponController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Coupon  $coupon
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Coupon $coupon)
     {

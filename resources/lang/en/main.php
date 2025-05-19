@@ -2,6 +2,7 @@
 return [
     'online_shop' => 'Ijevan Market',
     'all_categories' => 'All Categories',
+    'ijevan_market_address' => 'c. Ijevan, st. Metaxagorcneri 6/7',
     'current_lang' => 'eng',
     'set_lang' => 'arm',
     'login' => 'Log In',
@@ -48,5 +49,9 @@ return [
     'forgot_password' => 'Forgot Your Password?',
     'reset_password' => 'Reset password',
     'send_reset_link' => 'Send Password Reset Link',
-
+    'order_now' => 'Order now',
+    'best_sales' => 'Best Sales',
+    'product_search' => 'Product Search',
+    'no_products_found' => 'No products found',
+    'sorry_but_we_cant_find' => 'Sorry, but we didnt find any relevant product offers in your search. Try to look for something else.'
 ];

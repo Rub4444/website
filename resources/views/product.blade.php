@@ -1,101 +1,131 @@
 @extends('layouts.master')
 @section('title', 'Իջևան Մարկետ')
 @section('content')
-    <!-- Start product details section -->
-    <section class="product__details--section section--padding">
-        <div class="container">
-            <div class="row row-cols-lg-2 row-cols-md-2">
-               <div class="col">
-    <div class="card shadow-sm">
-        <div class="card-body p-3 text-center">
-            <div class="product__details--media">
-                <div class="product__media--preview swiper">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <div class="product__media--preview__items">
-                                <a class="product__media--preview__items--link glightbox" data-gallery="product-media-preview" href="{{ Storage::url($skus->product->image) }}">
-                                    <img src="{{ Storage::url($skus->product->image) }}"
-                                         alt="product-media-img"
-                                         class="img-fluid rounded"
-                                         style="max-height: 400px; object-fit: contain;">
-                                </a>
-                            </div>
+<!-- Start product details section -->
+<section class="product__details--section section--padding">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <!-- Product Image -->
+            <div class="col">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="product__media--preview">
+                            <a class="glightbox" data-gallery="product-media-preview"
+                               href="{{ Storage::url($skus->product->image) }}">
+                                <img src="{{ Storage::url($skus->product->image) }}"
+                                     alt="product-media-img"
+                                     class="img-fluid rounded"
+                                     style="max-height: 200px; object-fit: contain;">
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
-                <div class="col">
-                    <div class="product__details--info">
-                            <h2 class="product__details--info__title mb-15">{{ $skus->product->__('name') }}</h2>
-                            <div class="product__details--info__price mb-15">
-                                <span class="current__price">{{ $skus->price }} {{ $currencySymbol }}</span>
-                            </div>
+            <!-- Product Info -->
+            <div class="col">
+                <div class="product__details--info h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h2 class="mb-3">{{ $skus->product->__('name') }}</h2>
+                        <div class="mb-3">
+                            <span class="fs-4 fw-bold">{{ $skus->price }} {{ $currencySymbol }}</span>
+                        </div>
 
-                            @isset($skus->product->properties)
-                                @foreach ($skus->propertyOptions as $propertyOption)
-                                    <h4>
-                                        {{ $propertyOption->property->__('name') }}: {{ $propertyOption->__('name') }}
-                                    </h4>
-                                @endforeach
-                            @endisset
+                        @isset($skus->product->properties)
+                            @foreach ($skus->propertyOptions as $propertyOption)
+                                <h6 class="mb-2">
+                                    {{ $propertyOption->property->__('name') }}: {{ $propertyOption->__('name') }}
+                                </h6>
+                            @endforeach
+                        @endisset
 
-                            <p class="product__details--info__desc mb-20">
-                                {{ $skus->product->__('description') }}
-                            </p>
-                            @if ($skus->isAvailable())
-                                <div class="product__variant--list quantity d-flex align-items-center mb-20">
-                                    <div class="quantity__box">
-                                        <button type="button" class="quantity__value quickview__value--quantity decrease" aria-label="quantity value" value="Decrease Value">-</button>
-                                        <label>
-                                            <input type="number" class="quantity__number quickview__value--number" value="1" data-counter />
-                                        </label>
-                                        <button type="button" class="quantity__value quickview__value--quantity increase" aria-label="quantity value" value="Increase Value">+</button>
-                                    </div>
-                                    <form action="{{ route('basket-add', $skus->product) }}" method="POST">
-                                        @csrf
-                                        <button class="btn quickview__cart--btn" type="submit">Ավելացնել զամբյուղի մեջ</button>
-                                    </form>
-                                </div>
-                                <div class="product__variant--list mb-15">
-                                    <div class="product__details--info__meta">
-                                        <p class="product__details--info__meta--list"><strong>Կատեգորիա:</strong> <span>{{ $skus->product->category->name }}</span></p>
-                                        <p class="product__details--info__meta--list">
-                                                <strong>Քանակ:</strong>
-                                                <span>{{ $skus->count }}</span>
-                                        </p>
-                                    </div>
-                                </div>
-
-                            @else
-                                <div class="product__variant--list mb-15">
-                                    <div class="product__details--info__meta">
-                                        <strong>Հասանելի չէ`</strong>
-                                        <br>
-                                        <span>Տեղեկացնել ինձ ապրանքի առկայության դեպքում</span>
-                                        <br>
-
-                                        <span class="warning">
-                                            @if ($errors->has('email'))
-                                                {!! $errors->first('email') !!}
-                                            @endif
-                                        </span>
-
-                                        <form method="POST" action="{{ route('subscription', $skus) }}">
-                                            @csrf
-                                            <input type="email" name="email" placeholder="Մուտքագրեք էլ․ հասցե">
-                                            <button type="submit" class="btn btn-primary btn-sm me-2">Ուղարկել</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @endif
+                        <p class="mb-4 text-justify">
+                            {{ $skus->product->__('description') }}
+                        </p>
                     </div>
+
+                    @if ($skus->isAvailable())
+                        <div class="row g-3 align-items-center mb-3">
+                            <div class="col-12 col-sm-6">
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" class="btn btn-outline-secondary" value="Decrease Value">-</button>
+                                    <input type="number" class="form-control text-center mx-2" value="1" data-counter style="width: 70px;">
+                                    <button type="button" class="btn btn-outline-secondary" value="Increase Value">+</button>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <form action="{{ route('basket-add', $skus->product) }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-primary w-100" type="submit">Ավելացնել զամբյուղի մեջ</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <p><strong>Կատեգորիա:</strong> {{ $skus->product->category->name }}</p>
+                            <p><strong>Քանակ:</strong> {{ $skus->count }}</p>
+                        </div>
+                    @else
+                        <div class="mb-3">
+                            <p><strong>Հասանելի չէ`</strong></p>
+                            <p>Տեղեկացնել ինձ ապրանքի առկայության դեպքում</p>
+
+                            @if ($errors->has('email'))
+                                <span class="text-danger">{!! $errors->first('email') !!}</span>
+                            @endif
+
+                            <form method="POST" action="{{ route('subscription', $skus) }}" class="d-flex flex-column flex-sm-row gap-2 mt-2">
+                                @csrf
+                                <input type="email" name="email" class="form-control" placeholder="Մուտքագրեք էլ․ հասցե">
+                                <button type="submit" class="btn btn-primary">Ուղարկել</button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
-    </section>
-    <!-- End product details section -->
+    </div>
+</section>
+<!-- End product details section -->
+
+@if($relatedSkus->count())
+<section class="related-products section--padding">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2>Այլ տարբերակներ</h2>
+        </div>
+        <div class="row g-4">
+            @foreach($relatedSkus as $related)
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm text-center">
+                        <a href="{{ route('sku', [$related->product->category->code, $related->product->code, $related->id]) }}">
+                            <img src="{{ Storage::url($related->product->image) }}" class="card-img-top" alt="{{ $related->product->__('name') }}" style="height: 200px; object-fit: contain;">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ $related->product->__('name') }}
+                                @foreach ($related->propertyOptions as $option)
+                                    <br><small>{{ $option->property->__('name') }}: {{ $option->__('name') }}</small>
+                                @endforeach
+                            </h5>
+                            <p class="card-text">{{ $related->price }} {{ $currencySymbol }}</p>
+
+                            <form action="{{ route('basket-add', $related) }}" method="POST">
+                                @csrf
+                                @if($related->isAvailable())
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="bi bi-cart-plus"></i> @lang('main.basket')
+                                    </button>
+                                @else
+                                    <span class="btn btn-outline-danger w-100 disabled">@lang('main.available')</span>
+                                @endif
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 @endsection

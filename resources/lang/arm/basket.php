@@ -34,4 +34,6 @@ return [
     'address' => 'Հասցե',
     'enter_the_address' => 'Մուտքագրեք հասցեն',
     'edit_my_profile' => 'Հաշվի խմբագրում',
+    'your_coupon' => 'Ձեր կուպոնը',
+
 ];

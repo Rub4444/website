@@ -22,7 +22,7 @@ class BestProductsComposer
         ->select('sku_id', DB::raw('SUM(count) as total'))
         ->groupBy('sku_id')
         ->orderByDesc('total')
-        ->limit(3)
+        ->limit(4)
         ->pluck('sku_id')
         ->toArray();
 

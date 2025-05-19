@@ -20,6 +20,7 @@ class MainController extends Controller
     public function index(ProductFilterRequest $request)
     {
         $skusQuery = Sku::with(['product', 'product.category']);
+
         // $productsQuery = Product::with('category');
 
         // if ($request->filled('price_from'))
@@ -40,6 +41,7 @@ class MainController extends Controller
         //         });
         //     }
         // }
+
         $skus = $skusQuery->paginate(8)->withPath("?" . $request->getQueryString());
         return view('index', compact('skus'));
     }
@@ -68,7 +70,9 @@ class MainController extends Controller
             abort(404, 'Category not found');
         }
 
-        return view('product', compact('skus'));
+        $relatedSkus = $skus->relatedSkus();
+
+        return view('product', compact('skus', 'relatedSkus'));
     }
 
     public function subscribe(Sku $sku, SubscriptionRequest $request)

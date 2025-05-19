@@ -17,6 +17,7 @@ class Product extends Model
         'count', 'name_en', 'description_en'
     ];
 
+
     public function category()
     {
         return $this->belongsTo(Category::class);

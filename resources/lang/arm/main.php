@@ -1,6 +1,7 @@
 <?php
 return [
     'online_shop' => 'Իջևան Մարկետ',
+    'ijevan_market_address' => 'ք․ Իջևան,փ.Մետաղագործների 6/7',
     'all_categories' => 'Կատեգորիաներ',
     'current_lang' => 'arm',
     'set_lang' => 'eng',
@@ -49,4 +50,9 @@ return [
     'forgot_password' => 'Մոռացել Եք Ձեր Գաղտնաբառը?',
     'reset_password' => 'Վերականգնել գաղտնաբառը',
     'send_reset_link' => 'Ուղարկեք գաղտնաբառի վերականգնման հղումը',
+    'order_now' => 'Պատվիրեք հիմա',
+    'best_sales' => 'Թոփ Վաճառք',
+    'product_search' => 'Ապրանքների որոնում',
+    'no_products_found' => 'Ապրանքներ չեն գտնվել',
+    'sorry_but_we_cant_find' => 'Ներողություն, բայց մենք չգտանք համապատասխան ապրանքային առաջարկներ ձեր որոնմամբ։ Փորձեք այլ բան որոնել։',
 ];

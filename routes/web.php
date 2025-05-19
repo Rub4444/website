@@ -34,6 +34,8 @@ Route::get('/currency/{currencyCode}', [MainController::class, 'changeCurrency']
 
 Route::get('/logout', [LoginController::class, 'logout'])->name('get-logout')->middleware('auth');
 
+Route::get('/search', [SkuController::class, 'search'])->name('products.search');
+
 Route::middleware(['set_locale'])->group(function()
 {
     Route::get('/reset', [ResetController::class, 'reset'])->name('reset');

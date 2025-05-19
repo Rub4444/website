@@ -44,15 +44,13 @@ class Coupon extends Model
         return false;
     }
 
-    public function applyCost($price, Currency $currency = null)
+  public function applyCost($price, Currency $currency = null)
     {
-        if($this->isAbsolute())
-        {
+        if ($this->isAbsolute()) {
             return $price - CurrencyConversion::convert($this->value, $this->currency->code, $currency->code);
-        }
-        else
-        {
+        } else {
             return $price - ($price * $this->value / 100);
         }
     }
+
 }

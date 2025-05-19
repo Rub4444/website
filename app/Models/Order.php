@@ -43,15 +43,20 @@ class Order extends Model
     public function getFullSum($withCoupon = true)
     {
         $sum = 0;
-        foreach($this->skus as $sku)
+
+        foreach ($this->skus as $sku)
         {
             $sum += $sku->price * $sku->countInOrder;
         }
 
-        if($withCoupon && $this->hasCoupon())
+        if ($withCoupon && $this->hasCoupon())
         {
             $sum = $this->coupon->applyCost($sum, $this->currency);
+            // dd(4);
+
         }
+        // dd(3);
+
         return $sum;
     }
 
@@ -82,10 +87,13 @@ class Order extends Model
         return true;
     }
 
-
+    // public function hasCoupon()
+    // {
+    //     return $this->coupon;
+    // }
     public function hasCoupon()
     {
-        return $this->coupon;
+        return $this->coupon instanceof \App\Models\Coupon;
     }
 
 }

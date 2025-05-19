@@ -71,4 +71,19 @@ class SkuController extends Controller
         return redirect()->route('skus.index', $product)
                          ->with('success', 'Ապրանքային առաջարկը հաջողությամբ հեռացվեց։');
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $skus = Sku::with(['product', 'propertyOptions.property'])
+                    ->whereHas('product', function ($q) use ($query) {
+                        $q->where('name', 'like', '%' . $query . '%');
+                    })
+                    ->orWhere('price', 'like', '%' . $query . '%') // Пример: поиск по цене
+                    ->paginate(12);
+
+        return view('products.search-results', compact('skus', 'query'));
+    }
+
 }

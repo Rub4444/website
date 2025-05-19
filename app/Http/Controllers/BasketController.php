@@ -123,6 +123,7 @@ class BasketController extends Controller
         {
              session()->flash('warning', __('basket.coupon_not_added'));
         }
+
         return redirect()->route('basket');
     }
 }
