@@ -230,11 +230,19 @@
 
         <!-- Product Listing -->
         <h2 class="text-center mb-4">@lang('main.order_now')</h2>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+        {{-- <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
             @foreach($skus as $sku)
                 @include('card', compact('sku'))
             @endforeach
+        </div> --}}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+            @foreach($skus as $sku)
+                <div class="col-12 col-xss-6 col-sm-4 col-lg-3 col-xxl-2 my-2 p-1 p-lg-2">
+                    @include('card', compact('sku'))
+                </div>
+            @endforeach
         </div>
+
         <!-- Pagination -->
         <nav class="d-flex justify-content-center">
             {{ $skus->links('vendor.custom') }}
