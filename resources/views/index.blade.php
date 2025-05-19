@@ -119,6 +119,31 @@
             .carousel-control-next {
                 right: -90px;
             }
+
+            .category-card {
+                transition: transform 0.2s, box-shadow 0.2s;
+                border-radius: 0.5rem;
+            }
+
+            .category-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .category-card i {
+                font-size: 1.5rem;
+                color: #35A212;
+            }
+
+            .category-card span {
+                font-size: 1rem;
+                font-weight: 500;
+                color: #333;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
             /* Опционально: скрыть стрелки на маленьких экранах */
             @media (max-width: 576px) {
                 .carousel-control-prev,
@@ -126,40 +151,82 @@
                     display: none;
                 }
             }
+
+            .more-btn {
+                padding: 0.25rem 0.5rem;
+                border-radius: 50%;
+                border: 1px solid #ccc;
+                background-color: #35A212;
+                transition: all 0.3s ease;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .more-btn:hover {
+                background-color: #E6AC00;
+                border-color: #bbb;
+            }
+
+            .more-btn i {
+                font-size: 1rem;
+                transition: transform 0.3s ease;
+            }
+
+
         </style>
+
+
         <h2 class="text-center mb-4">@lang('main.all_categories')</h2>
 
-        <div id="categoryCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @foreach($categories->chunk(6) as $chunkIndex => $chunk)
-                    <div class="carousel-item @if($chunkIndex == 0) active @endif">
-                        <div class="row row-cols-3 row-cols-lg-6 carousel-row gx-1 gy-1">
-                            @foreach($chunk as $category)
-                                <div class="col">
-                                    <a href="{{ route('category', $category->code) }}" class="text-decoration-none">
-                                        <div class="card shadow-sm category-card">
-                                            <div class="card-body">
-                                                <i class="{{ $category->icon }}"></i>
-                                                <span>{{ $category->__('name') }}</span>
-                                            </div>
-                                        </div>
-                                    </a>
+        <div class="container">
+            <div class="row" id="category-list">
+                @foreach($categories as $index => $category)
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 py-2 p-1 category-item {{ $index >= 6 ? 'd-none extra-category' : '' }}">
+                        <a href="{{ route('category', $category->code) }}" class="text-decoration-none">
+                            <div class="card h-100 shadow-sm category-card">
+                                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                    <i class="{{ $category->icon }} mb-2" style="font-size: 1.5rem; color: #35A212;"></i>
+                                    <span class="text-center fw-medium">{{ $category->__('name') }}</span>
                                 </div>
-                            @endforeach
-                        </div>
+                            </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
 
-            <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
-                <span class="visually-hidden">Նախորդ</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
-                <span class="visually-hidden">Հաջորդ</span>
-            </button>
+            @if(count($categories) > 6)
+               <div class="text-center mt-2">
+                    <button class="btn btn-light btn-sm more-btn" id="toggleCategoriesBtn">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                </div>
+            @endif
         </div>
+
+        <script>
+            document.getElementById('toggleCategoriesBtn')?.addEventListener('click', function () {
+                const extraItems = document.querySelectorAll('.extra-category');
+                const icon = this.querySelector('i');
+
+                const isHidden = extraItems[0]?.classList.contains('d-none');
+                extraItems.forEach(item => {
+                    item.classList.toggle('d-none');
+                });
+
+                if (isHidden) {
+                    icon.classList.remove('bi-chevron-down');
+                    icon.classList.add('bi-chevron-up');
+                } else {
+                    icon.classList.remove('bi-chevron-up');
+                    icon.classList.add('bi-chevron-down');
+                }
+            });
+        </script>
+
+
 
         <!-- Product Listing -->
         <h2 class="text-center mb-4">@lang('main.order_now')</h2>
