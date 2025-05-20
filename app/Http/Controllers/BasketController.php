@@ -62,7 +62,7 @@ class BasketController extends Controller
         $longitude ))
     {
         $order = $basket->getOrder();
-        Mail::to($email)->send(new OrderCreated($request->name, $order));
+        // Mail::to($email)->send(new OrderCreated($request->name, $order));
         session()->flash('success', __('basket.your_order_confirmed'));
     }
     else
@@ -105,7 +105,7 @@ class BasketController extends Controller
     {
         (new Basket())->removeSku($skus);
 
-        session()->flash('warning', __('basket.removed').$skus->product->__('name'));
+        session()->flash('warning', __('basket.removed') . ' ' . $skus->product->name);
 
         return redirect()->route('basket');
     }

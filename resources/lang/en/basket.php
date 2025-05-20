@@ -35,5 +35,7 @@ return [
     'enter_the_address' => 'Enter the address',
     'edit_my_profile' => 'Account Editing',
     'your_coupon' => 'Your Coupon',
+    'removed' => 'Removed',
+
 ];
 
