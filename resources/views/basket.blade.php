@@ -52,11 +52,11 @@
         {{-- Купон --}}
         @if(!$order->hasCoupon())
             <div class="row mt-4">
-                <div class="col-md-6 offset-md-6">
+                <div class="col-md-4 offset-md-8">
                     <form method="POST" action="{{ route('set-coupon') }}" class="input-group">
                         @csrf
-                        <input type="text" name="coupon" class="form-control" placeholder="@lang('basket.coupon.add_coupon')">
-                        <button type="submit" class="btn btn-success">@lang('basket.coupon.apply')</button>
+                        <input type="text" name="coupon" class="form-control" placeholder="@lang('basket.your_coupon')">
+                        <button type="submit" class="btn btn-success">@lang('basket.confirm')</button>
                     </form>
                     @error('coupon')
                         <div class="alert alert-danger mt-2">{{ $message }}</div>

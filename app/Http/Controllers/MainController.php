@@ -84,6 +84,7 @@ class MainController extends Controller
 
         return redirect()->back()->with('success', 'Շնորհակալություն, ապրանքի առկայության դեպքում մենք կտեղեկացնենք Ձեզ');
     }
+
     public function changeLocale($locale)
     {
         $availableLocales = ['arm', 'en'];

@@ -188,7 +188,7 @@
                         <a href="{{ route('category', $category->code) }}" class="text-decoration-none">
                             <div class="card h-100 shadow-sm category-card">
                                 <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                                    <i class="{{ $category->icon }} mb-2" style="font-size: 1.5rem; color: #35A212;"></i>
+                                    <i class="{{ $category->icon }} mt-3 mb-1" style="font-size: 1.5rem; color: #35A212;"></i>
                                     <span class="text-center fw-medium">{{ $category->__('name') }}</span>
                                 </div>
                             </div>
