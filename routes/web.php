@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\MerchantController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShopController;
 
 Auth::routes([
     'reset'=>true,
@@ -51,6 +52,8 @@ Route::middleware(['set_locale'])->group(function()
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/profile/view', [ProfileController::class, 'index'])->name('profile.index');
+
+        Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
         Route::prefix('admin')->middleware('is_admin')->group(function ()
         {

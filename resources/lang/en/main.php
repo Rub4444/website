@@ -56,4 +56,10 @@ return [
     'sorry_but_we_cant_find' => 'Sorry, but we didnt find any relevant product offers in your search. Try to look for something else.',
     'currency' => 'Currency',
     'language' => 'Language',
+    'price_from' => 'Price from',
+    'price_to' => 'Price up to',
+    'default' => 'By default',
+    'cheap_from' => 'Cheap from...',
+    'expensive_from' => 'Expensive from...',
+    'filter' => 'Filter',
 ];

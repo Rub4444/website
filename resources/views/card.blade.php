@@ -23,6 +23,10 @@
                 <h5 class="card-title">{{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}</h5>
             </a>
             <p class="card-text fw-bold">{{ $sku->price }} {{ $currencySymbol }}</p>
+            <!-- Описание (только в режиме списка) -->
+            <p class="card-text text-muted d-none d-md-block description-for-list d-none">
+                {{ Str::limit($sku->product->__('description'), 150) }}
+            </p>
             <form action="{{ route('basket-add', $sku) }}" method="POST">
                 @csrf
                 @if($sku->isAvailable())

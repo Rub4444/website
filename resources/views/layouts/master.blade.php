@@ -90,6 +90,11 @@
                     </div>
                     <div class="header__account header__sticky--block">
                         <ul class="d-flex">
+                            <li class="header__account--items d-none d-lg-block">
+                                <a href="{{ route('shop') }}" class="header__account--btn">
+                                    <i class="bi bi-bag-check-fill"></i>
+                                </a>
+                            </li>
                             <li class="header__account--items  header__account--search__items d-none d-lg-block">
                                 <a class="header__account--btn search__open--btn" href="javascript:void(0)" data-offcanvas>
                                     <svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"/></svg>
@@ -271,6 +276,18 @@
                             </div>
                             <span class="badge bg-primary-subtle m fw-bold">@lang('main.set_lang')</span>
                         </a>
+
+                         <!-- Contact -->
+                        <a href="tel:+374 44 464 412" class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
+                            <div class="d-flex align-items-center gap-2">
+                                <svg class="suport__contact--icon text-white" xmlns="http://www.w3.org/2000/svg" width="35.725" height="35.743" viewBox="0 0 36.725 36.743">
+                                    <path id="headphone-alt-2" d="M28.893,18.469c-.026-2.873.1-5.754-.761-8.565-1.587-5.21-5.306-7.742-10.781-7.272-4.681.4-7.588,2.715-8.785,7.573a24.031,24.031,0,0,0,.2,13.3,11.447,11.447,0,0,0,6.254,7.253c.658.3,1.091.408,1.595-.356a3.732,3.732,0,0,1,4.38-1.334,3.931,3.931,0,1,1-4.582,5.82,2.989,2.989,0,0,0-1.782-1.466c-4.321-1.573-6.842-4.869-8.367-9.032a1.686,1.686,0,0,0-1.238-1.275,7.046,7.046,0,0,1-3.718-2.447A5.739,5.739,0,0,1,3.242,11.83,5.338,5.338,0,0,0,6.318,7.957C7.644,3.033,11.62.193,16.845.02a19.923,19.923,0,0,1,6.324.544c4.479,1.3,6.783,4.52,7.72,8.881a1.966,1.966,0,0,0,1.389,1.723,6.235,6.235,0,0,1,4.439,6.324,5.211,5.211,0,0,1-1.33,3.27,7.98,7.98,0,0,1-5.449,2.774c-.731.077-1.124-.051-1.069-.952.085-1.367.022-2.745.026-4.115Z" transform="translate(0.006 0.01)" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <span class="badge bg-primary-subtle m fw-bold">
+                                +374 44 464 412
+                            </span>
+                        </a>
                     </div>
                 </nav>
             </div>
@@ -289,10 +306,11 @@
                     </a>
                 </li>
                 <li class="offcanvas__stikcy--toolbar__list">
-                    <a class="offcanvas__stikcy--toolbar__btn" href="shop.html">
+                    <a class="offcanvas__stikcy--toolbar__btn" href="{{route('shop')}}">
                     <span class="offcanvas__stikcy--toolbar__icon">
-                        <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="18.51" height="17.443" viewBox="0 0 448 512"><path d="M416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-16 48v152H248V80zm-200 0v152H48V80zM48 432V280h152v152zm200 0V280h152v152z"></path></svg>
-                        </span>
+                        {{-- <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="18.51" height="17.443" viewBox="0 0 448 512"><path d="M416 32H32A32 32 0 0 0 0 64v384a32 32 0 0 0 32 32h384a32 32 0 0 0 32-32V64a32 32 0 0 0-32-32zm-16 48v152H248V80zm-200 0v152H48V80zM48 432V280h152v152zm200 0V280h152v152z"></path></svg> --}}
+                        <i class="bi bi-bag-check-fill"></i>
+                    </span>
                     <span class="offcanvas__stikcy--toolbar__label">Shop</span>
                     </a>
                 </li>
