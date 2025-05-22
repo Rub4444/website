@@ -71,8 +71,8 @@
     </div>
     <!-- End preloader -->
     <!-- Start header area -->
-    <header class="header__section header__transparent mb-30">
-        <div class="main__header header__sticky">
+    <header class="header__section header__transparent ">
+        <div class="main__header">
             <div class="container">
                 <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
                     <div class="offcanvas__header--menu__open d-block d-lg-none">
@@ -253,14 +253,23 @@
                             @endadmin
                         @endauth
                     </div>
-                    <div class="offcanvas__account--currency">
-                        <a class="offcanvas__account--currency__menu text-black" href="javascript:void(0)">
-                            <span>{{ $currencySymbol }}</span>
+                    <div class="d-flex flex-column gap-2 mt-3">
+                        <!-- Валюта -->
+                        <a href="javascript:void(0)" class="btn btn-outline-success d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-currency-exchange fs-5"></i>
+                                <span class="fw-semibold">@lang('main.currency')</span>
+                            </div>
+                            <span class="badge bg-success-subtle  fw-bold">{{ $currencySymbol }}</span>
                         </a>
-                    </div>
-                    <div class="offcanvas__account--currency">
-                        <a class="offcanvas__account--currency__menu text-black" href="{{route('locale', __('main.set_lang') )}}">
-                            <span>@lang('main.set_lang')</span>
+
+                        <!-- Смена языка -->
+                        <a href="{{ route('locale', __('main.set_lang')) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-translate fs-5"></i>
+                                <span class="fw-semibold">@lang('main.language')</span>
+                            </div>
+                            <span class="badge bg-primary-subtle m fw-bold">@lang('main.set_lang')</span>
                         </a>
                     </div>
                 </nav>

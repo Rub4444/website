@@ -53,5 +53,7 @@ return [
     'best_sales' => 'Best Sales',
     'product_search' => 'Product Search',
     'no_products_found' => 'No products found',
-    'sorry_but_we_cant_find' => 'Sorry, but we didnt find any relevant product offers in your search. Try to look for something else.'
+    'sorry_but_we_cant_find' => 'Sorry, but we didnt find any relevant product offers in your search. Try to look for something else.',
+    'currency' => 'Currency',
+    'language' => 'Language',
 ];

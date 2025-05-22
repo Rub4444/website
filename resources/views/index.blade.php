@@ -198,7 +198,7 @@
             </div>
 
             @if(count($categories) > 6)
-               <div class="text-center mt-2">
+               <div class="d-flex justify-content-center mt-2">
                     <button class="btn btn-light btn-sm more-btn" id="toggleCategoriesBtn">
                         <i class="bi bi-chevron-down"></i>
                     </button>
