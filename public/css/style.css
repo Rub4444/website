@@ -8133,10 +8133,12 @@ body {
 */
 .footer__logo{
     border-radius: 10%;
+    margin-top: 5px;
+
 }
 footer {
     background: #333333; /* Темный фон */
-    margin-top: 50px;
+    margin-top: 10px;
 }
 footer a:hover {
     color: #f8d32d; /* Цвет при наведении */

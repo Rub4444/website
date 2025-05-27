@@ -17,6 +17,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\WishlistController;
 
 Auth::routes([
     'reset'=>true,
@@ -43,6 +44,9 @@ Route::middleware(['set_locale'])->group(function()
 
     Route::middleware(['auth'])->group(function ()
     {
+        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+        Route::post('/wishlist/toggle/{sku}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
         Route::prefix('person')->as('person.')->group(function ()
         {
             Route::get('/orders', [\App\Http\Controllers\Person\OrderController::class, 'index'])->name('orders.index');

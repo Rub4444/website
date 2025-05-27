@@ -1,42 +1,81 @@
-<div class="col mb-1">
-    <div class="card shadow-sm">
+<div class="col mb-4">
+    <div class="card h-100 shadow-sm border-0 rounded-4 position-relative hover-shadow transition">
+        <!-- Картинка -->
         <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
             <img src="{{ asset('storage/' . $sku->product->image) }}"
-            class="card-img-top img-fluid"
-            style="height: 150px; object-fit: contain; background-color: #f8f9fa;"
-            alt="{{ $sku->product->__('name') }}">
-
+                 class="card-img-top img-fluid p-3"
+                 alt="{{ $sku->product->__('name') }}"
+                 style="height: 200px; object-fit: contain; background-color: #f9f9f9;">
         </a>
-        <div class="position-absolute top-0 start-0 m-2">
+
+        <!-- Бейджи -->
+        <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1">
             @if($sku->product->isNew())
                 <span class="badge bg-success">@lang('main.properties.new')</span>
             @endif
             @if($sku->product->isRecommend())
-                <span class="badge bg-primary">@lang('main.properties.recommend')</span>
+                <span class="badge bg-success">@lang('main.properties.recommend')</span>
             @endif
             @if($sku->product->isHit())
-                <span class="badge bg-danger">@lang('main.properties.hit')</span>
+                <span class="badge bg-success">@lang('main.properties.hit')</span>
             @endif
         </div>
-        <div class="card-body text-center">
-            <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}" class="text-decoration-none text-dark">
-                <h5 class="card-title">{{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}</h5>
+
+        <!-- Кнопка избранного -->
+        @auth
+            @php $isInWishlist = Auth::user()->hasInWishlist($sku->id); @endphp
+            <button
+                class="btn btn-sm shadow position-absolute top-0 end-0 m-2 toggle-wishlist rounded-circle d-flex align-items-center justify-content-center"
+                data-id="{{ $sku->id }}"
+                aria-pressed="{{ $isInWishlist ? 'true' : 'false' }}"
+                style="z-index: 10; width: 36px; height: 36px; border: 2px solid white;"
+                title="{{ $isInWishlist ? 'Удалить из избранного' : 'Добавить в избранное' }}">
+                <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart ' }}"></i>
+            </button>
+        @endauth
+
+        <!-- Контент -->
+        <div class="card-body text-center px-3 pb-3 pt-2">
+            <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}"
+               class="text-decoration-none text-dark">
+                <h6 class="card-title fw-semibold text-truncate">
+                    {{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}
+                </h6>
             </a>
-            <p class="card-text fw-bold">{{ $sku->price }} {{ $currencySymbol }}</p>
-            <!-- Описание (только в режиме списка) -->
-            <p class="card-text text-muted d-none d-md-block description-for-list d-none">
-                {{ Str::limit($sku->product->__('description'), 150) }}
+
+            <p class="card-text fw-bold text-success mb-2">{{ $sku->price }} {{ $currencySymbol }}</p>
+
+            <!-- Описание в режиме списка -->
+            <p class="card-text small text-muted description-for-list d-none">
+                {{ Str::limit($sku->product->__('description'), 100) }}
             </p>
-            <form action="{{ route('basket-add', $sku) }}" method="POST">
+
+            <!-- Кнопка корзины -->
+            <form action="{{ route('basket-add', $sku) }}" method="POST" class="mt-2">
                 @csrf
                 @if($sku->isAvailable())
                     <button type="submit" class="btn btn-success w-100">
-                        <i class="bi bi-cart-plus"></i> @lang('main.basket')
+                        <i class="bi bi-cart-plus me-1"></i> @lang('main.basket')
                     </button>
                 @else
-                    <span class="btn btn-outline-danger w-100 disabled">@lang('main.available')</span>
+                    <button type="button" class="btn btn-outline-danger w-100" disabled>
+                        @lang('main.available')
+                    </button>
                 @endif
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    /* В CSS добавьте плавный переход цвета */
+    .toggle-wishlist i {
+    transition: color 0.3s ease;
+    }
+
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        transition: box-shadow 0.3s ease-in-out;
+    }
+</style>
+

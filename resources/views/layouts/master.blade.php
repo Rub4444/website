@@ -91,6 +91,13 @@
                     <div class="header__account header__sticky--block">
                         <ul class="d-flex">
                             <li class="header__account--items d-none d-lg-block">
+                                <a href="{{ route('wishlist') }}" class="header__account--btn">
+                                    <i class="bi bi-heart-fill"></i>
+                                    <span class="visually-hidden">Wishlist</span>
+                                </a>
+                            </li>
+
+                            <li class="header__account--items d-none d-lg-block">
                                 <a href="{{ route('shop') }}" class="header__account--btn">
                                     <i class="bi bi-bag-check-fill"></i>
                                 </a>
@@ -161,16 +168,16 @@
                         <div class="dropdown__categories--menu">
                             <ul class="d-none d-lg-block">
                                 @foreach($categories as $category)
-                                    <li class="categories__menu--items">
-                                        <a  class="categories__menu--link" href="{{route('category', $category->code)}}"><i class="{{ $category->icon }}"></i>{{$category->__('name')}}</a>
+                                    <li class="categories__menu--items" >
+                                        <a  class="categories__menu--link" href="{{route('category', $category->code)}}"><i class="{{ $category->icon }}" style="color: #097739;"></i>{{$category->__('name')}}</a>
                                     </li>
                                 @endforeach
                             </ul>
                             <nav class="category__mobile--menu">
                                 <ul class="category__mobile--menu_ul">
                                     @foreach($categories as $category)
-                                        <li class="categories__menu--items">
-                                            <a class="categories__menu--link" href="{{route('category', $category->code)}}">{{$category->__('name')}}</a>
+                                        <li class="categories__menu--items" >
+                                            <a class="categories__menu--link"  href="{{route('category', $category->code)}}">{{$category->__('name')}}</a>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -215,7 +222,7 @@
         <div class="offcanvas__header">
             <div class="offcanvas__inner">
                 <div class="offcanvas__logo">
-                    <a class="offcanvas__logo_link" href="index.html">
+                    <a class="offcanvas__logo_link" href="{{route('index')}}">
                         <img src="{{ asset('img/logo/nav-log.png') }}" alt="Grocee Logo" width="158" height="36">
                     </a>
                     <button class="offcanvas__close--btn" data-offcanvas>close</button>
@@ -226,7 +233,7 @@
 
                             <li class="offcanvas__menu_li">
                                 <a class="offcanvas__menu_item" href="{{route('category', $category->code)}}">
-                                    <i class="{{ $category->icon }}"></i> {{$category->__('name')}}
+                                    <i class="{{ $category->icon }}" style="color: #097739;"></i> {{$category->__('name')}}
                                 </a>
                             </li>
                         @endforeach
@@ -262,7 +269,7 @@
                         <!-- Валюта -->
                         <a href="javascript:void(0)" class="btn btn-outline-success d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
                             <div class="d-flex align-items-center gap-2">
-                                <i class="bi bi-currency-exchange fs-5"></i>
+                                <i class="bi bi-currency-exchange fs-5" ></i>
                                 <span class="fw-semibold">@lang('main.currency')</span>
                             </div>
                             <span class="badge bg-success-subtle  fw-bold">{{ $currencySymbol }}</span>
@@ -368,9 +375,45 @@
     @yield('content')
     {{-- @stack('scripts') --}}
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.toggle-wishlist').forEach(button => {
+        button.addEventListener('click', function () {
+            const skuId = this.dataset.id;
+            const icon = this.querySelector('i');
+
+            fetch('/wishlist/toggle/' + skuId, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    this.setAttribute('aria-pressed', 'true');
+                    icon.classList.remove('bi-heart', 'text-secondary');
+                    icon.classList.add('bi-heart-fill', 'text-danger');
+                    this.title = 'Удалить из избранного';
+                } else if (data.status === 'removed') {
+                    this.setAttribute('aria-pressed', 'false');
+                    icon.classList.remove('bi-heart-fill', 'text-danger');
+                    icon.classList.add('bi-heart', 'text-white');
+                    this.title = 'Добавить в избранное';
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при обновлении избранного:', error);
+            });
+        });
+    });
+});
+</script>
 </body>
 
-<footer class="text-white py-5">
+<footer class="text-white">
     <!-- Подключение JavaScript -->
     <script src="{{ asset('js/popper.js') }}"></script>
     <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>

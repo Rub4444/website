@@ -13,7 +13,7 @@
         <!-- Список товаров -->
         <div class="row g-4">
             @foreach($category->products->map->skus->flatten() as $sku)
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                     @include('card', compact('sku'))
                 </div>
             @endforeach
