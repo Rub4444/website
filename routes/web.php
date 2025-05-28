@@ -93,7 +93,9 @@ Route::middleware(['set_locale'])->group(function()
     Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
 
     Route::group([
-        'middleware' => ['auth', 'verified', 'basket_not_empty']
+        // 'middleware' => ['auth', 'verified', 'basket_not_empty']
+        'middleware' => ['auth', 'basket_not_empty']
+
     ], function () {
         Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
         Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
