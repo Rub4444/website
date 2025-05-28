@@ -15,9 +15,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::paginate(30);
-        return view('auth.categories.index', compact('categories'));
+        $AllCategories = Category::paginate(30);
+        return view('auth.categories.index', compact('AllCategories'));
     }
+
 
     /**
      * Show the form for creating a new resource.

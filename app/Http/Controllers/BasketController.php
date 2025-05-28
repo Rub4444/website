@@ -87,19 +87,39 @@ class BasketController extends Controller
         return view('order', compact('order', 'categories'));
     }
 
-    public function basketAdd(Sku $skus)
-    {
-        $result = (new Basket(true))->addSku($skus);
-        if($result)
-        {
-            session()->flash('success', __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_add'));
-        }
-        else
-        {
-            session()->flash('warning',  __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_not_add'));
-        }
-        return redirect()->route('basket');
+    public function basketAdd(Request $request, Sku $skus)
+{
+    $quantity = (int) $request->input('quantity', 1);
+    if ($quantity < 1) {
+        $quantity = 1;
     }
+
+    $result = (new Basket(true))->addSku($skus, $quantity);
+
+    if($result)
+    {
+        session()->flash('success', __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_add'));
+    }
+    else
+    {
+        session()->flash('warning',  __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_not_add'));
+    }
+    return redirect()->route('basket');
+}
+
+    // public function basketAdd(Sku $skus)
+    // {
+    //     $result = (new Basket(true))->addSku($skus);
+    //     if($result)
+    //     {
+    //         session()->flash('success', __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_add'));
+    //     }
+    //     else
+    //     {
+    //         session()->flash('warning',  __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_not_add'));
+    //     }
+    //     return redirect()->route('basket');
+    // }
 
     public function basketRemove(Sku $skus)
     {

@@ -13,14 +13,14 @@
 
     <!-- Success Message -->
     @if(session()->has('success'))
-        <p class="alert alert-success">{{ session()->get('success') }}</p>
+        <p class="alert alert-success mt-3">{{ session()->get('success') }}</p>
     @endif
 
     <!-- Suppliers Table -->
-    <div class="card shadow-lg">
+    <div class="card shadow-lg mt-4">
         <div class="card-body">
             <table class="table table-striped table-hover">
-                <thead>
+                <thead class="table-dark text-white">
                     <tr>
                         <th>#</th>
                         <th>Անուն</th>
@@ -37,24 +37,27 @@
                         <td>
                             <div class="btn-group" role="group">
                                 <!-- View Button -->
-                                <a class="btn btn-success" href="{{ route('merchants.show', $merchant) }}" data-toggle="tooltip" title="Բացել">
-                                    <i class="fas fa-eye text-white"></i> Բացել
+                                <a class="btn btn-success text-white" href="{{ route('merchants.show', $merchant) }}" data-bs-toggle="tooltip" title="Բացել">
+                                    <i class="fas fa-eye"></i>
                                 </a>
 
                                 <!-- Edit Button -->
-                                <a class="btn btn-warning" href="{{ route('merchants.edit', $merchant) }}" data-toggle="tooltip" title="Փոփոխել">
-                                    <i class="fas fa-edit text-white"></i> Փոփոխել
+                                <a class="btn btn-warning text-white" href="{{ route('merchants.edit', $merchant) }}" data-bs-toggle="tooltip" title="Փոփոխել">
+                                    <i class="fas fa-edit"></i>
                                 </a>
 
                                 <!-- Update Token Button -->
-                                <a class="btn btn-primary" href="{{ route('merchants.update_token', $merchant) }}" data-toggle="tooltip" title="Թարմացնել տոկենը">
-                                    <i class="fas fa-sync-alt text-white"></i> Թարմացնել տոկենը
+                                <a class="btn btn-primary text-white" href="{{ route('merchants.update_token', $merchant) }}" data-bs-toggle="tooltip" title="Թարմացնել տոկենը">
+                                    <i class="fas fa-sync-alt"></i>
                                 </a>
-                                <form action="{{ route('merchants.destroy', $merchant) }}" method="POST" style="display:inline;">
-                                    <!-- Delete Button -->
+
+                                <!-- Delete Button -->
+                                <form action="{{ route('merchants.destroy', $merchant) }}" method="POST" onsubmit="return confirm('Համոզվա՞ծ եք, որ ցանկանում եք հեռացնել մատակարարը։');">
                                     @csrf
                                     @method('DELETE')
-                                    <input class="btn btn-danger" type="submit" value="Հեռացնել" data-toggle="tooltip" title="Հեռացնել">
+                                    <button type="submit" class="btn btn-danger text-white" data-bs-toggle="tooltip" title="Հեռացնել">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             </div>
                         </td>
@@ -64,63 +67,55 @@
             </table>
         </div>
 
-        <div class="pagination__area bg__gray--color">
-            <nav class="pagination justify-content-center">
-                <ul class="pagination__wrapper d-flex align-items-center justify-content-center">
-                    {{-- Кнопка "назад" --}}
+        <!-- Stylish Pagination -->
+        <div class="d-flex justify-content-center mt-4 mb-3">
+            <nav>
+                <ul class="pagination pagination-lg flex-wrap gap-2">
+                    {{-- Previous --}}
                     @if ($merchants->onFirstPage())
-                        <li class="pagination__list disabled">
-                            <span class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
-                                          d="M244 400L100 256l144-144M120 256h292"/>
-                                </svg>
+                        <li class="page-item disabled">
+                            <span class="page-link bg-dark text-white border-0 rounded-pill px-3">
+                                <i class="fas fa-angle-left"></i>
                             </span>
                         </li>
                     @else
-                        <li class="pagination__list">
-                            <a href="{{ $merchants->previousPageUrl() }}" class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
-                                          d="M244 400L100 256l144-144M120 256h292"/>
-                                </svg>
+                        <li class="page-item">
+                            <a href="{{ $merchants->previousPageUrl() }}" class="page-link bg-dark text-white border-0 rounded-pill px-3">
+                                <i class="fas fa-angle-left"></i>
                             </a>
                         </li>
                     @endif
 
-                    {{-- Номера страниц --}}
+                    {{-- Page Numbers --}}
                     @foreach ($merchants->getUrlRange(1, $merchants->lastPage()) as $page => $url)
                         @if ($page == $merchants->currentPage())
-                            <li class="pagination__list"><span class="pagination__item pagination__item--current">{{ $page }}</span></li>
+                            <li class="page-item active">
+                                <span class="page-link bg-primary text-white border-0 rounded-pill px-3">{{ $page }}</span>
+                            </li>
                         @else
-                            <li class="pagination__list"><a href="{{ $url }}" class="pagination__item link">{{ $page }}</a></li>
+                            <li class="page-item">
+                                <a href="{{ $url }}" class="page-link bg-dark text-white border-0 rounded-pill px-3">{{ $page }}</a>
+                            </li>
                         @endif
                     @endforeach
 
-                    {{-- Кнопка "вперёд" --}}
+                    {{-- Next --}}
                     @if ($merchants->hasMorePages())
-                        <li class="pagination__list">
-                            <a href="{{ $merchants->nextPageUrl() }}" class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
-                                          d="M268 112l144 144-144 144M392 256H100"/>
-                                </svg>
+                        <li class="page-item">
+                            <a href="{{ $merchants->nextPageUrl() }}" class="page-link bg-dark text-white border-0 rounded-pill px-3">
+                                <i class="fas fa-angle-right"></i>
                             </a>
                         </li>
                     @else
-                        <li class="pagination__list disabled">
-                            <span class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"
-                                          d="M268 112l144 144-144 144M392 256H100"/>
-                                </svg>
+                        <li class="page-item disabled">
+                            <span class="page-link bg-dark text-white border-0 rounded-pill px-3">
+                                <i class="fas fa-angle-right"></i>
                             </span>
                         </li>
                     @endif
                 </ul>
             </nav>
         </div>
-
     </div>
 </div>
 @endsection

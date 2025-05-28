@@ -1,112 +1,59 @@
 @extends('auth.layouts.master')
 
 @section('content')
-<div class="col-md-12">
-    {{-- <h1 class="mb-4 text-center">Կատեգորիաներ</h1> --}}
-    <!-- Add Category Button -->
-    <div class="mt-4 ">
-        <a class="btn btn-success" type="button" href="{{route('categories.create')}}">
-            <i class="fas fa-plus text-white"></i> Ավելացնել կատեգորիա
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Կատեգորիաներ</h2>
+        <a href="{{ route('categories.create') }}" class="btn btn-success">
+            <i class="fas fa-plus me-1 text-white"></i> Ավելացնել կատեգորիա
         </a>
     </div>
-    <!-- Card for the Table -->
-    <div class="card shadow-lg">
+
+    <div class="card shadow rounded-4">
         <div class="card-body">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Կոդ</th>
-                        <th>Անվանում</th>
-                        <th>Գործողություններ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($categories as $category)
-                    <tr>
-                        <td>{{$category->id}}</td>
-                        <td>{{$category->code}}</td>
-                        <td>{{$category->name}}</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <!-- View Button -->
-                                <a class="btn btn-success" type="button" href="{{ route('categories.show', $category) }}" data-toggle="tooltip" title="Открыть категорию">
-                                    <i class="fas fa-eye text-white"></i> Բացել
-                                </a>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Կոդ</th>
+                            <th scope="col">Անվանում</th>
+                            <th scope="col" class="text-end">Գործողություններ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($AllCategories as $category)
+                        <tr>
+                            <td>{{ $category->id }}</td>
+                            <td>{{ $category->code }}</td>
+                            <td>{{ $category->name }}</td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" title="Դիտել">
+                                        <i class="fas fa-eye text-white"></i>
+                                    </a>
+                                    <a href="{{ route('categories.edit', $category) }}" class="btn btn-outline-warning btn-sm" data-bs-toggle="tooltip" title="Խմբագրել">
+                                        <i class="fas fa-edit text-white"></i>
+                                    </a>
+                                    <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Վստա՞հ եք, որ ցանկանում եք հեռացնել։')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="Ջնջել">
+                                            <i class="fas fa-trash text-white"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-                                <!-- Edit Button -->
-                                <a class="btn btn-warning" type="button" href="{{ route('categories.edit', $category) }}" data-toggle="tooltip" title="Редактировать категорию">
-                                    <i class="fas fa-edit text-white"></i> Խմբագրել
-                                </a>
-
-                                <form action="{{ route('categories.destroy', $category) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Հեռացնել</button>
-                                </form>
-
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="mt-3">
+                {{ $AllCategories->links('pagination::bootstrap-4') }}
+            </div>
         </div>
-        <div class="pagination__area bg__gray--color">
-            <nav class="pagination justify-content-center">
-                <ul class="pagination__wrapper d-flex align-items-center justify-content-center">
-                    {{-- Кнопка "назад" --}}
-                    @if ($categories->onFirstPage())
-                        <li class="pagination__list disabled">
-                            <span class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M244 400L100 256l144-144M120 256h292"/>
-                                </svg>
-                            </span>
-                        </li>
-                    @else
-                        <li class="pagination__list">
-                            <a href="{{ $categories->previousPageUrl() }}" class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M244 400L100 256l144-144M120 256h292"/>
-                                </svg>
-                            </a>
-                        </li>
-                    @endif
-
-                    {{-- Номера страниц --}}
-                    @foreach ($categories->getUrlRange(1, $categories->lastPage()) as $page => $url)
-                        @if ($page == $categories->currentPage())
-                            <li class="pagination__list"><span class="pagination__item pagination__item--current">{{ $page }}</span></li>
-                        @else
-                            <li class="pagination__list"><a href="{{ $url }}" class="pagination__item link">{{ $page }}</a></li>
-                        @endif
-                    @endforeach
-
-                    {{-- Кнопка "вперёд" --}}
-                    @if ($categories->hasMorePages())
-                        <li class="pagination__list">
-                            <a href="{{ $categories->nextPageUrl() }}" class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M268 112l144 144-144 144M392 256H100"/>
-                                </svg>
-                            </a>
-                        </li>
-                    @else
-                        <li class="pagination__list disabled">
-                            <span class="pagination__item--arrow link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512">
-                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M268 112l144 144-144 144M392 256H100"/>
-                                </svg>
-                            </span>
-                        </li>
-                    @endif
-                </ul>
-            </nav>
-        </div>
-
-
     </div>
 </div>
-
 @endsection

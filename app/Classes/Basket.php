@@ -106,25 +106,45 @@ class Basket
 
 
 
+    public function addSku(Sku $sku, int $quantity = 1)
+{
+    if ($this->order->skus->contains($sku)) {
+        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
 
-    public function addSku(Sku $sku)
-    {
-        if ($this->order->skus->contains($sku)) {
-            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-            if ($pivotRow->countInOrder >= $sku->count) {
-                return false;
-            }
-            $pivotRow->countInOrder++;
-        } else {
-            if ($sku->count == 0) {
-                return false;
-            }
-            $sku->countInOrder = 1;
-            $this->order->skus->push($sku);
+        $newCount = $pivotRow->countInOrder + $quantity;
+        if ($newCount > $sku->count) {
+            return false; // превышение доступного количества
         }
-
-        return true;
+        $pivotRow->countInOrder = $newCount;
+    } else {
+        if ($sku->count == 0 || $quantity > $sku->count) {
+            return false;
+        }
+        $sku->countInOrder = $quantity;
+        $this->order->skus->push($sku);
     }
+
+    return true;
+}
+
+    // public function addSku(Sku $sku)
+    // {
+    //     if ($this->order->skus->contains($sku)) {
+    //         $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+    //         if ($pivotRow->countInOrder >= $sku->count) {
+    //             return false;
+    //         }
+    //         $pivotRow->countInOrder++;
+    //     } else {
+    //         if ($sku->count == 0) {
+    //             return false;
+    //         }
+    //         $sku->countInOrder = 1;
+    //         $this->order->skus->push($sku);
+    //     }
+
+    //     return true;
+    // }
 
     public function setCoupon(Coupon $coupon)
     {
