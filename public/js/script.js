@@ -372,42 +372,42 @@ var swiper = new Swiper(".instagram__swiper--activation", {
   },
 });
 
-// product details media swiper activation
-var swiper = new Swiper(".product__media--nav", {
-  loop: true,
-  spaceBetween: 10,
-  slidesPerView: 5,
-  freeMode: true,
-  watchSlidesProgress: true,
-  breakpoints: {
-    768: {
+document.addEventListener("DOMContentLoaded", function () {
+  const navEl = document.querySelector(".product__media--nav");
+  const previewEl = document.querySelector(".product__media--preview");
+
+  if (navEl && previewEl) {
+    var swiper = new Swiper(".product__media--nav", {
+      loop: true,
+      spaceBetween: 10,
       slidesPerView: 5,
-    },
-    480: {
-      slidesPerView: 4,
-    },
-    320: {
-      slidesPerView: 3,
-    },
-    200: {
-      slidesPerView: 2,
-    },
-    0: {
-      slidesPerView: 1,
-    },
-  },
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
+      freeMode: true,
+      watchSlidesProgress: true,
+      breakpoints: {
+        768: { slidesPerView: 5 },
+        480: { slidesPerView: 4 },
+        320: { slidesPerView: 3 },
+        200: { slidesPerView: 2 },
+        0: { slidesPerView: 1 },
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    });
+
+    var swiper2 = new Swiper(".product__media--preview", {
+      loop: true,
+      spaceBetween: 10,
+      thumbs: {
+        swiper: swiper,
+      },
+    });
+  } else {
+    console.warn("Swiper container(s) not found");
+  }
 });
-var swiper2 = new Swiper(".product__media--preview", {
-  loop: true,
-  spaceBetween: 10,
-  thumbs: {
-    swiper: swiper,
-  },
-});
+
 
 // tab activation
 const tab = function (wrapper) {
@@ -707,7 +707,6 @@ const footerWidgetAccordion = function () {
     }
   });
 };
-// Mobile menu
 document.addEventListener("DOMContentLoaded", function () {
     // Первое меню
     const menu1OpenBtn = document.querySelector(".offcanvas__menu1--btn");
@@ -719,15 +718,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const menu2CloseBtn = document.querySelector(".offcanvas__menu2--close");
     const menu2 = document.querySelector(".offcanvas__menu2");
 
-    menu2OpenBtn.addEventListener("click", function () {
-        menu2.classList.add("open");
-        document.body.classList.add("mobile_menu_open");
-    });
+    if (menu1OpenBtn && menu1CloseBtn && menu1) {
+        menu1OpenBtn.addEventListener("click", function () {
+            menu1.classList.add("open");
+            document.body.classList.add("mobile_menu_open");
+        });
 
-    menu2CloseBtn.addEventListener("click", function () {
-        menu2.classList.remove("open");
-        document.body.classList.remove("mobile_menu_open");
-    });
+        menu1CloseBtn.addEventListener("click", function () {
+            menu1.classList.remove("open");
+            document.body.classList.remove("mobile_menu_open");
+        });
+    }
+
+    if (menu2OpenBtn && menu2CloseBtn && menu2) {
+        menu2OpenBtn.addEventListener("click", function () {
+            menu2.classList.add("open");
+            document.body.classList.add("mobile_menu_open");
+        });
+
+        menu2CloseBtn.addEventListener("click", function () {
+            menu2.classList.remove("open");
+            document.body.classList.remove("mobile_menu_open");
+        });
+    }
 });
 
 

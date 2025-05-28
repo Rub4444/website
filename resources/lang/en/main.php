@@ -62,4 +62,9 @@ return [
     'cheap_from' => 'Cheap from...',
     'expensive_from' => 'Expensive from...',
     'filter' => 'Filter',
+    'home' => 'Home',
+    'shop' => 'Shop',
+    'search' => 'Search',
+    'cart' => 'Cart',
+    'wishlist' => 'Wishlist',
 ];

@@ -162,7 +162,7 @@
 
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Toggle hidden categories
@@ -184,4 +184,4 @@
         });
     });
 </script>
-@endpush
+@endpush --}}
