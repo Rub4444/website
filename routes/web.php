@@ -77,25 +77,23 @@ Route::middleware(['set_locale'])->group(function()
     });
 
     // Повторная отправка письма подтверждения
-    // Route::post('/email/verification-notification', function (Request $request)
-    // {
-    //     if ($request->user()->hasVerifiedEmail())
-    //     {
-    //         return redirect()->intended('/');
-    //     }
+    Route::post('/email/verification-notification', function (Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail())
+        {
+            return redirect()->intended('/');
+        }
 
-    //     $request->user()->sendEmailVerificationNotification();
+        $request->user()->sendEmailVerificationNotification();
 
-    //     return back()->with('message', 'Ссылка подтверждения отправлена на ваш email.');
-    // })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+        return back()->with('message', 'Ссылка подтверждения отправлена на ваш email.');
+    })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
     Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
     Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
 
     Route::group([
-        // 'middleware' => ['auth', 'verified', 'basket_not_empty']
-        'middleware' => ['auth', 'basket_not_empty']
-
+        'middleware' => ['auth', 'verified', 'basket_not_empty']
     ], function () {
         Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
         Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
