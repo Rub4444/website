@@ -4,7 +4,7 @@ return [
     'all_categories' => 'All Categories',
     'ijevan_market_address' => 'c. Ijevan, st. Metaxagorcneri 6/7',
     'current_lang' => 'eng',
-    'set_lang' => 'arm',
+    'set_lang' => 'hy',
     'login' => 'Log In',
     'registration' => 'Registration',
     'basket' => 'Basket',
