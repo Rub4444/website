@@ -64,7 +64,7 @@
 
         @if($products->hasPages())
         <div class="card-footer bg-white d-flex justify-content-center">
-            {{ $products->links('vendor.pagination.bootstrap-5') }}
+            {{ $products->links('pagination::bootstrap-4') }}
         </div>
         @endif
     </div>
