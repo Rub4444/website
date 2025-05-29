@@ -36,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdmin()
     {
-        return $this->is_admin === 1;
+        return $this->is_admin == 1;
     }
 
     public function orders()
