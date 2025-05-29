@@ -40,24 +40,6 @@ Route::get('/search', [SkuController::class, 'search'])->name('products.search')
 
 Route::middleware(['set_locale'])->group(function()
 {
-    Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
-
-    Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-
-    Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
-    Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
-
-    Route::get('/how-to-use', [MainController::class, 'howToUse'])->name('howToUse');
-    Route::get('/offer', [MainController::class, 'offer'])->name('offer');
-    Route::get('/delivery', [MainController::class, 'delivery'])->name('delivery');
-    // Route::get('/privacy', [MainController::class, 'privacy'])->name('privacy');
-
-    Route::get('/', [MainController::class, 'index'])->name('index');
-    Route::get('/categories', [MainController::class, 'categories'])->name('categories');
-    Route::post('/subscription/{sku}', [MainController::class, 'subscribe'])->name('subscription');
-    Route::get('/{category}', [MainController::class, 'category'])->name('category');
-    Route::get('/{category}/{product?}/{skus}', [MainController::class, 'sku'])->name('sku');
-
     Route::middleware(['auth'])->group(function ()
     {
          Route::prefix('admin')->middleware('is_admin')->group(function ()
@@ -88,6 +70,8 @@ Route::middleware(['set_locale'])->group(function()
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/profile/view', [ProfileController::class, 'index'])->name('profile.index');
+
+
     });
 
     Route::post('/email/verification-notification', function (Request $request)
@@ -110,6 +94,24 @@ Route::middleware(['set_locale'])->group(function()
         Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
         Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
     });
+
+    Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
+
+    Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
+    Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
+    Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
+
+    Route::get('/how-to-use', [MainController::class, 'howToUse'])->name('howToUse');
+    Route::get('/offer', [MainController::class, 'offer'])->name('offer');
+    Route::get('/delivery', [MainController::class, 'delivery'])->name('delivery');
+    // Route::get('/privacy', [MainController::class, 'privacy'])->name('privacy');
+
+    Route::get('/', [MainController::class, 'index'])->name('index');
+    Route::get('/categories', [MainController::class, 'categories'])->name('categories');
+    Route::post('/subscription/{sku}', [MainController::class, 'subscribe'])->name('subscription');
+    Route::get('/{category}', [MainController::class, 'category'])->name('category');
+    Route::get('/{category}/{product?}/{skus}', [MainController::class, 'sku'])->name('sku');
 });
 
 Route::prefix('api')->group(function () {
