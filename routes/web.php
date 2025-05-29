@@ -42,24 +42,25 @@ Route::middleware(['set_locale'])->group(function()
 {
     Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
+    Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
+    Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
+    Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
+
+    Route::get('/how-to-use', [MainController::class, 'howToUse'])->name('howToUse');
+    Route::get('/offer', [MainController::class, 'offer'])->name('offer');
+    Route::get('/delivery', [MainController::class, 'delivery'])->name('delivery');
+    // Route::get('/privacy', [MainController::class, 'privacy'])->name('privacy');
+
+    Route::get('/', [MainController::class, 'index'])->name('index');
+    Route::get('/categories', [MainController::class, 'categories'])->name('categories');
+    Route::post('/subscription/{sku}', [MainController::class, 'subscribe'])->name('subscription');
+    Route::get('/{category}', [MainController::class, 'category'])->name('category');
+    Route::get('/{category}/{product?}/{skus}', [MainController::class, 'sku'])->name('sku');
+
     Route::middleware(['auth'])->group(function ()
     {
-        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
-        Route::post('/wishlist/toggle/{sku}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-
-        Route::prefix('person')->as('person.')->group(function ()
-        {
-            Route::get('/orders', [\App\Http\Controllers\Person\OrderController::class, 'index'])->name('orders.index');
-            Route::get('/orders/{order}', [\App\Http\Controllers\Person\OrderController::class, 'show'])->name('orders.show');
-        });
-
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::get('/profile/view', [ProfileController::class, 'index'])->name('profile.index');
-
-        Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-
-        Route::prefix('admin')->middleware('is_admin')->group(function ()
+         Route::prefix('admin')->middleware('is_admin')->group(function ()
         {
             Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('home');
             Route::get('/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
@@ -74,9 +75,21 @@ Route::middleware(['set_locale'])->group(function()
             Route::resource('coupons', CouponController::class);
             Route::resource('properties/{property}/property-options', PropertyOptionController::class);
         });
+
+        Route::prefix('person')->as('person.')->group(function ()
+        {
+            Route::get('/orders', [\App\Http\Controllers\Person\OrderController::class, 'index'])->name('orders.index');
+            Route::get('/orders/{order}', [\App\Http\Controllers\Person\OrderController::class, 'show'])->name('orders.show');
+        });
+
+        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+        Route::post('/wishlist/toggle/{sku}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/view', [ProfileController::class, 'index'])->name('profile.index');
     });
 
-    // Повторная отправка письма подтверждения
     Route::post('/email/verification-notification', function (Request $request)
     {
         if ($request->user()->hasVerifiedEmail())
@@ -89,9 +102,6 @@ Route::middleware(['set_locale'])->group(function()
         return back()->with('message', 'Ссылка подтверждения отправлена на ваш email.');
     })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-    Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
-    Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
-
     Route::group([
         'middleware' => ['auth', 'verified', 'basket_not_empty']
     ], function () {
@@ -100,19 +110,7 @@ Route::middleware(['set_locale'])->group(function()
         Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
         Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
     });
-
-    Route::get('/how-to-use', [MainController::class, 'howToUse'])->name('howToUse');
-    Route::get('/offer', [MainController::class, 'offer'])->name('offer');
-    Route::get('/delivery', [MainController::class, 'delivery'])->name('delivery');
-    // Route::get('/privacy', [MainController::class, 'privacy'])->name('privacy');
-
-    Route::get('/', [MainController::class, 'index'])->name('index');
-    Route::get('/categories', [MainController::class, 'categories'])->name('categories');
-    Route::post('/subscription/{sku}', [MainController::class, 'subscribe'])->name('subscription');
-    Route::get('/{category}', [MainController::class, 'category'])->name('category');
-    Route::get('/{category}/{product?}/{skus}', [MainController::class, 'sku'])->name('sku');
 });
-
 
 Route::prefix('api')->group(function () {
     require base_path('routes/api.php');
