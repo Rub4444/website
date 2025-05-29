@@ -30,8 +30,10 @@ class CategoryRequest extends FormRequest
         ];
 
         // If the route is not store (it's edit), we remove the unique rule for code
-        if ($this->route()->named('categories.update')) {
-            $rules['code'] = 'required|min:3|max:255|unique:categories,code,' . $this->route('category');
+        if ($this->route()->named('categories.update'))
+        {
+            $category = $this->route('category');
+            $rules['code'] = 'required|min:3|max:255|unique:categories,code,' . ($category instanceof \App\Models\Category ? $category->id : $category);
         }
 
         return $rules;

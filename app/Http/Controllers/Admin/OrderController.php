@@ -22,7 +22,8 @@ class OrderController extends Controller
 
     public function confirm(Order $order)
     {
-        if ($order->status != 1) {
+        if ($order->status != 1)
+        {
             return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
         }
 
