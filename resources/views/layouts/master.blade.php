@@ -191,8 +191,11 @@
                                 </a>
                             </div>
                             <div class="account__currency">
-                                <a class="account__currency--link text-white" href="{{route('locale', __('main.set_lang') )}}">
+                                {{-- <a class="account__currency--link text-white" href="{{route('locale', __('main.set_lang') )}}">
                                     <span>@lang('main.set_lang')</span>
+                                </a> --}}
+                                <a class="account__currency--link text-white" href="{{ route('locale', app()->getLocale() === 'en' ? 'hy' : 'en') }}">
+                                    <span>{{ app()->getLocale() === 'en' ? 'Հայերեն' : 'English' }}</span>
                                 </a>
                             </div>
                             {{-- <div class="account__currency">

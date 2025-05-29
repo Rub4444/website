@@ -30,7 +30,14 @@ Route::get('/email/verify', function ()
     return view('auth.verify');
 })->name('verification.notice');
 
-Route::get('/locale/{locale}', [MainController::class, 'changeLocale'])->name('locale');
+// Route::get('/locale/{locale}', [MainController::class, 'changeLocale'])->name('locale');
+// routes/web.php
+Route::get('/locale/{lang}', function ($lang) {
+    if (in_array($lang, ['en', 'hy'])) {
+        session(['locale' => $lang]);
+    }
+    return redirect()->back();
+})->name('locale');
 
 Route::get('/currency/{currencyCode}', [MainController::class, 'changeCurrency'])->name('currency');
 

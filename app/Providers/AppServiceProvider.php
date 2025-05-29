@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+         $locale = session('locale', config('app.locale'));
+        \App::setLocale($locale);
 
         Blade::directive('routeactive', function($route)
         {
