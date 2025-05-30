@@ -382,11 +382,19 @@
     <!-- End header area -->
 
     @if(session()->has('success'))
-        <p class="alert alert-success">{{session()->get('success')}}</p>
+        <div class="col-12">
+            <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
+                {{session()->get('success')}}
+            </div>
+        </div>
     @endif
 
     @if(session()->has('warning'))
-        <p class="alert alert-warning">{{session()->get('warning')}}</p>
+        <div class="col-12">
+            <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
+                {{session()->get('warning')}}
+            </div>
+        </div>
     @endif
 
     @yield('content')

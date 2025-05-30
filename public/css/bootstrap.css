@@ -4702,12 +4702,12 @@ textarea.form-control-lg {
 }
 
 .alert-info {
-  color: #055160;
-  background-color: #cff4fc;
-  border-color: #b6effb;
+  color: #35A212;
+  background-color: #35A212;
+  border-color: #35A212;
 }
 .alert-info .alert-link {
-  color: #04414d;
+  color: #35A212;
 }
 
 .alert-warning {

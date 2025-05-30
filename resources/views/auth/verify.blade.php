@@ -34,7 +34,7 @@
         const btn = document.getElementById('verifyBtn');
         btn.addEventListener('click', () => {
             btn.disabled = true;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Ուղարկվում է...`;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> @lang('main.sending')...`;
         });
     </script>
 @endsection

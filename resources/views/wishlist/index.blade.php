@@ -74,6 +74,9 @@
                                     </td>
                                 </tr>
                             @empty
+                                <div class="col-12">
+                                    <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">@lang('main.there_are_no_suitable_products')</div>
+                                </div>
                             @endforelse
                         </tbody>
                     </table>
