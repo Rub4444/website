@@ -279,13 +279,17 @@
                         </a>
 
                         <!-- Смена языка -->
-                        <a href="{{ route('locale', __('main.set_lang')) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
+                        <a class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm" href="{{ route('locale', app()->getLocale() === 'en' ? 'hy' : 'en') }}">
+                            <i class="bi bi-translate fs-5"></i>
+                            <span class="fw-semibold">{{ app()->getLocale() === 'en' ? 'Հայերեն' : 'English' }}</span>
+                        </a>
+                        {{-- <a href="{{ route('locale', __('main.set_lang')) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
                             <div class="d-flex align-items-center gap-2">
                                 <i class="bi bi-translate fs-5"></i>
                                 <span class="fw-semibold">@lang('main.language')</span>
                             </div>
                             <span class="badge bg-primary-subtle m fw-bold">@lang('main.set_lang')</span>
-                        </a>
+                        </a> --}}
 
                          <!-- Contact -->
                         <a href="tel:+374 44 464 412" class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
