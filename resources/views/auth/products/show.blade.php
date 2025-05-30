@@ -81,13 +81,13 @@
     <!-- Ապրանքի գործողություններ -->
     <div class="d-flex justify-content-end">
         <a href="{{ route('products.edit', $product) }}" class="btn btn-warning me-2">
-            <i class="fas fa-edit"></i> Փոփոխել
+            <i class="fas fa-edit text-white"></i> Փոփոխել
         </a>
         <form action="{{ route('products.destroy', $product) }}" method="POST" onsubmit="return confirm('Արժանավոր եք, որ ցանկանում եք ջնջել այս ապրանքը?');">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger">
-                <i class="fas fa-trash-alt"></i> Ջնջել
+                <i class="fas fa-trash-alt text-white"></i> Ջնջել
             </button>
         </form>
     </div>

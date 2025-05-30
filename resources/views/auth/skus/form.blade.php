@@ -64,25 +64,24 @@
                 </div>
             </div>
             @endforeach --}}
-            @foreach ($product->properties as $property)
-
-                    <div class="input-group row">
-                        <label for="property_id[{{ $property->id }}]" class="col-sm-2 col-form-label">{{ $property->name }}: </label>
-                        <div class="col-sm-6">
-                            <select name="property_id[{{ $property->id }}]" class="form-control">
-                                @foreach($property->propertyOptions as $propertyOption)
-                                    <option value="{{ $propertyOption->id }}"
-                                        @isset($skus)
-                                        @if($skus->propertyOptions->contains($propertyOption->id))
-                                            selected
-                                        @endif
-                                        @endisset
-                                    >{{ $propertyOption->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                @endforeach
+        @foreach ($product->properties as $property)
+            <div class="input-group row">
+                <label for="property_id[{{ $property->id }}]" class="col-sm-2 col-form-label">{{ $property->name }}: </label>
+                <div class="col-sm-6">
+                    <select name="property_id[{{ $property->id }}]" class="form-control">
+                        @foreach($property->propertyOptions as $propertyOption)
+                            <option value="{{ $propertyOption->id }}"
+                                @isset($skus)
+                                @if($skus->propertyOptions->contains($propertyOption->id))
+                                    selected
+                                @endif
+                                @endisset
+                            >{{ $propertyOption->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        @endforeach
 
 
 

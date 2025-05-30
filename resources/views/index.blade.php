@@ -5,14 +5,14 @@
     @if (auth()->check() && !auth()->user()->hasVerifiedEmail())
         <div class="alert alert-warning d-flex justify-content-between align-items-center shadow-sm px-4 py-3 mb-4 rounded-3">
             <div class="col-6">
-                <strong>⚠️ Ուշադրություն:</strong>
-                <span>Ձեր Էլ-հասցեն հաստատված չէ:</span>
+                <strong>⚠️ @lang('main.warning')</strong>
+                <span>@lang('main.your_email_address_has_not')</span>
             </div>
             <div class="col-6">
                 <form method="POST" action="{{ route('verification.send') }}">
                     @csrf
                     <button id="resendBtn" type="submit" class="btn btn-sm btn-outline-dark ms-3">
-                        <i class="bi bi-send"></i> Կրկին ուղարկել
+                        <i class="bi bi-send"></i> @lang('main.send_again')
                     </button>
                 </form>
             </div>
@@ -106,7 +106,7 @@
             }
         </style>
 
-        <h2 class="text-center mb-4">@lang('main.all_categories')</h2>
+        {{-- <h2 class="text-center mb-4">@lang('main.all_categories')</h2> --}}
 
         <div class="container">
             <div class="row" id="category-list">
@@ -134,7 +134,7 @@
         </div>
 
         <!-- Products Listing -->
-        <h2 class="text-center my-4">@lang('main.order_now')</h2>
+        {{-- <h2 class="text-center my-4">@lang('main.order_now')</h2> --}}
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
             @foreach($skus as $sku)
                 <div class="col-6 col-xss-6 col-sm-4 col-lg-3 col-xxl-2 my-2 p-1 p-lg-2">
@@ -149,7 +149,7 @@
         </nav>
 
         <!-- Best Sellers -->
-        <h2 class="text-center mb-4">@lang('main.best_sales')</h2>
+        {{-- <h2 class="text-center mb-4">@lang('main.best_sales')</h2> --}}
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
             @foreach($bestSkus as $bestSku)
                 <div class="col-6 col-xss-6 col-sm-4 col-lg-3 col-xxl-2 my-2 p-1 p-lg-2">

@@ -4,7 +4,7 @@
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="card shadow-lg border-0 p-4" style="max-width: 500px; width: 100%;">
             <div class="card-body text-center">
-                <h4 class="card-title mb-3">✅ Հաստատում էլ․ հասցեն</h4>
+                <h4 class="card-title mb-3">✅ @lang('main.confirmed_email')</h4>
 
                 @if (session('message'))
                     <div class="alert alert-success">
@@ -12,19 +12,19 @@
                     </div>
                 @else
                     <div class="alert alert-warning">
-                        Շարունակելու համար խնդրում ենք հաստատել Ձեր էլ. հասցեն։
+                        @lang('main.for_continue_please')
                     </div>
                 @endif
 
                 <form method="POST" action="{{ route('verification.send') }}">
                     @csrf
                     <button id="verifyBtn" type="submit" class="btn btn-primary w-100">
-                        Կրկին ուղարկել
+                        @lang('main.send_again')
                     </button>
                 </form>
 
                 <p class="mt-3 text-muted small">
-                    Եթե չեք ստացել նամակը, ստուգեք սպամի թղթապանակը։
+                    @lang('main.email_in_spam')
                 </p>
             </div>
         </div>

@@ -43,7 +43,7 @@
                         </div>
                     @empty
                         <div class="col-12">
-                            <div class="alert alert-info text-center">Չկան համապատասխան ապրանքներ։</div>
+                            <div class="alert alert-info text-center">@lang('main.there_are_no_suitable_products')</div>
                         </div>
                     @endforelse
                 </div>
