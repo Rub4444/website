@@ -2,15 +2,7 @@
 @section('title', 'Իջևան Մարկետ')
 
 @section('content')
-    @if($order)
-        <section class="py-5 bg-light rounded-top">
-            <div class="container">
-                <div id="basket-items">
-                    @include('partials.basket_items', ['order' => $order, 'currencySymbol' => $currencySymbol])
-                </div>
-            </div>
-        </section>
-    @endif
+    @include('partials.basket_items', ['order' => $order, 'currencySymbol' => $currencySymbol])
 @endsection
 
 @push('scripts')
@@ -60,6 +52,7 @@
                 }
             });
         });
+
     </script>
 @endpush
 

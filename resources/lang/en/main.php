@@ -82,4 +82,5 @@ return [
     'for_continue_please' => 'Please confirm your email address to continue',
     'email_in_spam' => 'If you havent received the email, check the spam folder',
     'sending' => 'Sending',
+    'there_is_no_such_coupon' => 'There is no such coupon',
 ];

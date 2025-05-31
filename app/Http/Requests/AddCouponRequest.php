@@ -29,7 +29,7 @@ class AddCouponRequest extends FormRequest
     public function messages()
     {
         return [
-            'coupon.*' => 'Такого купона не существует',
+            'coupon.*' => __('main.there_is_no_such_coupon'),
         ];
     }
 }

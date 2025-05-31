@@ -9,6 +9,8 @@
 
     <title>@lang('main.online_shop')</title>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
@@ -407,7 +409,6 @@
         </svg>
     </button>
 
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.toggle-wishlist').forEach(button => {
