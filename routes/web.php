@@ -96,6 +96,11 @@ Route::middleware(['set_locale'])->group(function()
     Route::group([
         'middleware' => ['auth', 'verified', 'basket_not_empty']
     ], function () {
+
+        Route::post('/basket/ajax/add/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxAdd'])->name('basket.ajax.add');
+        Route::post('/basket/ajax/remove/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxRemove'])->name('basket.ajax.remove');
+
+
         Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
         Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
         Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
