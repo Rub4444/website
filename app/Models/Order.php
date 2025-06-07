@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum', 'coupon_id', 'delivery_type', 'address', 'latitude', 'longitude', 'cancellation_comment', 'delivery_price',];
+    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum', 'coupon_id'];
 
     public function skus()
     {
@@ -43,40 +43,30 @@ class Order extends Model
     public function getFullSum($withCoupon = true)
     {
         $sum = 0;
-
-        foreach ($this->skus as $sku)
+        foreach($this->skus as $sku)
         {
             $sum += $sku->price * $sku->countInOrder;
         }
 
-        if ($withCoupon && $this->hasCoupon())
+        if($withCoupon && $this->hasCoupon())
         {
             $sum = $this->coupon->applyCost($sum, $this->currency);
-            // dd(4);
-
         }
-        // dd(3);
-
         return $sum;
     }
 
 
-    public function saveOrder($name, $phone, $deliveryType = null, $address = null, $latitude = null, $longitude = null)
+    public function saveOrder($name, $phone)
     {
         $this->name = $name;
         $this->phone = $phone;
         $this->status = 1;
         $this->sum = $this->getFullSum();
-        $this->delivery_type = $deliveryType;
-        $this->address = $address;
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
 
         $skus = $this->skus;
         $this->save();
 
-        foreach ($skus as $skuInOrder)
-        {
+        foreach ($skus as $skuInOrder) {
             $this->skus()->attach($skuInOrder, [
                 'count' => $skuInOrder->countInOrder,
                 'price' => $skuInOrder->price,
@@ -87,13 +77,9 @@ class Order extends Model
         return true;
     }
 
-    // public function hasCoupon()
-    // {
-    //     return $this->coupon;
-    // }
     public function hasCoupon()
     {
-        return $this->coupon instanceof \App\Models\Coupon;
+        return $this->coupon;
     }
 
 }

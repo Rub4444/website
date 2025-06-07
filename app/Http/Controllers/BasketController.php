@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Classes\Basket;
 use App\Models\Category;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OrderCreated;
-use Illuminate\Http\JsonResponse;
+
 
 class BasketController extends Controller
 {
@@ -27,52 +25,25 @@ class BasketController extends Controller
 
     public function basketConfirm(Request $request)
     {
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:50',
-            'email' => 'required|email',
-            'delivery_type' => 'required|in:pickup,courier',
-            'address' => 'required_if:delivery_type,courier|max:255',
-            'latitude' => 'required_if:delivery_type,courier|numeric',
-            'longitude' => 'required_if:delivery_type,courier|numeric',
-        ]);
-
         $basket = new Basket();
 
-        if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse()) {
+        if($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
+        {
             $basket->clearCoupon();
             session()->flash('warning', 'Купон не доступен!');
             return redirect()->route('basket');
         }
 
         $email = Auth::check() ? Auth::user()->email : $request->email;
-        $deliveryType = $request->delivery_type;
-        $address = $deliveryType === 'courier' ? $request->address : null;
-        $latitude = $request->latitude;
-        $longitude = $request->longitude;
-
-        if ($basket->saveOrder(
-            $request->name,
-            $request->phone,
-            $email,
-            $deliveryType,
-            $address,
-            $latitude,
-            $longitude ))
+        if ($basket->saveOrder($request->name, $request->phone, $email))
         {
-            $order = $basket->getOrder();
-            // Mail::to($email)->send(new OrderCreated($request->name, $order));
             session()->flash('success', __('basket.your_order_confirmed'));
-        }
-        else
-        {
-            session()->flash('warning', __('basket.cant_find_product'));
+        } else {
+            session()->flash('warning', 'Товар не доступен!');
         }
 
         return redirect()->route('index');
     }
-
 
     public function basketPlace()
     {
@@ -80,56 +51,34 @@ class BasketController extends Controller
         $order = $basket->getOrder();
         if(!$basket->countAvailable())
         {
-            session()->flash('warning', __('basket.cant_find_product'));
+            session()->flash('warning', 'Товар не доступен!');
             return redirect()->route('basket');
         }
         $categories = Category::all();
         return view('order', compact('order', 'categories'));
     }
 
-    public function basketAdd(Request $request, Sku $skus)
+    public function basketAdd(Sku $skus)
     {
-        $quantity = (int) $request->input('quantity', 1);
-        if ($quantity < 1) {
-            $quantity = 1;
-        }
-
-        $result = (new Basket(true))->addSku($skus, $quantity);
-
+        $result = (new Basket(true))->addSku($skus);
         if($result)
         {
-            session()->flash('success', __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_add'));
+            session()->flash('success', 'Товар "' . $skus->product->__('name') . '" добавлен в корзину');
         }
         else
         {
-            session()->flash('warning',  __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_not_add'));
+            session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" не добавлен в корзину');
         }
         return redirect()->route('basket');
     }
-
-    // public function basketAdd(Sku $skus)
-    // {
-    //     $result = (new Basket(true))->addSku($skus);
-    //     if($result)
-    //     {
-    //         session()->flash('success', __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_add'));
-    //     }
-    //     else
-    //     {
-    //         session()->flash('warning',  __('basket.basket_product') . ' ' . $skus->product->name . ' ' . __('basket.basket_not_add'));
-    //     }
-    //     return redirect()->route('basket');
-    // }
 
     public function basketRemove(Sku $skus)
     {
         (new Basket())->removeSku($skus);
 
-        session()->flash('warning', __('basket.removed') . ' ' . $skus->product->name);
-
+        session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" удалён из корзины');
         return redirect()->route('basket');
     }
-
 
     public function setCoupon(AddCouponRequest $request)
     {
@@ -137,39 +86,12 @@ class BasketController extends Controller
         if($coupon->availableForUse())
         {
             (new Basket())->setCoupon($coupon);
-            session()->flash('success', __('basket.coupon_added'));
+            session()->flash('success', 'Купон был добавлен к заказу');
         }
         else
         {
-             session()->flash('warning', __('basket.coupon_not_added'));
+             session()->flash('warning', 'Купон не может быть использован');
         }
-
         return redirect()->route('basket');
-    }
-
-    public function ajaxAdd(Request $request, Sku $sku)
-    {
-        $basket = new Basket(true);
-        $basket->addSku($sku, (int) $request->input('quantity', 1));
-
-        return response()->json([
-            'html' => view('partials.basket_items', [
-                'order' => $basket->getOrder(),
-                'currencySymbol' => session('currency', '֏')
-            ])->render()
-        ]);
-    }
-
-    public function ajaxRemove(Sku $sku)
-    {
-        $basket = new Basket(true);
-        $basket->removeSku($sku);
-
-        return response()->json([
-            'html' => view('partials.basket_items', [
-                'order' => $basket->getOrder(),
-                'currencySymbol' => session('currency', '֏')
-            ])->render()
-        ]);
     }
 }

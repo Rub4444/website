@@ -19,11 +19,9 @@ class Basket
     {
         $order = session('order');
 
-        if (is_null($order) && $createOrder)
-        {
+        if (is_null($order) && $createOrder) {
             $data = [];
-            if (Auth::check())
-            {
+            if (Auth::check()) {
                 $data['user_id'] = Auth::id();
             }
             $data['currency_id'] = 1;
@@ -66,95 +64,59 @@ class Basket
         return true;
     }
 
-    public function saveOrder($name, $phone, $email, $deliveryType = null, $address = null, $latitude = null, $longitude = null)
-{
-    if (!$this->countAvailable(true)) {
-        return false;
-    }
-
-    $this->order->saveOrder($name, $phone, $deliveryType, $address, $latitude, $longitude);
-
-    Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
-
-    return true;
-}
-
-
-
-
-    public function removeSku(Sku $sku)
+    public function saveOrder($name, $phone, $email)
     {
-        $skus = $this->order->skus;
-
-        foreach ($skus as $key => $item) {
-            if ($item->id == $sku->id) {
-                if ($item->countInOrder > 1) {
-                    $item->countInOrder--;
-                } else {
-                    $skus->forget($key); // удаляем из коллекции
-                }
-                break;
-            }
+        if (!$this->countAvailable(true))
+        {
+            return false;
         }
-
-        // Обязательно пересохраняем!
-        $this->order->skus = $skus->values(); // сбрасываем ключи
-        session(['order' => $this->order]);
-
+        $this->order->saveOrder($name, $phone);
+        Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
         return true;
     }
 
-
-
-    public function addSku(Sku $sku, int $quantity = 1)
-{
-    if ($this->order->skus->contains($sku)) {
-        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-
-        $newCount = $pivotRow->countInOrder + $quantity;
-        if ($newCount > $sku->count) {
-            return false; // превышение доступного количества
+    public function removeSku(Sku $sku)
+    {
+        if ($this->order->skus->contains($sku))
+        {
+            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+            if ($pivotRow->countInOrder < 2)
+            {
+                $this->order->skus->pop($sku->id);;
+            }
+            else
+            {
+                $pivotRow->countInOrder--;
+            }
         }
-        $pivotRow->countInOrder = $newCount;
-    } else {
-        if ($sku->count == 0 || $quantity > $sku->count) {
-            return false;
-        }
-        $sku->countInOrder = $quantity;
-        $this->order->skus->push($sku);
     }
 
-    return true;
-}
+    public function addSku(Sku $sku)
+    {
+        if ($this->order->skus->contains($sku)) {
+            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+            if ($pivotRow->countInOrder >= $sku->count) {
+                return false;
+            }
+            $pivotRow->countInOrder++;
+        } else {
+            if ($sku->count == 0) {
+                return false;
+            }
+            $sku->countInOrder = 1;
+            $this->order->skus->push($sku);
+        }
 
-    // public function addSku(Sku $sku)
-    // {
-    //     if ($this->order->skus->contains($sku)) {
-    //         $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-    //         if ($pivotRow->countInOrder >= $sku->count) {
-    //             return false;
-    //         }
-    //         $pivotRow->countInOrder++;
-    //     } else {
-    //         if ($sku->count == 0) {
-    //             return false;
-    //         }
-    //         $sku->countInOrder = 1;
-    //         $this->order->skus->push($sku);
-    //     }
-
-    //     return true;
-    // }
+        return true;
+    }
 
     public function setCoupon(Coupon $coupon)
     {
         $this->order->coupon()->associate($coupon);
     }
 
-
     public function clearCoupon()
     {
         $this->order->coupon()->dissociate();
     }
-
 }
