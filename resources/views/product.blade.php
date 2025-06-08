@@ -6,7 +6,7 @@
         <div class="row">
             <!-- Left: Product Image Gallery -->
             <div class="col-lg-6">
-                <div class="product__media--preview position-relative bg-white rounded shadow-sm p-3" style="min-height: 300px; display: flex; align-items: center; justify-content: center;">
+                <div class="product__media--preview position-relative bg-white rounded shadow-sm p-3" style=" display: flex; align-items: center; justify-content: center;">
                     <a class="glightbox" data-gallery="product-gallery" href="{{ Storage::url($skus->product->image) }}">
                         <img class="img-fluid" src="{{ Storage::url($skus->product->image) }}"
                             alt="{{ $skus->product->__('name') }}"

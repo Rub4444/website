@@ -1,6 +1,6 @@
 <?php
 return [
-    'online_shop' => 'Ijevan Market',
+    'online_shop' => 'Ijevan Market - Online store in Ijevan',
     'all_categories' => 'All Categories',
     'ijevan_market_address' => 'c. Ijevan, st. Metaxagorcneri 6/7',
     'current_lang' => 'eng',

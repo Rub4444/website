@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum', 'coupon_id'];
+    protected $fillable = ['user_id', 'name', 'phone', 'status', 'currency_id', 'sum', 'coupon_id', 'delivery_type', 'delivery_city',
+    'delivery_street',
+    'delivery_home',];
 
     public function skus()
     {
@@ -56,12 +58,22 @@ class Order extends Model
     }
 
 
-    public function saveOrder($name, $phone)
+    public function saveOrder($name, $phone, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
         $this->name = $name;
         $this->phone = $phone;
+        $this->delivery_type = $deliveryType;
+        $this->delivery_city = $delivery_city;
+        $this->delivery_street = $delivery_street;
+        $this->delivery_home = $delivery_home;
         $this->status = 1;
+
         $this->sum = $this->getFullSum();
+
+        if ($this->delivery_type === 'delivery')
+        {
+            $this->sum += 500; // Добавляем стоимость доставки
+        }
 
         $skus = $this->skus;
         $this->save();

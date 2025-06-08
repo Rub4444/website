@@ -1,6 +1,6 @@
 <?php
 return [
-    'online_shop' => 'Իջևան Մարկետ',
+    'online_shop' => 'Իջևան Մարկետ - Առցանց խանութ Իջևանում',
     'ijevan_market_address' => 'ք․ Իջևան,փ.Մետաղագործների 6/7',
     'all_categories' => 'Կատեգորիաներ',
     'current_lang' => 'hy',

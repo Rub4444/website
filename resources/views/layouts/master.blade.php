@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Գտեք լավագույն ապրանքները առցանց մեր օնլայն խանութում։ Արագ առաքում, մատչելի գներ և որակյալ սպասարկում։">
-    <meta name="keywords" content="առաքում, իջևան, պատվեր, խանութ, օնլայն խանութ, առցանց գնումներ, մթերքներ, հագուստ, կենցաղային ապրանքներ, առաքում, հայկական խանութ">
+    <meta name="keywords" content="Ijevan Market, Իջևան Մարկետ, խանութ Իջևանում, առաքում Իջևանում, իջևան, պատվեր, խանութ, օնլայն խանութ, առցանց գնումներ, մթերքներ, հագուստ, կենցաղային ապրանքներ, հայկական խանութ">
 
     <title>@lang('main.online_shop')</title>
 
@@ -33,6 +33,14 @@
         .main__logo:hover {
             transform: scale(1.1);
         }
+
+        html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto; /* или: overflow-y: overlay (если поддерживается) */
+        }
+
     </style>
 </head>
 <body  style="background-color: white;">
@@ -383,31 +391,31 @@
     </header>
     <!-- End header area -->
 
-    @if(session()->has('success'))
-        <div class="col-12">
-            <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
-                {{session()->get('success')}}
+        @if(session()->has('success'))
+            <div class="col-12">
+                <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
+                    {{session()->get('success')}}
+                </div>
             </div>
-        </div>
-    @endif
+        @endif
 
-    @if(session()->has('warning'))
-        <div class="col-12">
-            <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
-                {{session()->get('warning')}}
+        @if(session()->has('warning'))
+            <div class="col-12">
+                <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
+                    {{session()->get('warning')}}
+                </div>
             </div>
-        </div>
-    @endif
+        @endif
 
-    @yield('content')
-    @stack('scripts')
+        @yield('content')
+        @stack('scripts')
 
-    <!-- Scroll top button -->
-    <button id="scroll__top" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: #2E8B57; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center;">
-        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512" width="20" height="20">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/>
-        </svg>
-    </button>
+        <!-- Scroll top button -->
+        <button id="scroll__top" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: #2E8B57; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512" width="20" height="20">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/>
+            </svg>
+        </button>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

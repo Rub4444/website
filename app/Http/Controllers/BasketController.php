@@ -35,7 +35,14 @@ class BasketController extends Controller
         }
 
         $email = Auth::check() ? Auth::user()->email : $request->email;
-        if ($basket->saveOrder($request->name, $request->phone, $email))
+        if ($basket->saveOrder($request->name,
+        $request->phone,
+        $email,
+        $request->delivery_type,
+        $request->delivery_city,
+        $request->delivery_street,
+        $request->delivery_home,
+        ))
         {
             session()->flash('success', __('basket.your_order_confirmed'));
         } else {

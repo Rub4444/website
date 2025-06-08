@@ -64,18 +64,18 @@ class Basket
         return true;
     }
 
-    public function saveOrder($name, $phone, $email)
+    public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
         if (!$this->countAvailable(true))
         {
             return false;
         }
-        $this->order->saveOrder($name, $phone);
+        $this->order->saveOrder($name, $phone, $deliveryType, $delivery_city, $delivery_street, $delivery_home);
         Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
         return true;
     }
 
-    public function removeSku(Sku $sku)
+  public function removeSku(Sku $sku)
     {
         if ($this->order->skus->contains($sku))
         {
