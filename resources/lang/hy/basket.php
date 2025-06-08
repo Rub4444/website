@@ -36,4 +36,7 @@ return [
     'edit_my_profile' => 'Հաշվի խմբագրում',
     'your_coupon' => 'Ձեր կուպոնը',
     'removed' => 'Հեռացվել է',
+    'choose_delivery_type' => 'Ընտրեք առաքման եղանակը',
+    'pickup' => 'Խանութից վերցնել',
+    'delivery' => 'Առաքում հասցեով',
 ];

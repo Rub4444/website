@@ -24,20 +24,21 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
-            'delivery_address' => 'required|string|max:255', // Адрес должен быть строкой
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+            'delivery_city' => 'nullable|string|max:255',
+            'delivery_street' => 'nullable|string|max:255',
+            'delivery_home' => 'nullable|string|max:255',
         ]);
 
         // Обновление данных пользователя
         $user = auth()->user();
+
         $user->update([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'phone' => $validatedData['phone'],
-            'delivery_address' => $validatedData['delivery_address'],
-            'latitude' => $validatedData['latitude'],
-            'longitude' => $validatedData['longitude'],
+            'delivery_city' => $validatedData['delivery_city'],
+            'delivery_street' => $validatedData['delivery_street'],
+            'delivery_home' => $validatedData['delivery_home'],
         ]);
 
 

@@ -9,46 +9,45 @@
                     <form action="{{route('basket-confirm')}}" method="POST">
                         <div class="checkout__content--step section__shipping--address">
                             <div class="section__header mb-25">
-                                <h2 class="section__header--title h3">Հաստատել Պատվերը՝</h2>
-                                <h4 class="section__header--title h4">{{$order->getFullSum()}} {{$currencySymbol}}</h4>
+                                <h2 class="section__header--title h3">@lang('basket.confirm') - {{$order->getFullSum()}} {{$currencySymbol}}</h2>
                             </div>
                             <div class="section__shipping--address__content">
                                 <div class="row">
                                     <div class="col-lg-6 mb-12">
                                         <div class="checkout__input--list ">
                                             <label>
-                                                <input required placeholder="Name" type="text" name="name" id="name" class="checkout__input--field border-radius-5">
+                                                <input required value="{{ old('name', auth()->user()->name ?? '') }}" placeholder="Name" type="text" name="name" id="name" class="checkout__input--field border-radius-5">
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-12">
                                         <div class="checkout__input--list ">
-                                            <input required placeholder="Phone Number" type="text" name="phone" id="phone" class="checkout__input--field border-radius-5">
+                                            <input required value="{{ old('phone', auth()->user()->phone ?? '') }}" placeholder="Phone Number" type="text" name="phone" id="phone" class="checkout__input--field border-radius-5">
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 mb-12">
+                                    <div class="col-lg-6 mb-12">
                                         <div class="checkout__input--list">
-                                            <label for="delivery_type">Ընտրեք առաքման եղանակը</label>
+                                            <label for="delivery_type">@lang('basket.choose_delivery_type')</label>
                                             <select name="delivery_type" id="delivery_type" class="checkout__input--field border-radius-5">
-                                                <option value="pickup">Խանութից վերցնել</option>
-                                                <option value="delivery">Առաքում հասցեով</option>
+                                                <option value="pickup">@lang('basket.pickup')</option>
+                                                <option value="delivery">@lang('basket.delivery')</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div id="address_fields" style="display: none;">
                                         <div class="col-lg-6 mb-12">
                                             <div class="checkout__input--list ">
-                                                <input value="Իջևան" readonly  style="background-color: #e9ecef;"  placeholder="City" type="text" name="delivery_city" id="delivery_city" class="checkout__input--field border-radius-5">
+                                                <input value="Իջևան" readonly  style="background-color: #e9ecef;"  placeholder="@lang('main.delivery_city')" type="text" name="delivery_city" id="delivery_city" class="checkout__input--field border-radius-5">
                                             </div>
                                         </div>
                                         <div class="col-lg-6 mb-12">
                                             <div class="checkout__input--list ">
-                                                <input required placeholder="Street" type="text" name="delivery_street" id="delivery_street" class="checkout__input--field border-radius-5">
+                                                <input required value="{{ old('delivery_street', auth()->user()->delivery_street ?? '') }}"  placeholder="@lang('main.delivery_street')" type="text" name="delivery_street" id="delivery_street" class="checkout__input--field border-radius-5">
                                             </div>
                                         </div>
                                         <div class="col-lg-6 mb-12">
                                             <div class="checkout__input--list ">
-                                                <input required placeholder="Home" type="text" name="delivery_home" id="delivery_home" class="checkout__input--field border-radius-5">
+                                                <input required value="{{ old('delivery_home', auth()->user()->delivery_home ?? '') }}"  placeholder="@lang('main.delivery_home')" type="text" name="delivery_home" id="delivery_home" class="checkout__input--field border-radius-5">
                                             </div>
                                         </div>
                                     </div>

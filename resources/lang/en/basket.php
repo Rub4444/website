@@ -36,6 +36,8 @@ return [
     'edit_my_profile' => 'Account Editing',
     'your_coupon' => 'Your Coupon',
     'removed' => 'Removed',
-
+    'choose_delivery_type' => 'Choose a shipping method',
+    'pickup' => 'Pick up from the store',
+    'delivery' => 'Delivery to the address',
 ];
 

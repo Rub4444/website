@@ -84,5 +84,7 @@ return [
     'email_in_spam' => 'Եթե չեք ստացել նամակը, ստուգեք սպամի թղթապանակը',
     'sending' => 'Ուղարկվում է',
     'there_is_no_such_coupon' => 'Նման կուպոն գոյություն չունի',
-
+    'delivery_city' => 'Քաղաք',
+    'delivery_street' => 'Խողոց',
+    'delivery_home' => 'Տուն',
 ];

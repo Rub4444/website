@@ -83,4 +83,7 @@ return [
     'email_in_spam' => 'If you havent received the email, check the spam folder',
     'sending' => 'Sending',
     'there_is_no_such_coupon' => 'There is no such coupon',
+    'delivery_city' => 'City',
+    'delivery_street' => 'Street',
+    'delivery_home' => 'Home',
 ];
