@@ -100,6 +100,7 @@ Route::middleware(['set_locale'])->group(function()
         Route::post('/basket/ajax/add/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxAdd'])->name('basket.ajax.add');
         Route::post('/basket/ajax/remove/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxRemove'])->name('basket.ajax.remove');
 
+        Route::delete('/basket/clear', [BasketController::class, 'basketClear'])->name('basket.clear');
 
         Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
         Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');

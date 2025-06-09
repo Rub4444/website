@@ -67,25 +67,58 @@
                     </div>
                 @endif
 
-                <div class="d-flex justify-content-between mt-4">
-                    @if($order->hasCoupon())
-                        <h5>
-                            @lang('basket.cost'):
-                            <strike>{{ $order->getFullSum(false) }} {{ $currencySymbol }}</strike>
-                            <strong>{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
-                        </h5>
-                    @else
-                        <h5>
-                            @lang('basket.cost'):
-                            <strong>{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
-                        </h5>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 gap-3">
+                    {{-- Сумма заказа --}}
+                    <div class="text-center text-md-start w-100">
+                        <div class="cart__summary--footer">
+                            <p class="cart__summary--footer__desc">@lang('basket.shipping_cost_not_calculated')</p>
+                            @if($order->hasCoupon())
+                                <h5 class="mb-0">
+                                    @lang('basket.cost'):
+                                    <strike class="text-muted">{{ $order->getFullSum(false) }} {{ $currencySymbol }}</strike>
+                                    <strong class="text-danger ms-2">{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
+                                </h5>
+                            @else
+                                <h5 class="mb-0">
+                                    @lang('basket.cost'):
+                                    <strong>{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
+                                </h5>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Кнопка очистки корзины --}}
+                    @if($order && $order->skus->count())
+                        <form method="POST" action="{{ route('basket.clear') }}"
+                            onsubmit="return confirm('Ջնջե՞լ բոլոր ապրանքները զամբյուղից։');"
+                            class="w-100 text-center text-md-end">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-orange w-100 w-md-auto">
+                                @lang('basket.clear_cart')
+                            </button>
+                        </form>
                     @endif
 
-                    <div class="d-none d-lg-block">
-                        <a href="{{ route('index') }}" class="btn btn-outline-secondary">@lang('basket.continue_shopping')</a>
-                    </div>
-                    <div>
-                        <a href="{{ route('basket-place') }}" class="btn btn-primary">@lang('basket.confirm')</a>
+                    <style>
+                        .btn-orange {
+                            background-color: #F65005;
+                            color: white;
+                            border: none;
+                            transition: background-color 0.3s ease;
+                        }
+
+                        .btn-orange:hover {
+                            background-color: #E6AC00;
+                            color: white;
+                        }
+                    </style>
+
+                    {{-- Кнопка подтверждения заказа --}}
+                    <div class="w-100 text-center text-md-end">
+                        <a href="{{ route('basket-place') }}" class="btn btn-success w-100 w-md-auto">
+                            @lang('basket.confirm')
+                        </a>
                     </div>
                 </div>
             </div>

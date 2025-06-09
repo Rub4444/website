@@ -52,6 +52,17 @@ class BasketController extends Controller
         return redirect()->route('index');
     }
 
+    public function basketClear()
+    {
+        $basket = new Basket();
+        // Можно создать метод clear() в Basket, который сбросит session('order')
+        session()->forget('order');
+
+        session()->flash('success', 'Корзина очищена');
+        return redirect()->route('basket');
+    }
+
+
     public function basketPlace()
     {
         $basket = new Basket();

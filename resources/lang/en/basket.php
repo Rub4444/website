@@ -39,5 +39,6 @@ return [
     'choose_delivery_type' => 'Choose a shipping method',
     'pickup' => 'Pick up from the store',
     'delivery' => 'Delivery to the address',
+    'clear_cart' => 'Clear the cart',
 ];
 
