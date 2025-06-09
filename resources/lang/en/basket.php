@@ -40,5 +40,6 @@ return [
     'pickup' => 'Pick up from the store',
     'delivery' => 'Delivery to the address',
     'clear_cart' => 'Clear the cart',
+    'clear_all_question' => 'Delete all items from the shopping cart',
 ];
 

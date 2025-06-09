@@ -36,4 +36,11 @@ class OrderCreated extends Mailable
             'order' => $this->order
         ]);
     }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Պատվերը հաստատված է',
+        );
+    }
 }

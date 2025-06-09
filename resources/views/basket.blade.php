@@ -90,7 +90,7 @@
                     {{-- Кнопка очистки корзины --}}
                     @if($order && $order->skus->count())
                         <form method="POST" action="{{ route('basket.clear') }}"
-                            onsubmit="return confirm('Ջնջե՞լ բոլոր ապրանքները զամբյուղից։');"
+                            onsubmit="return confirm('@lang('basket.clear_all_question')');"
                             class="w-100 text-center text-md-end">
                             @csrf
                             @method('DELETE')
