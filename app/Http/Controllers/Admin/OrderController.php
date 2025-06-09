@@ -9,8 +9,9 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::where('status', '!=', 0)->paginate(10);
-
+        $orders = Order::where('status', '!=', 0)
+                        ->orderBy('created_at', 'desc') // <-- добавлено
+                        ->paginate(10);
         return view('auth.orders.index', compact('orders'));
     }
 
