@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Order;
+use Illuminate\Mail\Mailables\Envelope;
 
 class OrderCreated extends Mailable
 {
