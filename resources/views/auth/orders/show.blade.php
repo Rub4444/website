@@ -85,14 +85,14 @@
                     <p><strong>Հաճախորդ՝</strong> {{ $order->name }}</p>
                     <p><strong>Հեռախոսահամար՝</strong> {{ $order->phone }}</p>
                     <!-- Карта -->
-                    <p><strong>Պատվերի տեսակը՝</strong> {{ $order->delivery_type === 'courier' ? 'Առաքում' : 'Վերցնել խանութից' }}</p>
+                    <p><strong>Պատվերի տեսակը՝</strong> {{ $order->delivery_type === 'delivery' ? 'Առաքում' : 'Վերցնել խանութից' }}</p>
                     <p><strong>Կարգավիճակ՝</strong>
                         @switch($order->status)
                             @case(1)
                                 <span class="text-warning">Ընթացքի մեջ</span>
                                 @break
                             @case(2)
-                                @if($order->delivery_type === 'courier')
+                                @if($order->delivery_type === 'delivery')
                                     <span class="text-primary">Հաստատված է, առաքիչը ճանապարհին է</span>
                                 @else
                                     <span class="text-primary">Հաստատված է, կարող եք մոտենալ</span>
