@@ -9,7 +9,7 @@ class SecureHeaders
 {
     public function handle(Request $request, Closure $next)
     {
-        \Log::info('SecureHeaders middleware triggered');
+        \Log::info('111111111111111111111111');
         $response = $next($request);
 
         $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
