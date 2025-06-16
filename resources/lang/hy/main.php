@@ -3,6 +3,8 @@ return [
     'online_shop' => 'Իջևան Մարկետ - Առցանց խանութ Իջևանում',
     'ijevan_market_address' => 'ք․ Իջևան,փ.Մետաղագործների 6/7',
     'all_categories' => 'Կատեգորիաներ',
+    'count' => 'Քանակ',
+    'category' => 'Կատեգորիա',
     'current_lang' => 'hy',
     'set_lang' => 'eng',
     'login' => 'Մուտք',

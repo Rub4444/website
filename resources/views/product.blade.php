@@ -53,14 +53,14 @@
                                 <input type="number" name="quantity" class="form-control w-auto" value="1" min="1" style="max-width: 80px;">
                                 <button class="btn btn-primary" type="submit">@lang('main.basket')</button>
                             </form>
-                            <p class="mt-3"><strong>Քանակ:</strong> {{ $skus->count }}</p>
+                            <p class="mt-3"><strong>@lang('main.count'):</strong> {{ $skus->count }}</p>
                         @else
                             <div class="alert alert-warning mt-3">
                                 <p class="mb-2">@lang('main.available')</p>
                                 <form method="POST" action="{{ route('subscription', $skus) }}" class="d-flex gap-2">
                                     @csrf
-                                    <input type="email" name="email" class="form-control" placeholder="Մուտքագրեք էլ․ հասցե">
-                                    <button type="submit" class="btn btn-outline-primary">@lang('main.notify_me')</button>
+                                    <input type="email" name="email" class="form-control" placeholder="@lang('basket.email')">
+                                    <button type="submit" class="btn btn-outline-primary">@lang('basket.confirm')</button>
                                 </form>
                             </div>
                         @endif

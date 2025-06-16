@@ -2,6 +2,8 @@
 return [
     'online_shop' => 'Ijevan Market - Online store in Ijevan',
     'all_categories' => 'All Categories',
+    'category' => 'Category',
+    'count' => 'Count',
     'ijevan_market_address' => 'c. Ijevan, st. Metaxagorcneri 6/7',
     'current_lang' => 'eng',
     'set_lang' => 'hy',
