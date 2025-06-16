@@ -253,7 +253,7 @@
                     </ul>
                     <div class="offcanvas__account--items">
                         @guest
-                            <a class="offcanvas__account--items__btn d-flex align-items-center"  href="{{route('register')}}">
+                            <a class="offcanvas__account--items__btn d-flex align-items-center mb-3"  href="{{route('register')}}">
                                 <span class="offcanvas__account--items__icon">
                                     <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
                                 </span>
@@ -262,14 +262,14 @@
                         @endguest
                         @auth
                             @admin
-                                <a class="offcanvas__account--items__btn d-flex align-items-center" href="{{route('home')}}">
+                                <a class="offcanvas__account--items__btn d-flex align-items-center mb-3" href="{{route('home')}}">
                                     <span class="offcanvas__account--items__icon">
                                         <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
                                     </span>
                                     <span class="offcanvas__account--items__label">Admin Panel</span>
                                 </a>
                             @else
-                                <a class="offcanvas__account--items__btn d-flex align-items-center" href="{{route('person.orders.index')}}">
+                                <a class="offcanvas__account--items__btn d-flex align-items-center mb-3" href="{{route('person.orders.index')}}">
                                     <span class="offcanvas__account--items__icon">
                                         <svg xmlns="http://www.w3.org/2000/svg"  width="20.51" height="19.443" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></svg>
                                     </span>
@@ -277,38 +277,29 @@
                                 </a>
                             @endadmin
                         @endauth
-                    </div>
-                    <div class="d-flex flex-column gap-2 mt-3">
+
                         <!-- Валюта -->
-                        <a href="javascript:void(0)" class="btn btn-outline-success d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="bi bi-currency-exchange fs-5" ></i>
-                                <span class="fw-semibold">@lang('main.currency')</span>
-                            </div>
-                            <span class="badge bg-success-subtle  fw-bold">{{ $currencySymbol }}</span>
+                        <a href="javascript:void(0)" class="offcanvas__account--items__btn d-flex align-items-center mb-3">
+                            <span class="offcanvas__account--items__icon">
+                                <i class="bi bi-currency-exchange fs-5" width="20.51" height="19.443"></i>
+                            </span>
+                            <span class="offcanvas__account--items__label">@lang('main.currency')` {{ $currencySymbol }}</span>
                         </a>
 
                         <!-- Смена языка -->
-                        <a class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm" href="{{ route('locale', app()->getLocale() === 'en' ? 'hy' : 'en') }}">
-                            <i class="bi bi-translate fs-5"></i>
-                            <span class="fw-semibold">{{ app()->getLocale() === 'en' ? 'Հայերեն' : 'English' }}</span>
-                        </a>
-                        {{-- <a href="{{ route('locale', __('main.set_lang')) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
-                            <div class="d-flex align-items-center gap-2">
+                        <a class="offcanvas__account--items__btn d-flex align-items-center mb-3" href="{{ route('locale', app()->getLocale() === 'en' ? 'hy' : 'en') }}">
+                            <span class="offcanvas__account--items__icon">
                                 <i class="bi bi-translate fs-5"></i>
-                                <span class="fw-semibold">@lang('main.language')</span>
-                            </div>
-                            <span class="badge bg-primary-subtle m fw-bold">@lang('main.set_lang')</span>
-                        </a> --}}
+                            </span>
+                            <span class="offcanvas__account--items__label">{{ app()->getLocale() === 'en' ? 'Հայերեն' : 'English' }}</span>
+                        </a>
 
-                         <!-- Contact -->
-                        <a href="tel:+374 44 464 412" class="btn btn-outline-primary d-flex align-items-center justify-content-between px-3 py-2 rounded-pill shadow-sm">
-                            <div class="d-flex align-items-center gap-2">
-                                <svg class="suport__contact--icon text-white" xmlns="http://www.w3.org/2000/svg" width="35.725" height="35.743" viewBox="0 0 36.725 36.743">
-                                    <path id="headphone-alt-2" d="M28.893,18.469c-.026-2.873.1-5.754-.761-8.565-1.587-5.21-5.306-7.742-10.781-7.272-4.681.4-7.588,2.715-8.785,7.573a24.031,24.031,0,0,0,.2,13.3,11.447,11.447,0,0,0,6.254,7.253c.658.3,1.091.408,1.595-.356a3.732,3.732,0,0,1,4.38-1.334,3.931,3.931,0,1,1-4.582,5.82,2.989,2.989,0,0,0-1.782-1.466c-4.321-1.573-6.842-4.869-8.367-9.032a1.686,1.686,0,0,0-1.238-1.275,7.046,7.046,0,0,1-3.718-2.447A5.739,5.739,0,0,1,3.242,11.83,5.338,5.338,0,0,0,6.318,7.957C7.644,3.033,11.62.193,16.845.02a19.923,19.923,0,0,1,6.324.544c4.479,1.3,6.783,4.52,7.72,8.881a1.966,1.966,0,0,0,1.389,1.723,6.235,6.235,0,0,1,4.439,6.324,5.211,5.211,0,0,1-1.33,3.27,7.98,7.98,0,0,1-5.449,2.774c-.731.077-1.124-.051-1.069-.952.085-1.367.022-2.745.026-4.115Z" transform="translate(0.006 0.01)" fill="currentColor"/>
-                                </svg>
-                            </div>
-                            <span class="badge bg-primary-subtle m fw-bold">
+                        <!-- Contact -->
+                        <a href="tel:+374 44 464 412" class="offcanvas__account--items__btn d-flex align-items-center mb-3">
+                            <span class="offcanvas__account--items__icon d-flex justify-content-center align-items-center">
+                                <i class="bi bi-headset fs-5"></i>
+                            </span>
+                            <span class="offcanvas__account--items__label">
                                 +374 44 464 412
                             </span>
                         </a>
