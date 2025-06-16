@@ -24,12 +24,37 @@
             <p class="fs-5">🌟 @lang('main.to_become')</p>
 
             <h2 class="mt-4 text-success">@lang('main.values')</h2>
-            <ul class="fs-5">
-                <li>🤝 <strong>@lang('main.honestly')</strong> — @lang('main.we_build')</li>
-                <li>📦 <strong>@lang('main.quality_and_freshness')</strong> — @lang('main.we_carefully')</li>
-                <li>🚚 <strong>@lang('main.fast_delivery')</strong> — @lang('main.you_receive')</li>
-                <li>🛒 <strong>@lang('main.convenience')</strong> — @lang('main.easy_to_choose')</li>
-            </ul>
+            <ul class="list-unstyled d-flex flex-wrap justify-content-between gap-3">
+    <li class="d-flex align-items-center">
+        <span class="fs-3 me-2">🤝</span>
+        <div>
+            <strong>@lang('main.honestly')</strong><br>
+            <small class="text-muted">@lang('main.we_build')</small>
+        </div>
+    </li>
+    <li class="d-flex align-items-center">
+        <span class="fs-3 me-2">📦</span>
+        <div>
+            <strong>@lang('main.quality_and_freshness')</strong><br>
+            <small class="text-muted">@lang('main.we_carefully')</small>
+        </div>
+    </li>
+    <li class="d-flex align-items-center">
+        <span class="fs-3 me-2">🚚</span>
+        <div>
+            <strong>@lang('main.fast_delivery')</strong><br>
+            <small class="text-muted">@lang('main.you_receive')</small>
+        </div>
+    </li>
+    <li class="d-flex align-items-center">
+        <span class="fs-3 me-2">🛒</span>
+        <div>
+            <strong>@lang('main.convenience')</strong><br>
+            <small class="text-muted">@lang('main.easy_to_choose')</small>
+        </div>
+    </li>
+</ul>
+
         </div>
     </div>
 
