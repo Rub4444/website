@@ -123,4 +123,9 @@ class MainController extends Controller
     {
         return view('privacy');
     }
+
+    public function about()
+    {
+        return view('about-us');
+    }
 }

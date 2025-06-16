@@ -3,6 +3,11 @@
 @section('title', 'Իջևան Մարկետ')
 
 @section('content')
+
+    @if (($category->code ?? $skus->product->category->code) === 'alkvohvolayin-khmichqner')
+        @include('partials.age-check-modal')
+    @endif
+
     <div class="container py-4">
         <!-- Категория: Заголовок -->
         <div class="text-center mb-5">

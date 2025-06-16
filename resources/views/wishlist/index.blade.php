@@ -39,7 +39,7 @@
                                                 </a>
                                             </div>
                                             <div class="cart__content">
-                                                <h3 class="cart__content--title h4"><a href="product-details.html">{{ $sku->product->__('name') }}</a></h3>
+                                                <h3 class="cart__content--title h4"><a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">{{ $sku->product->__('name') }}</a></h3>
                                                 @foreach ($sku->propertyOptions as $option)
                                                     <span class="cart__content--variant">
                                                         {{ $option->property->name }}: {{ $option->name }}

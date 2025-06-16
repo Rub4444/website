@@ -118,6 +118,9 @@ Route::middleware(['set_locale'])->group(function()
     Route::get('/how-to-use', [MainController::class, 'howToUse'])->name('howToUse');
     Route::get('/offer', [MainController::class, 'offer'])->name('offer');
     Route::get('/delivery', [MainController::class, 'delivery'])->name('delivery');
+    Route::get('/about-us', [MainController::class, 'about'])->name('about-us');
+
+
     // Route::get('/privacy', [MainController::class, 'privacy'])->name('privacy');
 
     Route::get('/', [MainController::class, 'index'])->name('index');

@@ -479,10 +479,19 @@
                 behavior: 'smooth'
             });
         });
+
+
     </script>
 
     <footer class="text-white py-5">
         <!-- Подключение JavaScript -->
+        <!-- Подключение JavaScript -->
+        <script src="{{ asset('js/jquery.min.js') }}"></script> <!-- если нужен jQuery -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
+        <script src="{{ asset('js/glightbox.min.js') }}"></script>
+        <script src="{{ asset('js/script.js') }}"></script>
+{{--
         <script src="{{ asset('js/popper.js') }}"></script>
         <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
         <script src="{{ asset('js/glightbox.min.js') }}"></script>
@@ -490,7 +499,7 @@
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> --}}
 
         <div class="container">
             <div class="row">
@@ -518,6 +527,10 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ route('delivery') }}" class="text-white text-decoration-none mb-4">@lang('main.delivery_and_payment')</a></li>
                     </ul>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ route('about-us') }}" class="text-white text-decoration-none mb-4">@lang('main.about-us')</a></li>
+                    </ul>
+
                     {{-- <ul class="list-unstyled">
                         <li><a href="{{ route('privacy') }}" class="text-white text-decoration-none mb-4">Գաղտնիության քաղաքականություն</a></li>
                     </ul> --}}
