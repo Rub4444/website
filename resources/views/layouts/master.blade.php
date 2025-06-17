@@ -382,33 +382,34 @@
     </header>
     <!-- End header area -->
 
-        @if(session()->has('success'))
-            <div class="col-12">
-                <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
-                    {{session()->get('success')}}
-                </div>
+    @if(session()->has('success'))
+        <div class="col-12">
+            <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
+                {{session()->get('success')}}
             </div>
-        @endif
+        </div>
+    @endif
 
-        @if(session()->has('warning'))
-            <div class="col-12">
-                <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
-                    {{session()->get('warning')}}
-                </div>
+    @if(session()->has('warning'))
+        <div class="col-12">
+            <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">
+                {{session()->get('warning')}}
             </div>
-        @endif
+        </div>
+    @endif
 
-        @yield('content')
-        @stack('scripts')
+    <!-- Scroll top button -->
+    <button id="scroll__top" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: #2E8B57; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512" width="20" height="20">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/>
+        </svg>
+    </button>
 
-        <!-- Scroll top button -->
-        <button id="scroll__top" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; background: #2E8B57; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512" width="20" height="20">
-                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/>
-            </svg>
-        </button>
 
-    <script>
+    @yield('content')
+    @stack('scripts')
+
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.toggle-wishlist').forEach(button => {
                 button.addEventListener('click', function () {
@@ -465,6 +466,8 @@
 
         const scrollBtn = document.getElementById('scroll__top');
 
+        console.log(scrollBtn);
+
         window.addEventListener('scroll', () => {
             if (window.scrollY > 300) {
                 scrollBtn.style.display = 'flex';
@@ -481,25 +484,92 @@
         });
 
 
+    </script> --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Wishlist
+            document.querySelectorAll('.toggle-wishlist').forEach(button => {
+                button.addEventListener('click', function () {
+                    const skuId = this.dataset.id;
+                    const icon = this.querySelector('i');
+
+                    fetch('/wishlist/toggle/' + skuId, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'added') {
+                            this.setAttribute('aria-pressed', 'true');
+                            icon.classList.remove('bi-heart', 'text-secondary');
+                            icon.classList.add('bi-heart-fill', 'text-danger');
+                            this.title = 'Удалить из избранного';
+                        } else if (data.status === 'removed') {
+                            this.setAttribute('aria-pressed', 'false');
+                            icon.classList.remove('bi-heart-fill', 'text-danger');
+                            icon.classList.add('bi-heart', 'text-white');
+                            this.title = 'Добавить в избранное';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при обновлении избранного:', error);
+                    });
+                });
+            });
+
+            // Toggle categories
+            const toggleBtn = document.getElementById('toggleCategoriesBtn');
+            toggleBtn?.addEventListener('click', function () {
+                const extraItems = document.querySelectorAll('.extra-category');
+                const icon = this.querySelector('i');
+                const isHidden = extraItems[0]?.classList.contains('d-none');
+
+                extraItems.forEach(item => {
+                    item.classList.toggle('d-none');
+                });
+
+                if (isHidden) {
+                    icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
+                } else {
+                    icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollBtn = document.getElementById('scroll__top');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollBtn.style.display = 'flex';  // Показываем кнопку
+                } else {
+                    scrollBtn.style.display = 'none';  // Скрываем кнопку
+                }
+            });
+
+            scrollBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
     </script>
 
+
     <footer class="text-white py-5">
-        <!-- Подключение JavaScript -->
-        <!-- Подключение JavaScript -->
-        <script src="{{ asset('js/jquery.min.js') }}"></script> <!-- если нужен jQuery -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
-        <script src="{{ asset('js/glightbox.min.js') }}"></script>
-        <script src="{{ asset('js/script.js') }}"></script>
-{{--
         <script src="{{ asset('js/popper.js') }}"></script>
         <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('js/glightbox.min.js') }}"></script>
-        <script src="{{ asset('js/script.js') }}"></script>
-        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/script.js') }}"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> --}}
 
         <div class="container">
             <div class="row">
