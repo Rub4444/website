@@ -12,10 +12,22 @@ use App\Models\Property;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::paginate(10);
-        return view('auth.products.index', compact('products'));
+        $search = $request->input('search');
+
+        $query = Product::query();
+
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        $products = $query->paginate(50);
+
+        // Чтобы пагинация сохраняла параметр поиска в ссылках
+        $products->appends(['search' => $search]);
+
+        return view('auth.products.index', compact('products', 'search'));
     }
 
     public function create()

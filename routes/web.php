@@ -19,6 +19,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishlistController;
 
+use App\Http\Controllers\ProductImportController;
+
 Auth::routes([
     'reset'=>true,
     'confirm'=>false,
@@ -51,6 +53,8 @@ Route::middleware(['set_locale'])->group(function()
     {
          Route::prefix('admin')->middleware('is_admin')->group(function ()
         {
+            Route::post('/products/import', [ProductImportController::class, 'import'])->name('products.import');
+
             Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('home');
             Route::get('/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
             Route::post('/orders/{order}/confirm', [App\Http\Controllers\Admin\OrderController::class, 'confirm'])->name('admin.orders.confirm');

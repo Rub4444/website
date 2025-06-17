@@ -4,12 +4,52 @@
 
 @section('content')
 <div class="col-md-12 mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0">Ապրանքների ցանկ</h4>
-        <a class="btn btn-success btn-sm rounded-2" href="{{ route('products.create') }}">
-            <i class="fas fa-plus me-1 text-white"></i> Ավելացնել Ապրանք
-        </a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Ապրանքների ցանկ</h4>
+    <a href="{{ route('products.create') }}" class="btn btn-success btn-sm rounded-2">
+        <i class="fas fa-plus me-1"></i> Ավելացնել Ապրանք
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>Импорт товаров</strong>
     </div>
+    <div class="card-body">
+        <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+            @csrf
+            <div class="col-md-4">
+                <label for="category_id" class="form-label">Category ID</label>
+                <input type="number" name="category_id" id="category_id" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label for="property_id" class="form-label">Property ID (через запятую)</label>
+                <input type="text" name="property_id" id="property_id" class="form-control" placeholder="например: 1,2,3" required>
+            </div>
+            <div class="col-md-4">
+                <label for="file" class="form-label">Файл</label>
+                <input type="file" name="file" id="file" class="form-control" required>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Импортировать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>Поиск товаров</strong>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ route('products.index') }}" class="d-flex gap-2 align-items-center">
+            <input type="text" name="search" placeholder="Поиск по названию" value="{{ $search ?? '' }}" class="form-control" />
+            <button type="submit" class="btn btn-primary">Найти</button>
+            <a href="{{ route('products.index') }}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+
 
     <div class="card shadow-sm rounded-4">
         <div class="card-body">
