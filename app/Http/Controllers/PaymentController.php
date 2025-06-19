@@ -55,14 +55,21 @@ class PaymentController extends Controller
 
     public function cancel($paymentId)
 {
-    $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
+    $response = Http::asForm()->post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
         'PaymentID' => $paymentId,
         'Username' => env('AMERIA_USERNAME'),
         'Password' => env('AMERIA_PASSWORD'),
     ]);
 
+    dd([
+        'status' => $response->status(),
+        'body' => $response->body(),
+        'json' => $response->json(),
+    ]);
+
+
     $data = $response->json();
-    dd($data);
+
     if ($data['ResponseCode'] === '00') {
         return "❌ Оплата успешно отменена. Message: " . $data['ResponseMessage'];
     }
