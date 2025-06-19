@@ -57,8 +57,8 @@ class PaymentController extends Controller
 {
     $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
         'PaymentID' => $paymentId,
-        'Username' => env('AMERIA_USERNAME'),
-        'Password' => env('AMERIA_PASSWORD'),
+        'Username' => env('3d19541048'),
+        'Password' => env('lazY2k'),
     ]);
 
     $data = $response->json();
@@ -75,8 +75,8 @@ public function refund($paymentId)
 {
     $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
         'PaymentID' => $paymentId,
-        'Username' => env('AMERIA_USERNAME'),
-        'Password' => env('AMERIA_PASSWORD'),
+        'Username' => env('3d19541048'),
+        'Password' => env('lazY2k'),
         'Amount'   => 10, // возврат 10 AMD
     ]);
 
