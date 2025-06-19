@@ -80,6 +80,8 @@ Route::middleware(['set_locale'])->group(function()
 
         Route::get('/pay', [\App\Http\Controllers\PaymentController::class, 'pay']);
         Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback']);
+        Route::get('/payment/cancel/{paymentId}', [\App\Http\Controllers\PaymentController::class, 'cancel']);
+        Route::get('/payment/refund/{paymentId}', [\App\Http\Controllers\PaymentController::class, 'refund']);
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -50,4 +50,40 @@ class PaymentController extends Controller
             return view('payment.failed', compact('data'));
         }
     }
+
+    public function cancel($paymentId)
+{
+    $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
+        'PaymentID' => $paymentId,
+        'Username' => env('AMERIA_USERNAME'),
+        'Password' => env('AMERIA_PASSWORD'),
+    ]);
+
+    $data = $response->json();
+
+    if ($data['ResponseCode'] === '00') {
+        return "❌ Оплата успешно отменена. Message: " . $data['ResponseMessage'];
+    }
+
+    return "Ошибка отмены: " . $data['ResponseMessage'] ?? 'Неизвестная ошибка';
+}
+
+
+public function refund($paymentId)
+{
+    $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
+        'PaymentID' => $paymentId,
+        'Username' => env('AMERIA_USERNAME'),
+        'Password' => env('AMERIA_PASSWORD'),
+        'Amount'   => 10, // возврат 10 AMD
+    ]);
+
+    $data = $response->json();
+
+    if ($data['ResponseCode'] === '00') {
+        return "💸 Возврат успешно выполнен. Message: " . $data['ResponseMessage'];
+    }
+
+    return "Ошибка возврата: " . $data['ResponseMessage'] ?? 'Неизвестная ошибка';
+}
 }
