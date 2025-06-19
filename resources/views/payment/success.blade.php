@@ -5,6 +5,7 @@
 <h1>✅ Оплата прошла успешно</h1>
 
 <p><strong>OrderID:</strong> {{ $data['OrderID'] ?? 'не найден' }}</p>
+<p><strong>PaymentID:</strong> {{ $paymentId ?? 'не найден' }}</p>
 <p><strong>ResponseCode:</strong> {{ $data['ResponseCode'] ?? '—' }}</p>
 <p>Сумма: {{ $data['Amount'] ?? '—' }} AMD</p>
 <p>Дата: {{ $data['DateTime'] ?? '—' }}</p>
