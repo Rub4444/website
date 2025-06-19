@@ -1,6 +1,8 @@
 <h1>✅ Оплата прошла успешно</h1>
-<p><strong>OrderID:</strong> {{ $data['OrderID'] }}</p>
-<p><strong>PaymentID:</strong> {{ $data['MDOrderID'] ?? $data['PaymentID'] }}</p>
+
+<p><strong>OrderID:</strong> {{ $data['OrderID'] ?? 'не найден' }}</p>
+<p><strong>PaymentID:</strong> {{ $data['PaymentID'] ?? ($data['MDOrderID'] ?? 'не найден') }}</p>
+
 <p><strong>ResponseCode:</strong> {{ $data['ResponseCode'] }}</p>
 
 
