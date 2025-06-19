@@ -81,6 +81,7 @@ public function refund($paymentId)
     ]);
 
     $data = $response->json();
+    dd($data);
 
     if ($data['ResponseCode'] === '00') {
         return "💸 Возврат успешно выполнен. Message: " . $data['ResponseMessage'];
