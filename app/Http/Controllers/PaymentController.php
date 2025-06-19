@@ -52,22 +52,53 @@ class PaymentController extends Controller
             return view('payment.failed', compact('data'));
         }
     }
+public function cancel(string $paymentId)
+    {
+        // Նախ ստուգում ենք PaymentID-ի մանրամասները
+        $details = $this->getPaymentDetails($paymentId);
 
-    public function cancel($paymentId)
+        if (isset($details['ResponseCode']) && $details['ResponseCode'] === '00') {
+            if (isset($details['PaymentStatus']) && $details['PaymentStatus'] === 'Completed') {
+                // Վճարումը կարող է չեղարկվել, կատարում ենք չեղարկման հարցում
+                return $this->sendCancelRequest($paymentId);
+            } else {
+                return "Վճարումը չի կարելի չեղարկել (չի համապատասխանում կարգավիճակը):";
+            }
+        } else {
+            return "PaymentID գոյություն չունի կամ սխալ է։";
+        }
+    }
+private function sendCancelRequest(string $paymentId)
+    {
+        $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
+            'PaymentID' => $paymentId,
+            'Username' => env('AMERIA_USERNAME'),
+            'Password' => env('AMERIA_PASSWORD'),
+        ]);
+
+        $data = $response->json();
+
+        if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
+            return "❌ Վճարումը հաջողությամբ չեղարկվեց։";
+        }
+
+        return "Չեղարկման սխալ: " . ($data['ResponseMessage'] ?? 'Չի հաջողվեց ստանալ մանրամասներ։');
+    }
+public function getPaymentDetails(string $paymentId)
 {
-    $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
+    $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/GetPaymentDetails', [
         'PaymentID' => $paymentId,
         'Username' => env('AMERIA_USERNAME'),
         'Password' => env('AMERIA_PASSWORD'),
     ]);
 
-    $data = $response->json();
-
-    if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
-        return "❌ Վճարումը հաջողությամբ չեղարկվեց։";
+    if ($response->failed()) {
+        return ['error' => 'Սերվերի հետ խնդիր է: ' . $response->body()];
     }
 
-    return "Չեղարկման սխալ: " . ($data['ResponseMessage'] ?? 'Չի հաջողվեց ստանալ մանրամասներ։');
+    $data = $response->json();
+
+    return $data;
 }
 
 
