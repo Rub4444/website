@@ -62,6 +62,7 @@ class PaymentController extends Controller
     ]);
 
     $data = $response->json();
+    dd($data);
 
     if ($data['ResponseCode'] === '00') {
         return "❌ Оплата успешно отменена. Message: " . $data['ResponseMessage'];
