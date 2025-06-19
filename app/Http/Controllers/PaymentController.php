@@ -57,13 +57,12 @@ class PaymentController extends Controller
 {
     $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
         'PaymentID' => $paymentId,
-        'Username' => env('3d19541048'),
-        'Password' => env('lazY2k'),
+        'Username' => env('AMERIA_USERNAME'),
+        'Password' => env('AMERIA_PASSWORD'),
     ]);
 
     $data = $response->json();
     dd($data);
-
     if ($data['ResponseCode'] === '00') {
         return "❌ Оплата успешно отменена. Message: " . $data['ResponseMessage'];
     }
@@ -76,13 +75,12 @@ public function refund($paymentId)
 {
     $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
         'PaymentID' => $paymentId,
-        'Username' => env('3d19541048'),
-        'Password' => env('lazY2k'),
+        'Username' => env('AMERIA_USERNAME'),
+        'Password' => env('AMERIA_PASSWORD'),
         'Amount'   => 10, // возврат 10 AMD
     ]);
 
     $data = $response->json();
-    dd($data);
 
     if ($data['ResponseCode'] === '00') {
         return "💸 Возврат успешно выполнен. Message: " . $data['ResponseMessage'];
