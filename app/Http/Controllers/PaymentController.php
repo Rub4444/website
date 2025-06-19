@@ -32,7 +32,7 @@ class PaymentController extends Controller
             return redirect()->to(env('AMERIA_GATEWAY_URL') . "?id=" . $data['PaymentID'] . "&lang=am");
         }
 
-        return "❌ Սխալ ինիցիալիզացիայի ժամանակ: " . ($data['ResponseMessage'] ?? 'Չբացահայտված սխալ');
+        return "❌ Սխալ ինիցիալիզացիայի ժամանակ (" . ($data['ResponseCode'] ?? '--') . "): " . ($data['ResponseMessage'] ?? 'Չբացահայտված սխալ');
     }
 
     public function callback(Request $request)
