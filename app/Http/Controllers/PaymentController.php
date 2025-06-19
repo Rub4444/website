@@ -64,7 +64,6 @@ class PaymentController extends Controller
     dd([
         'status' => $response->status(),
         'body' => $response->body(),
-        'json' => $response->json(),
     ]);
 
 
