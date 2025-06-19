@@ -23,6 +23,8 @@ class PaymentController extends Controller
             'BackURL' => env('AMERIA_BACK_URL'),
         ]);
 
+        $paymentId = $data['PaymentID'] ?? $data['MDOrderID'] ?? null;
+
         $data = $response->json();
 
         if ($data['ResponseCode'] == 1 || $data['ResponseCode'] == "00") {
