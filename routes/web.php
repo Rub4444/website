@@ -55,6 +55,7 @@ Route::middleware(['set_locale'])->group(function()
          Route::prefix('admin')->middleware('is_admin')->group(function ()
         {
             Route::post('/products/import', [ProductImportController::class, 'import'])->name('products.import');
+            Route::get('/products/tree', [ProductController::class, 'tree'])->name('products.tree');
 
             Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('home');
             Route::get('/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');

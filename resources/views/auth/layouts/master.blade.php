@@ -114,6 +114,9 @@
                         @admin
                             <li class="nav-item"><a class="nav-link" href="{{route('categories.index')}}">Կատեգորիաներ</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{route('products.index')}}">Ապրանքներ</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('products.tree') }}">Ապրանքների ծառ</a>
+                            </li>
                             <li class="nav-item"><a class="nav-link" href="{{route('properties.index')}}">Հատկանիշներ</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{route('coupons.index')}}">Կուպոններ</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{route('merchants.index')}}">Մատակարարներ</a></li>

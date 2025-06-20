@@ -30,6 +30,20 @@ class ProductController extends Controller
         return view('auth.products.index', compact('products', 'search'));
     }
 
+    public function tree(Request $request)
+    {
+        $search = $request->input('search');
+
+        $categories = Category::with(['products' => function($query) use ($search) {
+            if ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            }
+        }])->get();
+
+        return view('auth.products.tree', compact('categories', 'search'));
+    }
+
+
     public function create()
     {
         $categories = Category::get();
