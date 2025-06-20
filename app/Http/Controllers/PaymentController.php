@@ -9,52 +9,53 @@ class PaymentController extends Controller
 {
     public function pay()
     {
-        $orderId = rand(3954001, 3955000); // Тестовый OrderID
-        $amount = 10; // 10 AMD
+        $orderId = rand(3954001, 3955000);
+        $amount = 10;
 
         $response = Http::post(env('AMERIA_INIT_URL'), [
-            'ClientID' => env('AMERIA_CLIENT_ID'),
-            'Username' => env('AMERIA_USERNAME'),
-            'Password' => env('AMERIA_PASSWORD'),
-            'OrderID' => $orderId,
-            'Amount' => $amount,
-            'Currency' => '051',
+            'ClientID'    => env('AMERIA_CLIENT_ID'),
+            'Username'    => env('AMERIA_USERNAME'),
+            'Password'    => env('AMERIA_PASSWORD'),
+            'OrderID'     => $orderId,
+            'Amount'      => $amount,
+            'Currency'    => '051',
             'Description' => 'Test Payment Order #' . $orderId,
-            'BackURL' => env('AMERIA_BACK_URL'),
+            'BackURL'     => env('AMERIA_BACK_URL'),
         ]);
 
         $data = $response->json();
         $paymentId = $data['PaymentID'] ?? $data['MDOrderID'] ?? null;
 
-
-        if ($data['ResponseCode'] == 1 || $data['ResponseCode'] == "00") {
-            return redirect()->to(env('AMERIA_GATEWAY_URL') . "?id=" . $data['PaymentID'] . "&lang=am");
-        } else {
-            return "Ошибка инициализации оплаты: " . $data['ResponseMessage'];
+        if (isset($data['ResponseCode']) && ($data['ResponseCode'] === '00' || $data['ResponseCode'] === 1)) {
+            return redirect()->to(env('AMERIA_GATEWAY_URL') . "?id=" . $paymentId . "&lang=am");
         }
+
+        return "❌ Սխալ ինիցիալիզացիայի ժամանակ: " . ($data['ResponseMessage'] ?? 'Անհայտ սխալ');
     }
 
     public function callback(Request $request)
     {
         $paymentId = $request->input('paymentID');
 
-        $response = Http::post(env('AMERIA_DETAILS_URL'), [
-            'PaymentID' => $paymentId,
-            'Username' => env('AMERIA_USERNAME'),
-            'Password' => env('AMERIA_PASSWORD'),
-        ]);
-
-        $data = $response->json();
-
-        if ($data['ResponseCode'] === '00' && $data['PaymentState'] === 'payment_deposited') {
-            return view('payment.success', compact('data'));
-        } else {
-            return view('payment.failed', compact('data'));
+        if (!$paymentId) {
+            return "❌ PaymentID բացակայում է callback-ում։";
         }
+
+        $data = $this->getPaymentDetails($paymentId);
+
+        if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00' && $data['PaymentState'] === 'payment_deposited') {
+            return view('payment.success', compact('data'));
+        }
+
+        return view('payment.failed', compact('data'));
     }
 
     public function cancel(string $paymentId)
     {
+        if (empty($paymentId)) {
+            return "❌ PaymentID չի փոխանցվել։";
+        }
+
         $details = $this->getPaymentDetails($paymentId);
 
         if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
@@ -68,12 +69,44 @@ class PaymentController extends Controller
         return $this->sendCancelRequest($paymentId);
     }
 
-private function sendCancelRequest(string $paymentId)
+    public function refund(string $paymentId)
+    {
+        if (empty($paymentId)) {
+            return "❌ PaymentID չի փոխանցվել։";
+        }
+
+        $details = $this->getPaymentDetails($paymentId);
+
+        if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
+            return "❌ Սխալ `PaymentDetails` հարցման ժամանակ։";
+        }
+
+        if ($details['PaymentState'] !== 'payment_deposited') {
+            return "❌ Չի կարելի կատարել վերադարձ։ Վճարումը դեռ չի կատարվել։";
+        }
+
+        $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
+            'PaymentID' => $paymentId,
+            'Username'  => env('AMERIA_USERNAME'),
+            'Password'  => env('AMERIA_PASSWORD'),
+            'Amount'    => 10, // можешь сделать переменной
+        ]);
+
+        $data = $response->json();
+
+        if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
+            return "💸 Վերադարձը հաջողությամբ կատարվեց։";
+        }
+
+        return "❌ Սխալ վերադարձի ժամանակ: " . ($data['ResponseMessage'] ?? 'Անհայտ սխալ');
+    }
+
+    private function sendCancelRequest(string $paymentId)
     {
         $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
             'PaymentID' => $paymentId,
-            'Username' => env('AMERIA_USERNAME'),
-            'Password' => env('AMERIA_PASSWORD'),
+            'Username'  => env('AMERIA_USERNAME'),
+            'Password'  => env('AMERIA_PASSWORD'),
         ]);
 
         $data = $response->json();
@@ -82,54 +115,24 @@ private function sendCancelRequest(string $paymentId)
             return "❌ Վճարումը հաջողությամբ չեղարկվեց։";
         }
 
-        return "Չեղարկման սխալ: " . ($data['ResponseMessage'] ?? 'Չի հաջողվեց ստանալ մանրամասներ։');
-    }
-public function getPaymentDetails(string $paymentId)
-{
-    $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/GetPaymentDetails', [
-        'PaymentID' => $paymentId,
-        'Username' => env('AMERIA_USERNAME'),
-        'Password' => env('AMERIA_PASSWORD'),
-    ]);
-
-    if ($response->failed()) {
-        return ['error' => 'Սերվերի հետ խնդիր է: ' . $response->body()];
+        return "Չեղարկման սխալ: " . ($data['ResponseMessage'] ?? 'Չի հաջողվել ստանալ մանրամասներ։');
     }
 
-    $data = $response->json();
+    public function getPaymentDetails(string $paymentId)
+    {
+        $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/GetPaymentDetails', [
+            'PaymentID' => $paymentId,
+            'Username'  => env('AMERIA_USERNAME'),
+            'Password'  => env('AMERIA_PASSWORD'),
+        ]);
 
-    return $data;
-}
+        if ($response->failed()) {
+            return [
+                'ResponseCode' => '99',
+                'ResponseMessage' => 'Սերվերի հետ խնդիր է։ ' . $response->body()
+            ];
+        }
 
-
-
-public function refund($paymentId)
-{
-    $details = $this->getPaymentDetails($paymentId);
-
-    if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
-        return "❌ Սխալ `PaymentDetails` հարցման ժամանակ։";
+        return $response->json();
     }
-
-    if ($details['PaymentState'] !== 'payment_deposited') {
-        return "❌ Չի կարելի կատարել վերադարձ։ Վճարումը դեռ չի կատարվել։";
-    }
-
-    $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
-        'PaymentID' => $paymentId,
-        'Username' => env('AMERIA_USERNAME'),
-        'Password' => env('AMERIA_PASSWORD'),
-        'Amount'   => 10,
-    ]);
-
-    $data = $response->json();
-
-    if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
-        return "💸 Վերադարձը հաջողությամբ կատարվեց։";
-    }
-
-    return "❌ Սխալ վերադարձի ժամանակ: " . ($data['ResponseMessage'] ?? 'Անհայտ սխալ');
-}
-
-
 }
