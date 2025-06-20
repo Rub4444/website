@@ -23,9 +23,9 @@ class PaymentController extends Controller
             'BackURL' => env('AMERIA_BACK_URL'),
         ]);
 
+        $data = $response->json();
         $paymentId = $data['PaymentID'] ?? $data['MDOrderID'] ?? null;
 
-        $data = $response->json();
 
         if ($data['ResponseCode'] == 1 || $data['ResponseCode'] == "00") {
             return redirect()->to(env('AMERIA_GATEWAY_URL') . "?id=" . $data['PaymentID'] . "&lang=am");
@@ -105,19 +105,30 @@ public function getPaymentDetails(string $paymentId)
 
 public function refund($paymentId)
 {
+    $details = $this->getPaymentDetails($paymentId);
+
+    if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
+        return "❌ Ошибка получения статуса платежа перед возвратом.";
+    }
+
+    if ($details['PaymentState'] !== 'payment_deposited') {
+        return "❌ Возврат невозможен. Статус: " . $details['PaymentState'];
+    }
+
     $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
         'PaymentID' => $paymentId,
-        'Username' => env('AMERIA_USERNAME'),
-        'Password' => env('AMERIA_PASSWORD'),
-        'Amount'   => 10, // возврат 10 AMD
+        'Username'  => env('AMERIA_USERNAME'),
+        'Password'  => env('AMERIA_PASSWORD'),
+        'Amount'    => 10,
     ]);
 
     $data = $response->json();
 
-    if ($data['ResponseCode'] === '00') {
+    if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
         return "💸 Возврат успешно выполнен. Message: " . $data['ResponseMessage'];
     }
 
-    return "Ошибка возврата: " . $data['ResponseMessage'] ?? 'Неизвестная ошибка';
+    return "❌ Ошибка возврата: " . ($data['ResponseMessage'] ?? 'Неизвестная ошибка');
 }
+
 }
