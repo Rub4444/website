@@ -56,7 +56,7 @@ public function cancel(string $paymentId)
     {
         // Նախ ստուգում ենք PaymentID-ի մանրամասները
         $details = $this->getPaymentDetails($paymentId);
-
+        dd($details);
         if (isset($details['ResponseCode']) && $details['ResponseCode'] === '00') {
             if (isset($details['PaymentStatus']) && $details['PaymentStatus'] === 'Completed') {
                 // Վճարումը կարող է չեղարկվել, կատարում ենք չեղարկման հարցում
@@ -106,7 +106,7 @@ public function getPaymentDetails(string $paymentId)
 public function refund($paymentId)
 {
     $details = $this->getPaymentDetails($paymentId);
-
+    dd($details);
     if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
         return "❌ Ошибка получения статуса платежа перед возвратом.";
     }
