@@ -52,22 +52,22 @@ class PaymentController extends Controller
             return view('payment.failed', compact('data'));
         }
     }
-public function cancel(string $paymentId)
+
+    public function cancel(string $paymentId)
     {
-        // Նախ ստուգում ենք PaymentID-ի մանրամասները
         $details = $this->getPaymentDetails($paymentId);
-        dd($details);
-        if (isset($details['ResponseCode']) && $details['ResponseCode'] === '00') {
-            if (isset($details['PaymentStatus']) && $details['PaymentStatus'] === 'Completed') {
-                // Վճարումը կարող է չեղարկվել, կատարում ենք չեղարկման հարցում
-                return $this->sendCancelRequest($paymentId);
-            } else {
-                return "Վճարումը չի կարելի չեղարկել (չի համապատասխանում կարգավիճակը):";
-            }
-        } else {
-            return "PaymentID գոյություն չունի կամ սխալ է։";
+
+        if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
+            return "❌ PaymentID գոյություն չունի կամ սխալ է։";
         }
+
+        if (isset($details['PaymentState']) && $details['PaymentState'] === 'payment_deposited') {
+            return "❌ Չի կարելի չեղարկել, քանի որ վճարումը արդեն կատարվել է։ Փորձիր կատարել վերադարձ (refund):";
+        }
+
+        return $this->sendCancelRequest($paymentId);
     }
+
 private function sendCancelRequest(string $paymentId)
     {
         $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
@@ -106,29 +106,30 @@ public function getPaymentDetails(string $paymentId)
 public function refund($paymentId)
 {
     $details = $this->getPaymentDetails($paymentId);
-    dd($details);
+
     if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
-        return "❌ Ошибка получения статуса платежа перед возвратом.";
+        return "❌ Սխալ `PaymentDetails` հարցման ժամանակ։";
     }
 
     if ($details['PaymentState'] !== 'payment_deposited') {
-        return "❌ Возврат невозможен. Статус: " . $details['PaymentState'];
+        return "❌ Չի կարելի կատարել վերադարձ։ Վճարումը դեռ չի կատարվել։";
     }
 
     $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
         'PaymentID' => $paymentId,
-        'Username'  => env('AMERIA_USERNAME'),
-        'Password'  => env('AMERIA_PASSWORD'),
-        'Amount'    => 10,
+        'Username' => env('AMERIA_USERNAME'),
+        'Password' => env('AMERIA_PASSWORD'),
+        'Amount'   => 10,
     ]);
 
     $data = $response->json();
 
     if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
-        return "💸 Возврат успешно выполнен. Message: " . $data['ResponseMessage'];
+        return "💸 Վերադարձը հաջողությամբ կատարվեց։";
     }
 
-    return "❌ Ошибка возврата: " . ($data['ResponseMessage'] ?? 'Неизвестная ошибка');
+    return "❌ Սխալ վերադարձի ժամանակ: " . ($data['ResponseMessage'] ?? 'Անհայտ սխալ');
 }
+
 
 }
