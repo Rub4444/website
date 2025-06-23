@@ -11,8 +11,17 @@
 <p>Дата: {{ $data['DateTime'] ?? '—' }}</p>
 
 @if ($paymentId)
-    <a href="{{ url('/payment/cancel/' . $paymentId) }}" style="color:red;">❌ Отменить оплату</a><br>
-    <a href="{{ url('/payment/refund/' . $paymentId) }}" style="color:green;">💸 Сделать возврат</a>
+    <form method="POST" action="{{ url('/payment/cancel') }}">
+        @csrf
+        <input type="hidden" name="paymentId" value="{{ $paymentId }}">
+        <button type="submit" style="color:red;">❌ Отменить оплату</button>
+    </form>
+
+    <form method="POST" action="{{ url('/payment/refund') }}">
+        @csrf
+        <input type="hidden" name="paymentId" value="{{ $paymentId }}">
+        <button type="submit" style="color:green;">💸 Сделать возврат</button>
+    </form>
 @else
     <p style="color:orange;">⚠️ PaymentID не найден — отмена и возврат недоступны.</p>
 @endif

@@ -80,10 +80,10 @@ Route::middleware(['set_locale'])->group(function()
         Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
         Route::post('/wishlist/toggle/{sku}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
-        Route::get('/pay', [\App\Http\Controllers\PaymentController::class, 'pay']);
-        Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback']);
-        Route::get('/payment/cancel/{paymentId}', [\App\Http\Controllers\PaymentController::class, 'cancel']);
-        Route::get('/payment/refund/{paymentId}', [\App\Http\Controllers\PaymentController::class, 'refund']);
+        Route::get('/payment/pay', [PaymentController::class, 'pay']);
+        Route::get('/payment/callback', [PaymentController::class, 'callback']);
+        Route::post('/payment/cancel', [PaymentController::class, 'cancelPost']);
+        Route::post('/payment/refund', [PaymentController::class, 'refundPost']);
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');

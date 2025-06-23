@@ -147,4 +147,17 @@ class PaymentController extends Controller
 
         return $response->json();
     }
+
+    public function cancelPost(Request $request)
+    {
+        $paymentId = $request->input('paymentId');
+        return $this->cancel($paymentId);
+    }
+
+    public function refundPost(Request $request)
+    {
+        $paymentId = $request->input('paymentId');
+        return $this->refund($paymentId);
+    }
+
 }
