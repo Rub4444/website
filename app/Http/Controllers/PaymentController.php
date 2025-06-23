@@ -77,6 +77,8 @@ class PaymentController extends Controller
 
     public function refund(string $paymentId)
     {
+        dd('REFUND PaymentID:', $paymentId);
+
         if (empty($paymentId)) {
             return "❌ PaymentID չի փոխանցվել։";
         }
