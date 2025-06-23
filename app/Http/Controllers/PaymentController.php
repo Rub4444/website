@@ -56,6 +56,8 @@ class PaymentController extends Controller
 
     public function cancel(string $paymentId)
     {
+        dd('CANCEL PaymentID:', $paymentId);
+
         if (empty($paymentId)) {
             return "❌ PaymentID չի փոխանցվել։";
         }
@@ -144,7 +146,7 @@ class PaymentController extends Controller
                 'ResponseMessage' => 'Սերվերի հետ խնդիր է։ ' . $response->body()
             ];
         }
-
+        dd('✅ Response OK:', $response->json());
         return $response->json();
     }
 
