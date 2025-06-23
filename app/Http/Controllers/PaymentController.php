@@ -23,10 +23,14 @@ class PaymentController extends Controller
             'BackURL'     => env('AMERIA_BACK_URL'),
         ]);
 
+        if ($response->failed()) {
+            return "❌ Սխալ InitPayment հարցման ժամանակ։\n" . $response->body();
+        }
+
         $data = $response->json();
         $paymentId = $data['PaymentID'] ?? $data['MDOrderID'] ?? null;
 
-        if (isset($data['ResponseCode']) && ($data['ResponseCode'] === '00' || $data['ResponseCode'] === 1)) {
+        if (isset($data['ResponseCode']) && (in_array($data['ResponseCode'], ['00', 1, '1']))) {
             return redirect()->to(env('AMERIA_GATEWAY_URL') . "?id=" . $paymentId . "&lang=am");
         }
 
@@ -35,7 +39,7 @@ class PaymentController extends Controller
 
     public function callback(Request $request)
     {
-        $paymentId = $request->input('paymentID');
+        $paymentId = $request->input('paymentID') ?? $request->get('paymentID');
 
         if (!$paymentId) {
             return "❌ PaymentID բացակայում է callback-ում։";
@@ -62,7 +66,7 @@ class PaymentController extends Controller
             return "❌ PaymentID գոյություն չունի կամ սխալ է։";
         }
 
-        if (isset($details['PaymentState']) && $details['PaymentState'] === 'payment_deposited') {
+        if ($details['PaymentState'] === 'payment_deposited') {
             return "❌ Չի կարելի չեղարկել, քանի որ վճարումը արդեն կատարվել է։ Փորձիր կատարել վերադարձ (refund):";
         }
 
@@ -89,8 +93,12 @@ class PaymentController extends Controller
             'PaymentID' => $paymentId,
             'Username'  => env('AMERIA_USERNAME'),
             'Password'  => env('AMERIA_PASSWORD'),
-            'Amount'    => 10, // можешь сделать переменной
+            'Amount'    => 10, // կարգաբերվող
         ]);
+
+        if ($response->failed()) {
+            return "❌ HTTP սխալ վերադարձի ժամանակ:\n" . $response->body();
+        }
 
         $data = $response->json();
 
@@ -108,6 +116,10 @@ class PaymentController extends Controller
             'Username'  => env('AMERIA_USERNAME'),
             'Password'  => env('AMERIA_PASSWORD'),
         ]);
+
+        if ($response->failed()) {
+            return "❌ HTTP սխալ չեղարկման ժամանակ:\n" . $response->body();
+        }
 
         $data = $response->json();
 
