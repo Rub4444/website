@@ -146,7 +146,7 @@ class PaymentController extends Controller
                 'ResponseMessage' => 'Սերվերի հետ խնդիր է։ ' . $response->body()
             ];
         }
-        dd('✅ Response OK:', $response->json());
+        // dd('✅ Response OK:', $response->json());
         return $response->json();
     }
 
