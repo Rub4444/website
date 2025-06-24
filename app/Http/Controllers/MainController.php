@@ -20,8 +20,10 @@ class MainController extends Controller
     public function index(ProductFilterRequest $request)
     {
         $skus = Sku::with(['product', 'product.category'])
-            ->whereHas('product.category')
-            ->get();
+        ->whereHas('product.category')
+        ->get();
+
+        $skusQuery = Sku::with(['product', 'product.category']);
 
         // $productsQuery = Product::with('category');
 
