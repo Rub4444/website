@@ -18,7 +18,8 @@ class ProductController extends Controller
 
         $query = Product::query();
 
-        if ($search) {
+        if ($search)
+        {
             $query->where('name', 'like', '%' . $search . '%');
         }
 
@@ -55,7 +56,8 @@ class ProductController extends Controller
     {
         $params = $request->all();
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image'))
+        {
             $path = $request->file('image')->store('products', 'public');
             $params['image'] = $path;
         }
@@ -90,8 +92,10 @@ class ProductController extends Controller
         $params = $request->all();
 
         // Удаляем старое изображение, если загружено новое
-        if ($request->hasFile('image')) {
-            if ($product->image) {
+        if ($request->hasFile('image'))
+        {
+            if ($product->image)
+            {
                 Storage::disk('public')->delete($product->image);
             }
             $params['image'] = $request->file('image')->store('products', 'public');
