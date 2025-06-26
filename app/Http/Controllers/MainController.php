@@ -18,36 +18,29 @@ use DebugBar\DebugBar;
 class MainController extends Controller
 {
     public function index(ProductFilterRequest $request)
-    {
-        // $productsQuery = Product::with('category');
+{
+    // Получаем ID SKU с минимальной ценой на каждый product_id
+    $minPriceSkuIds = Sku::selectRaw('MIN(price) as min_price, product_id')
+    ->whereHas('product.category')
+    ->groupBy('product_id')
+    ->get()
+    ->map(function ($item) {
+        return Sku::where('product_id', $item->product_id)
+                ->where('price', $item->min_price)
+                ->orderBy('id')
+                ->value('id');
+    })->filter();
 
-        // if ($request->filled('price_from'))
-        // {
-        //     $skusQuery->where('price', '>=', $request->price_from);
-        // }
-        // if ($request->filled('price_to'))
-        // {
-        //     $skusQuery->where('price', '<=', $request->price_to);
-        // }
 
-        // foreach (['hit', 'new', 'recommend'] as $field)
-        // {
-        //     if ($request->has($field))
-        //     {
-        //         $skusQuery->whereHas('product', function ($query) use ($field) {
-        //             $query->where( $field);
-        //         });
-        //     }
-        // }
+    // Загружаем только эти SKUs
+    $skus = Sku::with(['product', 'product.category'])
+        ->whereIn('id', $minPriceSkuIds)
+        ->paginate(8)
+        ->withPath("?" . $request->getQueryString());
 
-       $skusQuery = Sku::with(['product', 'product.category'])
-        ->whereHas('product.category');
+    return view('index', compact('skus'));
+}
 
-        $skus = $skusQuery->paginate(8)->withPath("?" . $request->getQueryString());
-
-        return view('index', compact('skus'));
-
-    }
 
     public function categories()
     {

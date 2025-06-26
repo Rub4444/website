@@ -77,9 +77,6 @@
     @if($relatedSkus->count())
         <section class="related-products section--padding bg-light">
             <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="h4">@lang('main.related_products')</h2>
-                </div>
                 <div class="row g-4">
                     @foreach($relatedSkus as $sku)
                         @include('card', ['sku' => $sku])
