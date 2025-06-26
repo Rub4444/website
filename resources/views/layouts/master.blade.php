@@ -82,6 +82,20 @@
     <!-- End preloader -->
     <!-- Start header area -->
     <header class="header__section header__transparent ">
+        <div class="header__topbar bg__primary2">
+            <div class="container">
+                <div class="header__topbar--inner d-flex align-items-center justify-content-center">
+                    <div class="header__shipping d-flex align-items-center gap-2">
+                        <i class="fas fa-truck text-white me-2"></i>
+                        <p class="header__shipping--text text-white mb-0">
+                            <strong>@lang('main.free_delivery')</strong>
+                        </p>
+                    </div>
+                    {{-- <div class="header__topbar--countdown d-flex" data-countdown="Sep 30, 2022 00:00:00"></div> --}}
+                </div>
+            </div>
+        </div>
+
         <div class="main__header">
             <div class="container">
                 <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
