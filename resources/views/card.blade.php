@@ -1,11 +1,13 @@
 <div class="col mb-4">
     <div class="card h-100 shadow-sm border-0 rounded-4 position-relative hover-shadow transition">
+
         <!-- Картинка -->
         <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-            <img src="{{ asset('storage/' . $sku->product->image) }}"
-                 class="card-img-top img-fluid p-3"
-                 alt="{{ $sku->product->__('name') }}"
-                 style="height: 200px; object-fit: contain; background-color: #f9f9f9;">
+            <div class="product-img-wrapper">
+                <img src="{{ asset('storage/' . $sku->product->image) }}"
+                     class="card-img-top img-fluid"
+                     alt="{{ $sku->product->__('name') }}">
+            </div>
         </a>
 
         <!-- Бейджи -->
@@ -30,7 +32,7 @@
                 aria-pressed="{{ $isInWishlist ? 'true' : 'false' }}"
                 style="z-index: 10; width: 36px; height: 36px; border: 2px solid white;"
                 title="{{ $isInWishlist ? 'Удалить из избранного' : 'Добавить в избранное' }}">
-                <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart ' }}"></i>
+                <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
             </button>
         @endauth
 
@@ -68,14 +70,38 @@
 </div>
 
 <style>
-    /* В CSS добавьте плавный переход цвета */
-    .toggle-wishlist i {
-    transition: color 0.3s ease;
+    /* Контейнер для изображения фиксированного размера */
+    .product-img-wrapper {
+        height: 200px;
+        background-color: #f9f9f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 1rem;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+    .product-img-wrapper {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto; /* по центру */
+}
+
+    .product-img-wrapper img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
     }
 
+    /* Плавный переход для избранного */
+    .toggle-wishlist i {
+        transition: color 0.3s ease;
+    }
+
+    /* Hover эффект тени */
     .hover-shadow:hover {
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
         transition: box-shadow 0.3s ease-in-out;
     }
 </style>
-
