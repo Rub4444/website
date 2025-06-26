@@ -72,7 +72,10 @@ class Order extends Model
 
         if ($this->delivery_type === 'delivery')
         {
-            $this->sum += 500; // Добавляем стоимость доставки
+            if($this->sum < 10000)
+            {
+                $this->sum += 500;
+            }
         }
 
         $skus = $this->skus;
