@@ -9,12 +9,12 @@
 @section('content')
 <div class="container mt-4">
     <div class="card shadow rounded-4">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header bg-black text-white">
             <h4 class="mb-0">
                 @isset($sku)
-                    Խմբագրել SKU <b>{{ $sku->name }}</b>
+                    Խմբագրել <strong>{{ $product->name }}</strong> SKU <b>{{ $sku->name }}</b>
                 @else
-                    Ավելացնել SKU
+                    Ավելացնել <strong>{{ $product->name }}</strong> SKU
                 @endisset
             </h4>
         </div>
