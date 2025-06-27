@@ -1,13 +1,24 @@
 <div class="col mb-4">
     <div class="card h-100 shadow-sm border-0 rounded-4 position-relative hover-shadow transition">
 
-        <!-- Картинка -->
+        {{-- <!-- Картинка -->
         <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
             <div class="product-img-wrapper">
                 <img src="{{ asset('storage/' . $sku->product->image) }}"
                      class="card-img-top img-fluid"
                      alt="{{ $sku->product->__('name') }}">
             </div>
+        </a> --}}
+        <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
+                @if ($sku->image)
+                    <img src="{{ asset('storage/' . $sku->image) }}"
+                        class="card-img-top img-fluid"
+                        alt="{{ $sku->product->__('name') }}">
+                @else
+                    <img src="{{ asset('img/no-image.png') }}"
+                        class="card-img-top img-fluid"
+                        alt="No image">
+                @endif
         </a>
 
         <!-- Бейджи -->

@@ -24,6 +24,7 @@ class SkuRequest extends FormRequest
         return [
             'price' => 'required|numeric|min:0',
             'count' => 'required|integer|min:0',
+            'image' => 'nullable|image|max:2048',
         ];
     }
 }

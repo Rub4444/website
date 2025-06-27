@@ -13,9 +13,9 @@
             <div class="row">
                 <!-- Left: Product Image Gallery -->
                 <div class="col-lg-6">
-                    <div class="product__media--preview position-relative bg-white rounded shadow-sm p-3" style=" display: flex; align-items: center; justify-content: center;">
-                        <a class="glightbox" data-gallery="product-gallery" href="{{ Storage::url($skus->product->image) }}">
-                            <img class="img-fluid" src="{{ Storage::url($skus->product->image) }}"
+                    <div class="product__media--preview position-relative bg-white rounded shadow-sm p-3" style="display: flex; align-items: center; justify-content: center;">
+                        <a class="glightbox" data-gallery="product-gallery" href="{{ Storage::url($skus->image) }}">
+                            <img class="img-fluid" src="{{ Storage::url($skus->image) }}"
                                 alt="{{ $skus->product->__('name') }}"
                                 style="max-height: 280px; object-fit: contain;">
                         </a>
@@ -24,12 +24,12 @@
                                     data-id="{{ $skus->id }}"
                                     data-active="{{ Auth::user()->hasInWishlist($skus->id) ? '1' : '0' }}"
                                     style="z-index: 10; width: 36px; height: 36px; border: 2px solid white;">
-
                                 <i class="bi {{ Auth::user()->hasInWishlist($skus->id) ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
                             </button>
                         @endauth
                     </div>
                 </div>
+
 
                 <!-- Right: Product Info -->
                 <div class="col-lg-6">

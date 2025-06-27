@@ -82,6 +82,14 @@
                 </div>
             </div>
         @endforeach
+        <div class="form-group">
+            <label for="image">Նկար</label>
+            <input type="file" name="image" class="form-control">
+        </div>
+
+        @if (isset($sku) && $sku->image)
+            <img src="{{ Storage::url($sku->image) }}" width="100">
+        @endif
 
 
 

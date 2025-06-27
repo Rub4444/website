@@ -82,10 +82,10 @@
                     </div>
 
                     {{-- Image --}}
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="image" class="form-label">Նկար</label>
                         <input type="file" class="form-control" name="image" id="image">
-                    </div>
+                    </div> --}}
 
                     {{-- Properties --}}
                     <div class="mb-3">

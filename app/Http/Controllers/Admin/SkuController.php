@@ -21,21 +21,27 @@ class SkuController extends Controller
         return view('auth.skus.form', compact('product'));
     }
 
-    public function store(SkuRequest $request, Product $product)
+   public function store(SkuRequest $request, Product $product)
     {
         $params = $request->validated();
-        $params['price'] =  $params['price'];
+        $params['price'] = $params['price'];
         $params['product_id'] = $product->id;
 
-        $sku = Sku::create($params);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('skus', 'public');
+            $params['image'] = $path;
+        }
+
+        $sku = Sku::create($params); // ← создаём после добавления image
 
         if ($request->has('property_id')) {
             $sku->propertyOptions()->sync($request->property_id);
         }
 
         return redirect()->route('skus.show', [$product, $sku->id])
-                         ->with('success', 'Ապրանքային առաջարկը հաջողությամբ ստեղծվեց։');
+                        ->with('success', 'Ապրանքային առաջարկը հաջողությամբ ստեղծվեց։');
     }
+
 
     public function show(Product $product, Sku $sku)
     {
@@ -50,20 +56,28 @@ class SkuController extends Controller
     }
 
     public function update(SkuRequest $request, Product $product, Sku $sku)
-    {
-        $params = $request->validated();
-        $params['product_id'] = $product->id;
+{
+    $params = $request->validated();
+    $params['product_id'] = $product->id;
 
-        $sku->update($params);
-
-        if ($request->has('property_id'))
-        {
-            $sku->propertyOptions()->sync($request->property_id);
+    if ($request->hasFile('image')) {
+        if ($sku->image) {
+            Storage::disk('public')->delete($sku->image);
         }
 
-        return redirect()->route('skus.show', [$product, $sku->id])
-                         ->with('success', 'Ապրանքային առաջարկը հաջողությամբ թարմացվեց։');
+        $params['image'] = $request->file('image')->store('skus', 'public');
     }
+
+    $sku->update($params); // ← переместить сюда после image
+
+    if ($request->has('property_id')) {
+        $sku->propertyOptions()->sync($request->property_id);
+    }
+
+    return redirect()->route('skus.show', [$product, $sku->id])
+                     ->with('success', 'Ապրանքային առաջարկը հաջողությամբ թարմացվեց։');
+}
+
 
     public function destroy(Product $product, Sku $sku)
     {

@@ -56,21 +56,18 @@ class ProductController extends Controller
     {
         $params = $request->all();
 
-        if ($request->hasFile('image'))
-        {
-            $path = $request->file('image')->store('products', 'public');
-            $params['image'] = $path;
-        }
+        // if ($request->hasFile('image'))
+        // {
+        //     $path = $request->file('image')->store('products', 'public');
+        //     $params['image'] = $path;
+        // }
 
         // Убедимся, что чекбоксы не остаются NULL
         foreach (['new', 'hit', 'recommend'] as $field)
         {
             $params[$field] = $request->has($field) ? 1 : 0;
         }
-        // if ($request->hasFile('image')) {
-        //     $path = $request->file('image')->store('products', 'public');
-        //     dd($path);
-        // }
+
         Product::create($params);
         return redirect()->route('products.index')->with('success', 'Продукт добавлен.');
     }
@@ -92,14 +89,14 @@ class ProductController extends Controller
         $params = $request->all();
 
         // Удаляем старое изображение, если загружено новое
-        if ($request->hasFile('image'))
-        {
-            if ($product->image)
-            {
-                Storage::disk('public')->delete($product->image);
-            }
-            $params['image'] = $request->file('image')->store('products', 'public');
-        }
+        // if ($request->hasFile('image'))
+        // {
+        //     if ($product->image)
+        //     {
+        //         Storage::disk('public')->delete($product->image);
+        //     }
+        //     $params['image'] = $request->file('image')->store('products', 'public');
+        // }
 
         // Убедимся, что чекбоксы не остаются NULL
         foreach (['new', 'hit', 'recommend'] as $field) {
@@ -114,9 +111,9 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
+        // if ($product->image) {
+        //     Storage::disk('public')->delete($product->image);
+        // }
 
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Продукт удален.');
