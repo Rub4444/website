@@ -50,10 +50,10 @@
         @endauth
 
         <!-- Контент -->
-        <div class="card-body text-center px-3 pb-3 pt-2 w-100">
+        <div class="card-body text-center px-3 pb-3 pt-2 ">
             <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}"
                class="text-decoration-none text-dark">
-                <h6 class="card-title fw-semibold text-truncate">
+                <h6 class="card-title fw-semibold text-break">
                     {{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}
                 </h6>
             </a>
