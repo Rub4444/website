@@ -10,6 +10,7 @@
             </div>
         </a> --}}
         <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
+            <div class="product-img-wrapper">
                 @if ($sku->image)
                     <img src="{{ asset('storage/' . $sku->image) }}"
                         class="card-img-top img-fluid"
@@ -19,6 +20,7 @@
                         class="card-img-top img-fluid"
                         alt="No image">
                 @endif
+            </div>
         </a>
 
         <!-- Бейджи -->
