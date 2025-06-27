@@ -50,7 +50,7 @@
         @endauth
 
         <!-- Контент -->
-        <div class="card-body text-center px-3 pb-3 pt-2">
+        <div class="card-body text-center px-3 pb-3 pt-2" style="word-wrap: break-word;">
             <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}"
                class="text-decoration-none text-dark">
                 <h6 class="card-title fw-semibold text-truncate">
