@@ -9,7 +9,7 @@
 @section('content')
 <div class="container mt-4">
     <div class="card shadow rounded-4">
-        <div class="card-header bg-black text-white">
+        <div class="card-header text-black">
             <h4 class="mb-0">
                 @isset($sku)
                     Խմբագրել <strong>{{ $product->name }}</strong> SKU <b>{{ $sku->name }}</b>
