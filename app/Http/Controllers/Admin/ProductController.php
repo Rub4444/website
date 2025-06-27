@@ -52,25 +52,37 @@ class ProductController extends Controller
         return view('auth.products.form', compact('categories', 'properties'));
     }
 
+    // public function store(ProductRequest $request)
+    // {
+    //     $params = $request->all();
+
+    //     // Убедимся, что чекбоксы не остаются NULL
+    //     foreach (['new', 'hit', 'recommend'] as $field)
+    //     {
+    //         $params[$field] = $request->has($field) ? 1 : 0;
+    //     }
+
+    //     Product::create($params);
+    //     return redirect()->route('products.index')->with('success', 'Продукт добавлен.');
+    // }
     public function store(ProductRequest $request)
     {
         $params = $request->all();
 
-        // if ($request->hasFile('image'))
-        // {
-        //     $path = $request->file('image')->store('products', 'public');
-        //     $params['image'] = $path;
-        // }
-
-        // Убедимся, что чекбоксы не остаются NULL
-        foreach (['new', 'hit', 'recommend'] as $field)
-        {
+        foreach (['new', 'hit', 'recommend'] as $field) {
             $params[$field] = $request->has($field) ? 1 : 0;
         }
 
-        Product::create($params);
+        $product = Product::create($params);
+
+        // 💡 Добавим привязку свойств
+        if ($request->has('property_id')) {
+            $product->properties()->sync($request->property_id);
+        }
+
         return redirect()->route('products.index')->with('success', 'Продукт добавлен.');
     }
+
 
     public function show(Product $product)
     {
