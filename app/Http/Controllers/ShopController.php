@@ -36,7 +36,7 @@ class ShopController extends Controller
         }
 
         // Здесь используем paginate, чтобы можно было применить withQueryString()
-        $skus = $query->paginate(12)->withQueryString(); // ✅ Пагинация + фильтры
+        $skus = $query->paginate(60)->withQueryString(); // ✅ Пагинация + фильтры
 
         $categories = Category::all();
 
