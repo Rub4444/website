@@ -24,7 +24,7 @@ class CategoryRequest extends FormRequest
         $rules = [
             'code' => 'required|min:3|max:255|unique:categories,code',
             'name' => 'required|min:3|max:255',
-            'description' => 'required|min:3',
+            'description' => 'nullable|min:3',
             'name_en' => 'nullable|min:3|max:255',
             'description_en' => 'nullable|min:3',
         ];
