@@ -73,3 +73,61 @@
         </nav>
     </div>
 @endif
+<style>
+    .pagination__area {
+        padding: 1rem 0;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+    }
+
+    .pagination__wrapper {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .pagination__list {
+        display: flex;
+        align-items: center;
+    }
+
+    .pagination__item,
+    .pagination__item--arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        font-weight: 500;
+        border-radius: 8px;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .pagination__item:hover,
+    .pagination__item--arrow:hover {
+        background-color: #e9ecef;
+        color: #000;
+    }
+
+    .pagination__item--current {
+        background-color: #198754;
+        color: white;
+        border-color: #198754;
+    }
+
+    .disabled .pagination__item--arrow,
+    .disabled .pagination__item {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+    .pagination__wrapper {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+</style>
