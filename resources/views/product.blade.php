@@ -59,7 +59,7 @@
                     @if ($skus->isAvailable())
                         <form action="{{ route('basket-add', $skus) }}" method="POST" class="d-flex align-items-center gap-3 mb-3">
                             @csrf
-                            <input type="number" name="quantity" class="form-control w-auto" value="1" min="1" style="max-width: 100px;">
+                            {{-- <input type="number" name="quantity" class="form-control w-auto" value="1" min="1" style="max-width: 100px;"> --}}
                             <button type="submit" class="btn btn-success px-4">
                                 <i class="bi bi-cart-plus me-2"></i> @lang('main.basket')
                             </button>
