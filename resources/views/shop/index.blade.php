@@ -8,15 +8,16 @@
             <button class="btn btn-outline-success d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
                 <i class="bi bi-sliders"></i> Ֆիլտրեր
             </button>
-            <div class="btn-group d-lg-none" role="group">
-                <button type="button" class="btn btn-outline-secondary view-toggle active" data-view="grid">
+            <div class="btn-group d-lg-none" role="group" aria-label="View toggle">
+                <button type="button" class="btn btn-outline-secondary view-toggle active" data-view="grid" aria-pressed="true" title="Ցանցային տեսք">
                     <i class="bi bi-grid-3x3-gap-fill"></i>
                 </button>
-                <button type="button" class="btn btn-outline-secondary view-toggle" data-view="list">
+                <button type="button" class="btn btn-outline-secondary view-toggle" data-view="list" aria-pressed="false" title="Ցանկային տեսք">
                     <i class="bi bi-list-ul"></i>
                 </button>
             </div>
         </div>
+
 
         <div class="row">
             <!-- Sidebar фильтры -->
@@ -109,3 +110,79 @@
 </script>
 
 @endsection
+<style>
+    /* Основные стили страницы */
+.shop-section {
+    background-color: #f8f9fa; /* светлый фон */
+}
+
+/* Панель фильтров */
+.bg-light {
+    background-color: #fff !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+/* Карточки товаров */
+.card {
+    border: none;
+    border-radius: 1rem;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(25, 135, 84, 0.3);
+}
+
+/* Кнопки переключения вида */
+.btn-group .btn {
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-group .btn.active,
+.btn-group .btn:hover {
+    background-color: #198754;
+    color: #fff;
+    border-color: #198754;
+}
+
+/* Оффканвас */
+.offcanvas {
+    background-color: #fff;
+}
+
+/* Заголовок оффканвас */
+.offcanvas-header h5 {
+    font-weight: 600;
+}
+
+/* Кнопки фильтров и поиска */
+.btn-outline-success {
+    border-color: #198754;
+    color: #198754;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover,
+.btn-outline-success:focus {
+    background-color: #198754;
+    color: #fff;
+    border-color: #198754;
+}
+
+/* Кнопка закрытия оффканвас */
+.btn-close {
+    outline: none;
+}
+
+/* Для мобильных фильтров */
+@media (max-width: 991.98px) {
+    .btn-group.d-lg-none {
+        margin-left: auto;
+    }
+}
+
+</style>
