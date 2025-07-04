@@ -111,7 +111,7 @@
         <div class="container">
             <div class="row" id="category-list">
                 @foreach($categories as $index => $category)
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 py-2 p-1 category-item {{ $index >= 6 ? 'd-none extra-category' : '' }}">
+                    <div class="col-6 col-sm-4 col-md-4 col-lg-2 py-2 p-1 category-item {{ $index >= 6 ? 'd-none extra-category' : '' }}">
                         <a href="{{ route('category', $category->code) }}" class="text-decoration-none">
                             <div class="card h-100 shadow-sm category-card">
                                 <div class="card-body d-flex flex-column align-items-center justify-content-center">
@@ -150,7 +150,7 @@
 
         <!-- Best Sellers -->
         {{-- <h2 class="text-center mb-4">@lang('main.best_sales')</h2> --}}
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5 align-items-stretch">
             @foreach($bestSkus as $bestSku)
                 <div class="col-6 col-xss-6 col-sm-4 col-lg-3 col-xxl-2 my-2 p-1 p-lg-2">
                     @include('card', ['sku' => $bestSku])
