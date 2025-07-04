@@ -20,13 +20,19 @@
                     </a>
 
                     @auth
-                    <button
-                        class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-3 rounded-circle shadow"
-                        data-id="{{ $skus->id }}"
-                        data-active="{{ Auth::user()->hasInWishlist($skus->id) ? '1' : '0' }}"
-                        style="width: 40px; height: 40px;">
-                        <i class="bi {{ Auth::user()->hasInWishlist($skus->id) ? 'bi-heart-fill' : 'bi-heart' }} fs-5"></i>
-                    </button>
+                        <button class="btn btn-sm shadow position-absolute top-0 end-0 m-2 toggle-wishlist rounded-circle d-flex align-items-center justify-content-center"
+                                    data-id="{{ $skus->id }}"
+                                    data-active="{{ Auth::user()->hasInWishlist($skus->id) ? '1' : '0' }}"
+                                    style="z-index: 10; width: 36px; height: 36px; border: 2px solid white;">
+                                <i class="bi {{ Auth::user()->hasInWishlist($skus->id) ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
+                        </button>
+                        <!-- <button
+                            class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-3 rounded-circle shadow"
+                            data-id="{{ $skus->id }}"
+                            data-active="{{ Auth::user()->hasInWishlist($skus->id) ? '1' : '0' }}"
+                            style="width: 40px; height: 40px;">
+                            <i class="bi {{ Auth::user()->hasInWishlist($skus->id) ? 'bi-heart-fill' : 'bi-heart' }} fs-5"></i>
+                        </button> -->
                     @endauth
                 </div>
             </div>
