@@ -42,8 +42,8 @@ class MainController extends Controller
 
         // Загружаем категории с подсчетом количества SKU (среди выбранных)
         $categories = Category::whereIn('id', $categoryIds)
-            ->withCount(['skus as filtered_skus_count' => function ($query) use ($minPriceSkuIds) {
-                $query->whereIn('id', $minPriceSkuIds);
+            withCount(['skus as filtered_skus_count' => function ($query) use ($minPriceSkuIds) {
+                $query->whereIn('skus.id', $minPriceSkuIds);
             }])
             ->orderByDesc('filtered_skus_count')
             ->get();
