@@ -21,6 +21,7 @@ class CategorySeeder extends Seeder
             ['name' => 'Ընդեղեն', 'name_en' => 'Nuts and Seeds', 'icon' => 'fa-solid fa-seedling'],
             ['name' => 'Հացաբուլկեղեն', 'name_en' => 'Bakery', 'icon' => 'fa-solid fa-bread-slice'],
             ['name' => 'Պաղպաղակ', 'name_en' => 'Ice Cream', 'icon' => 'fa-solid fa-ice-cream'],
+            ['name' => 'Չիպսեր և սերմեր', 'name_en' => 'Chips and Seeds', 'icon' => 'fa-solid fa-cookie'],
 
             ['name' => 'Մաքրող միջոց', 'name_en' => 'Cleaning Supplies', 'icon' => 'fa-solid fa-soap'],
             ['name' => 'Լվացքի միջոց', 'name_en' => 'Laundry Products', 'icon' => 'fa-solid fa-pump-soap'],
