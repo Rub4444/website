@@ -1,96 +1,99 @@
 @extends('layouts.master')
 
 @section('content')
-<!-- cart section start -->
-<section class="cart__section section--padding">
+<section class="py-5">
     <div class="container">
-        <div class="cart__section--inner">
-            <div class="cart__table">
-                <table class="cart__table--inner">
-                    <thead class="cart__table--header">
-                        <tr class="cart__table--header__items">
-                            <th class="cart__table--header__list">@lang('main.product')</th>
-                            <th class="cart__table--header__list">@lang('main.price')</th>
-                            <th class="cart__table--header__list text-center">@lang('main.stock_status')</th>
-                            <th class="cart__table--header__list text-right">@lang('main.add_to_card')</th>
-                        </tr>
-                    </thead>
-                    <tbody class="cart__table--body">
-                        @forelse($skus as $sku)
-                            <tr class="cart__table--body__items">
-                                <td class="cart__table--body__list">
-                                    <div class="cart__product d-flex align-items-center">
-                                        @auth
-                                            @php $isInWishlist = Auth::user()->hasInWishlist($sku->id); @endphp
-                                            <button
-                                                class="btn btn-sm shadow position-absolute me-2 toggle-wishlist rounded-circle d-flex align-items-center justify-content-center"
-                                                data-id="{{ $sku->id }}"
-                                                aria-pressed="{{ $isInWishlist ? 'true' : 'false' }}"
-                                                style="z-index: 10; width: 36px; height: 36px; border: 2px solid white;"
-                                                title="{{ $isInWishlist ? 'Удалить из избранного' : 'Добавить в избранное' }}">
-                                                <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart ' }}"></i>
-                                            </button>
-                                        @endauth
+        <div class="table-responsive rounded shadow-sm bg-white p-3">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">@lang('main.product')</th>
+                        <th scope="col">@lang('main.price')</th>
+                        <th scope="col" class="text-center">@lang('main.stock_status')</th>
+                        <th scope="col" class="text-end">@lang('main.add_to_card')</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($skus as $sku)
+                    <tr>
+                        <!-- Product Info -->
+                        <td>
+                            <div class="d-flex align-items-center">
+                                @auth
+                                    @php $isInWishlist = Auth::user()->hasInWishlist($sku->id); @endphp
+                                    <button class="btn btn-sm btn-outline-danger me-2 rounded-circle d-flex align-items-center justify-content-center"
+                                            data-id="{{ $sku->id }}"
+                                            aria-pressed="{{ $isInWishlist ? 'true' : 'false' }}"
+                                            style="width: 36px; height: 36px;">
+                                        <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
+                                    </button>
+                                @endauth
 
-                                        <div class="cart__thumbnail">
-                                            <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                                                <img class="border-radius-5" width="50" height="50"
-                                                    src="{{ asset('storage/' . $sku->image) }}"
-                                                    alt="{{ $sku->product->__('name') }}">
-                                            </a>
-                                        </div>
+                                <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
+                                    <img src="{{ asset('storage/' . $sku->image) }}" class="rounded me-3" width="60" height="60"
+                                         alt="{{ $sku->product->__('name') }}" style="object-fit: contain;">
+                                </a>
 
-                                        <div class="cart__content">
-                                            <h3 class="cart__content--title h4"><a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">{{ $sku->product->__('name') }}</a></h3>
-                                            @foreach ($sku->propertyOptions as $option)
-                                                <span class="cart__content--variant">
-                                                    {{ $option->property->name }}: {{ $option->name }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__table--body__list">
-                                    <span class="cart__price">{{ $sku->price }} {{ $currencySymbol }}</span>
-                                </td>
-                                <td class="cart__table--body__list text-center">
-                                    @if ($sku->count > 0)
-                                        <span class="in__stock text__secondary">@lang('main.in_stock')</span>
-                                    @else
-                                        <span class="text-danger">@lang('main.out_off_stock')</span>
-                                    @endif
-                                </td>
-                                <td class="cart__table--body__list text-right ">
-
-                                    <form action="{{ route('basket-add', $sku) }}" method="POST" class="mt-2">
-                                        @csrf
-                                        @if($sku->isAvailable())
-                                            <button type="submit" class="btn btn-success btn-sm">
-                                                <i class="bi bi-cart-plus me-1"></i> @lang('main.basket')
-                                            </button>
-                                        @else
-                                            <button type="button" class="btn btn-outline-danger btn-sm" disabled>
-                                                @lang('main.available')
-                                            </button>
-                                        @endif
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <div class="col-12">
-                                <div class="text-center" style=" position: relative;padding: 1rem 1rem;margin-bottom: 1rem;border: 1px solid transparent;border-radius: 0.25rem; background-color:#6bc391;color:white;">@lang('main.there_are_no_suitable_products')</div>
+                                <div>
+                                    <h6 class="mb-1">{{ $sku->product->__('name') }}</h6>
+                                    @foreach ($sku->propertyOptions as $option)
+                                        <div class="text-muted small">{{ $option->property->name }}: {{ $option->name }}</div>
+                                    @endforeach
+                                </div>
                             </div>
-                        @endforelse
-                    </tbody>
-                </table>
-                <div class="continue__shopping d-flex justify-content-between">
-                    <a class="continue__shopping--link" href="{{route('index')}}">@lang('basket.continue_shopping')</a>
-                    <a class="continue__shopping--clear" href="{{route('shop')}}">@lang('main.view_all_products')</a>
-                </div>
-            </div>
+                        </td>
+
+                        <!-- Price -->
+                        <td>
+                            <span class="fw-bold text-success">{{ $sku->price }} {{ $currencySymbol }}</span>
+                        </td>
+
+                        <!-- Availability -->
+                        <td class="text-center">
+                            @if ($sku->count > 0)
+                                <span class="badge bg-success">@lang('main.in_stock')</span>
+                            @else
+                                <span class="badge bg-danger">@lang('main.out_off_stock')</span>
+                            @endif
+                        </td>
+
+                        <!-- Add to Cart -->
+                        <td class="text-end">
+                            <form action="{{ route('basket-add', $sku) }}" method="POST">
+                                @csrf
+                                @if($sku->isAvailable())
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="bi bi-cart-plus me-1"></i> @lang('main.basket')
+                                    </button>
+                                @else
+                                    <button type="button" class="btn btn-outline-danger btn-sm" disabled>
+                                        @lang('main.available')
+                                    </button>
+                                @endif
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-white bg-success p-3 rounded">
+                            @lang('main.there_are_no_suitable_products')
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer buttons -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 gap-3">
+            <a href="{{ route('index') }}" class="btn btn-outline-secondary w-100 w-md-auto">
+                <i class="bi bi-arrow-left me-1"></i> @lang('basket.continue_shopping')
+            </a>
+
+            <a href="{{ route('shop') }}" class="btn btn-outline-primary w-100 w-md-auto">
+                @lang('main.view_all_products')
+            </a>
         </div>
     </div>
 </section>
-<!-- cart section end -->
 @endsection
-
