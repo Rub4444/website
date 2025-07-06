@@ -23,10 +23,14 @@
                         <td>
                             <div class="d-flex align-items-center gap-3">
                                 <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku->id]) }}">
-                                    <img src="{{ Storage::url($sku->image) }}"
+                                    {{-- <img src="{{ Storage::url($sku->image) }}"
                                          alt="Product"
                                          class="rounded"
-                                         style="width: 70px; height: 70px; object-fit: cover;">
+                                         style="width: 70px; height: 70px; object-fit: cover;"> --}}
+                                    <img src="{{ Storage::url($sku->image) }}"
+                                    alt="Product"
+                                    class="rounded"
+                                    style="width: 70px; height: 70px; object-fit: contain;">
                                 </a>
                                 <div>
                                     <h6 class="mb-0">{{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}</h6>
