@@ -31,7 +31,7 @@
 
                                 <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
                                     <img src="{{ asset('storage/' . $sku->image) }}" class="rounded me-3" width="60" height="60"
-                                         alt="{{ $sku->product->__('name') }}" style="object-fit: contain;">
+                                         alt="{{ $sku->product->__('name') }}" style="width: 70px; height: 70px; object-fit: contain;">
                                 </a>
 
                                 <div>
