@@ -9,7 +9,7 @@
                     <tr>
                         <th scope="col">@lang('main.product')</th>
                         <th scope="col">@lang('main.price')</th>
-                        <th scope="col" class="text-center">@lang('main.stock_status')</th>
+                        {{-- <th scope="col" class="text-center">@lang('main.stock_status')</th> --}}
                         <th scope="col" class="text-end">@lang('main.add_to_card')</th>
                     </tr>
                 </thead>
@@ -49,13 +49,13 @@
                         </td>
 
                         <!-- Availability -->
-                        <td class="text-center">
+                        {{-- <td class="text-center">
                             @if ($sku->count > 0)
                                 <span class="badge bg-success">@lang('main.in_stock')</span>
                             @else
                                 <span class="badge bg-danger">@lang('main.out_off_stock')</span>
                             @endif
-                        </td>
+                        </td> --}}
 
                         <!-- Add to Cart -->
                         <td class="text-end">
