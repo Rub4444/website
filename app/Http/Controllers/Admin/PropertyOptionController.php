@@ -15,7 +15,10 @@ class PropertyOptionController extends Controller
      */
     public function index(Property $property)
     {
-        $propertyOptions = PropertyOption::paginate(10);
+        // $propertyOptions = PropertyOption::paginate(10);
+
+        $propertyOptions = PropertyOption::where('property_id', $property->id)->paginate(10);
+
         return view('auth.property_options.index', compact('propertyOptions', 'property'));
     }
 

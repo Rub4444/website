@@ -47,26 +47,9 @@
                 </div>
 
                 {{-- Properties --}}
-                {{-- @foreach ($product->properties as $property)
-                    <div class="mb-3">
-                        <label for="property_id[{{ $property->id }}]" class="form-label">{{ $property->name }}:</label>
-                        <select name="property_id[{{ $property->id }}]" class="form-select" required>
-                            @foreach($property->propertyOptions as $propertyOption)
-                                <option value="{{ $propertyOption->id }}"
-                                    @isset($sku)
-                                        @if($sku->propertyOptions->contains($propertyOption->id)) selected @endif
-                                    @endisset
-                                >
-                                    {{ $propertyOption->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                @endforeach --}}
-
                 @foreach ($product->properties as $property)
                     <div class="mb-3">
-                        <label class="form-label">{{ $property->name }}:</label>
+                        <label for="property_id[{{ $property->id }}]" class="form-label">{{ $property->name }}:</label>
                         <select name="property_id[{{ $property->id }}]" class="form-select" required>
                             @foreach($property->propertyOptions as $propertyOption)
                                 <option value="{{ $propertyOption->id }}"

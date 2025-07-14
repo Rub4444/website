@@ -18,9 +18,6 @@ class SkuController extends Controller
 
     public function create(Product $product)
     {
-         // Загрузим вместе с propertyOptions
-        $product->load('properties.propertyOptions');
-
         return view('auth.skus.form', compact('product'));
     }
 
@@ -55,9 +52,6 @@ class SkuController extends Controller
 
     public function edit(Product $product, Sku $sku)
     {
-         // Загрузим вместе с propertyOptions
-        $product->load('properties.propertyOptions');
-
         return view('auth.skus.form', compact('product', 'sku'));
     }
 
