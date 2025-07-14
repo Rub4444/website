@@ -11,7 +11,7 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $categories = [
-            ['name' => 'Հյութեր', 'name_en' => 'Juices', 'icon' => 'fa-solid fa-wine-glass-alt'],
+            ['name' => 'Զովացուցիչ ըմպելիքներ / Ջուր', 'name_en' => 'Juices', 'icon' => 'fa-solid fa-wine-glass-alt'],
             ['name' => 'Ալկոհոլային խմիչքներ', 'name_en' => 'Alcoholic Drinks', 'icon' => 'fa-solid fa-glass-whiskey'],
             ['name' => 'Կաթնամթերք', 'name_en' => 'Dairy Products', 'icon' => 'fa-solid fa-cheese'],
             ['name' => 'Կիսաֆաբրիկատ', 'name_en' => 'Semi-finished', 'icon' => 'fa-solid fa-drumstick-bite'],
