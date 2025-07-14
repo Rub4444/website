@@ -33,7 +33,8 @@ class PropertyOptionController extends Controller
     public function store(PropertyOptionRequest $request, Property $property)
     {
         $params = $request->all();
-        $params['property_id'] = $request->property->id;
+        // $params['property_id'] = $request->property->id;
+        $params['property_id'] = $property->id;
 
         PropertyOption::create($params);
         return redirect()->route('property-options.index', $property);
