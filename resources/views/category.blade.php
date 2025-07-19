@@ -4,7 +4,7 @@
 
 @section('content')
 
-    @if (($category->code ?? $skus->product->category->code) === 'alkvohvolayin-khmichqner')
+    @if (in_array(($category->code ?? $skus->product->category->code), ['alkvohvolayin-khmichqner', 'cxaxotner']))
         @include('partials.age-check-modal')
     @endif
 
