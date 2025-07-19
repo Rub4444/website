@@ -17,41 +17,76 @@ use DebugBar\DebugBar;
 
 class MainController extends Controller
 {
+//     public function index(ProductFilterRequest $request)
+//     {
+//         // Получаем ID SKU с минимальной ценой на каждый product_id
+//         $minPriceSkuIds = Sku::selectRaw('MIN(price) as min_price, product_id')
+//         ->whereHas('product.category')
+//         ->groupBy('product_id')
+//         ->get()
+//         ->map(function ($item) {
+//             return Sku::where('product_id', $item->product_id)
+//                     ->where('price', $item->min_price)
+//                     ->orderBy('id')
+//                     ->value('id');
+//         })->filter();
+
+//         // Загружаем только эти SKUs
+//         $skus = Sku::with(['product', 'product.category'])
+//             ->whereIn('id', $minPriceSkuIds)
+//             ->paginate(8)
+//             ->withPath("?" . $request->getQueryString());
+
+//         // Получаем категории этих SKU
+//         $categoryIds = $skus->pluck('product.category.id')->unique();
+
+//         // Загружаем категории с подсчетом количества SKU (среди выбранных)
+//         $categories = Category::whereIn('id', $categoryIds)
+//             ->withCount(['skus as filtered_skus_count' => function ($query) use ($minPriceSkuIds) {
+//     $query->whereIn('skus.id', $minPriceSkuIds);
+// }])
+
+//             ->orderByDesc('filtered_skus_count')
+//             ->get();
+
+//         return view('index', compact('skus', 'categories'));
+//         // return view('index', compact('skus'));
+//     }
     public function index(ProductFilterRequest $request)
-    {
-        // Получаем ID SKU с минимальной ценой на каждый product_id
-        $minPriceSkuIds = Sku::selectRaw('MIN(price) as min_price, product_id')
+{
+    // Получаем ID SKU с минимальной ценой на каждый product_id
+    $minPriceSkuIds = Sku::selectRaw('MIN(price) as min_price, product_id')
         ->whereHas('product.category')
         ->groupBy('product_id')
         ->get()
         ->map(function ($item) {
             return Sku::where('product_id', $item->product_id)
-                    ->where('price', $item->min_price)
-                    ->orderBy('id')
-                    ->value('id');
+                ->where('price', $item->min_price)
+                ->orderBy('id')
+                ->value('id');
         })->filter();
 
-        // Загружаем только эти SKUs
-        $skus = Sku::with(['product', 'product.category'])
-            ->whereIn('id', $minPriceSkuIds)
-            ->paginate(8)
-            ->withPath("?" . $request->getQueryString());
+    // Загружаем только эти SKUs
+    $skus = Sku::with(['product', 'product.category'])
+        ->whereIn('id', $minPriceSkuIds)
+        ->paginate(8)
+        ->withPath("?" . $request->getQueryString());
 
-        // Получаем категории этих SKU
-        $categoryIds = $skus->pluck('product.category.id')->unique();
+    // Получаем категории этих SKU
+    $categoryIds = $skus->pluck('product.category.id')->unique();
 
-        // Загружаем категории с подсчетом количества SKU (среди выбранных)
-        $categories = Category::whereIn('id', $categoryIds)
-            ->withCount(['skus as filtered_skus_count' => function ($query) use ($minPriceSkuIds) {
-    $query->whereIn('skus.id', $minPriceSkuIds);
-}])
+    // Загружаем категории с подсчетом количества SKU среди выбранных, и сортируем по убыванию
+    $categories = Category::withCount([
+        'skus as filtered_skus_count' => function ($query) use ($minPriceSkuIds) {
+            $query->whereIn('skus.id', $minPriceSkuIds);
+        }
+    ])
+        ->whereIn('id', $categoryIds)
+        ->orderByDesc('filtered_skus_count') // Сортировка по количеству SKU
+        ->get();
 
-            ->orderByDesc('filtered_skus_count')
-            ->get();
-
-        return view('index', compact('skus', 'categories'));
-        // return view('index', compact('skus'));
-    }
+    return view('index', compact('skus', 'categories'));
+}
 
 
     public function categories()
