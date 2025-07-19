@@ -17,45 +17,6 @@ use DebugBar\DebugBar;
 
 class MainController extends Controller
 {
-    public function index(ProductFilterRequest $request)
-{
-    // Получаем ID SKU с минимальной ценой на каждый product_id
-    $minPriceSkuIds = Sku::selectRaw('MIN(price) as min_price, product_id')
-        ->whereHas('product.category')
-        ->groupBy('product_id')
-        ->get()
-        ->map(function ($item) {
-            return Sku::where('product_id', $item->product_id)
-                ->where('price', $item->min_price)
-                ->orderBy('id')
-                ->value('id');
-        })->filter();
-
-    // Загружаем только эти SKUs с пагинацией
-    $skus = Sku::with(['product', 'product.category'])
-        ->whereIn('id', $minPriceSkuIds)
-        ->paginate(8)
-        ->withPath("?" . $request->getQueryString());
-
-    // Для получения категорий — лучше получить все sku без пагинации, чтобы правильно считать категории
-    $allSkusForCategories = Sku::with('product.category')
-        ->whereIn('id', $minPriceSkuIds)
-        ->get();
-
-    // Получаем уникальные id категорий из этой выборки
-    $categoryIds = $allSkusForCategories->pluck('product.category.id')->unique()->toArray();
-
-    // Загружаем категории с подсчетом количества SKU (из нашей выборки), сортируем по убыванию
-    $categories = Category::whereIn('id', $categoryIds)
-        ->withCount(['skus as filtered_skus_count' => function ($query) use ($minPriceSkuIds) {
-            $query->whereIn('skus.id', $minPriceSkuIds);
-        }])
-        ->orderByDesc('filtered_skus_count')
-        ->get();
-
-    return view('index', compact('skus', 'categories'));
-}
-
     // public function index(ProductFilterRequest $request)
     // {
     //     // Получаем ID SKU с минимальной ценой на каждый product_id
@@ -91,6 +52,39 @@ class MainController extends Controller
     //     return view('index', compact('skus', 'categories'));
     //     // return view('index', compact('skus'));
     // }
+public function index(ProductFilterRequest $request)
+{
+    // Получаем ID SKU с минимальной ценой на каждый product_id
+    $minPriceSkuIds = Sku::selectRaw('MIN(price) as min_price, product_id')
+        ->whereHas('product.category')
+        ->groupBy('product_id')
+        ->get()
+        ->map(function ($item) {
+            return Sku::where('product_id', $item->product_id)
+                ->where('price', $item->min_price)
+                ->orderBy('id')
+                ->value('id');
+        })->filter();
+
+    // Загружаем эти SKU с пагинацией
+    $skus = Sku::with(['product', 'product.category'])
+        ->whereIn('id', $minPriceSkuIds)
+        ->paginate(8)
+        ->withPath("?" . $request->getQueryString());
+
+    // Теперь считаем сколько таких SKU для каждой категории
+    // Для этого сделаем запрос к таблице категорий с join на продукты и sku
+    $categories = Category::select('categories.*')
+        ->selectRaw('COUNT(skus.id) as filtered_skus_count')
+        ->join('products', 'products.category_id', '=', 'categories.id')
+        ->join('skus', 'skus.product_id', '=', 'products.id')
+        ->whereIn('skus.id', $minPriceSkuIds)
+        ->groupBy('categories.id')
+        ->orderByDesc('filtered_skus_count')
+        ->get();
+
+    return view('index', compact('skus', 'categories'));
+}
 
 
     public function categories()
