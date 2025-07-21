@@ -34,7 +34,7 @@ class MainController extends Controller
         // Загружаем только эти SKUs
         $skus = Sku::with(['product', 'product.category'])
             ->whereIn('id', $minPriceSkuIds)
-            ->paginate(8)
+            ->paginate(20)
             ->withPath("?" . $request->getQueryString());
 
         // Получаем категории этих SKU
