@@ -157,6 +157,24 @@
             @endforeach
         </div>
 
+        <!-- Горизонтальный скролл с товарами -->
+        <h5 class="mt-4 mb-3">📌 @lang('main.featured_random_products')</h5>
+        <div class="d-flex overflow-auto px-2 pb-3" style="gap: 12px;">
+            @foreach($randomSkus as $sku)
+                <div class="card shadow-sm" style="min-width: 180px; max-width: 200px;">
+                    <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}" class="text-decoration-none text-dark">
+                        @if($sku->image)
+                            <img src="{{ $sku->image }}" class="card-img-top" style="object-fit: cover; height: 150px;" alt="{{ $sku->product->name }}">
+                        @endif
+                        <div class="card-body">
+                            <h6 class="card-title mb-1">{{ $sku->product->name }}</h6>
+                            <p class="card-text">{{ $sku->price }} ֏</p>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        </div>
+
     </div>
 
 @endsection
