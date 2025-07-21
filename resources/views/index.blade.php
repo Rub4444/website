@@ -156,32 +156,6 @@
                 </div>
             @endforeach
         </div>
-
-        <div id="categoryCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @foreach ($randomSkus as $index => $sku)
-                <div class="carousel-item @if ($index === 0) active @endif">
-                    <div class="card mx-auto" style="width: 18rem;">
-                    <img src="{{ $sku->product->image_url }}" class="card-img-top" alt="{{ $sku->product->name }}">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ $sku->product->name }}</h5>
-                        <p class="card-text">{{ $sku->price }} ֏</p>
-                        <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}" class="btn btn-primary">Подробнее</a>
-                    </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            </button>
-        </div>
-
-
     </div>
 
 @endsection
