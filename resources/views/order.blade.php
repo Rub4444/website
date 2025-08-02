@@ -63,7 +63,7 @@
                         </div>
                         <div class="checkout__content--step__footer d-flex align-items-center">
                             @csrf
-                            <input type="submit" class="btn btn-success" value="Confirm">
+                            <input type="submit" class="btn btn-success" value="@lang('basket.confirm')">
                         </div>
                     </form>
                 </main>

@@ -94,8 +94,7 @@ class SkuController extends Controller
                     ->whereHas('product', function ($q) use ($query) {
                         $q->where('name', 'like', '%' . $query . '%');
                     })
-                    ->orWhere('price', 'like', '%' . $query . '%') // Пример: поиск по цене
-                    ->paginate(12);
+                    ->orWhere('price', 'like', '%' . $query . '%');
 
         return view('products.search-results', compact('skus', 'query'));
     }
