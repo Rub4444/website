@@ -27,6 +27,10 @@
                                 <td>{{ $sku->id }}</td>
                             </tr>
                             <tr>
+                                <td>Անուն SKU</td>
+                                <td>{{ $sku->name ?? '-' }}</td>
+                            </tr>
+                            <tr>
                                 <td>Գին</td>
                                 <td>{{ $sku->price}} դրամ</td>
                             </tr>

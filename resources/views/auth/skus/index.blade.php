@@ -12,6 +12,7 @@
                 <thead class="">
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">SKU Անուն</th>
                         <th scope="col">Առաջարկի հատկություններ</th>
                         <th scope="col">Գործողություններ</th>
                     </tr>
@@ -24,6 +25,7 @@
                     @endphp --}}
                         <tr>
                             <td>{{ $sku->id }}</td>
+                            <td>{{ $sku->name ?? '-' }}</td>
                             <td>{{ $sku->propertyOptions->map->name->implode(', ') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
