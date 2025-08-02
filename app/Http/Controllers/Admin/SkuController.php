@@ -86,17 +86,32 @@ class SkuController extends Controller
                          ->with('success', 'Ապրանքային առաջարկը հաջողությամբ հեռացվեց։');
     }
 
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
+    // public function search(Request $request)
+    // {
+    //     $query = $request->input('query');
 
-        $skus = Sku::with(['product', 'propertyOptions.property'])
-                    ->whereHas('product', function ($q) use ($query) {
-                        $q->where('name', 'like', '%' . $query . '%');
-                    })
-                    ->orWhere('price', 'like', '%' . $query . '%');
+    //     $skus = Sku::with(['product', 'propertyOptions.property'])
+    //                 ->whereHas('product', function ($q) use ($query) {
+    //                     $q->where('name', 'like', '%' . $query . '%');
+    //                 })
+    //                 ->orWhere('price', 'like', '%' . $query . '%');
 
-        return view('products.search-results', compact('skus', 'query'));
-    }
+    //     return view('products.search-results', compact('skus', 'query'));
+    // }
+public function search(Request $request)
+{
+    $query = $request->input('query');
+
+    $skus = Sku::with(['product', 'propertyOptions.property'])
+        ->where(function ($q) use ($query) {
+            $q->whereHas('product', function ($q2) use ($query) {
+                $q2->where('name', 'like', '%' . $query . '%');
+            })
+            ->orWhere('price', 'like', '%' . $query . '%');
+        })
+        ->get();
+
+    return view('products.search-results', compact('skus', 'query'));
+}
 
 }
