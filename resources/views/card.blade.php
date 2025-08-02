@@ -57,8 +57,8 @@
                     {{ $sku->product->__('name') }} {{ $sku->name ? ' ' . $sku->name : '' }}
                     {{-- {{ $sku->propertyOptions->map->name->implode(', ') }} --}}
                     {{ $sku->propertyOptions->map(function($option) {
-                            return $option->property->name . ': ' . $option->name;
-                        })->implode(', ') }}
+                         $option->name . ': ' . return $option->property->name;})->implode(', ')
+                    }}
                 </h6>
             </a>
 
