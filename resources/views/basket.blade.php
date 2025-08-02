@@ -33,7 +33,10 @@
                                     style="width: 70px; height: 70px; object-fit: contain;">
                                 </a>
                                 <div>
-                                    <h6 class="mb-0">{{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}</h6>
+                                    <h6 class="mb-0">
+                                        {{ $sku->product->__('name') }} {{ $sku->name ? ' ' . $sku->name : '' }}
+                                        {{ $sku->propertyOptions->map->name->implode(', ') }}
+                                    </h6>
                                 </div>
                             </div>
                         </td>
