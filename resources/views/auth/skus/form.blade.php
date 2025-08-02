@@ -30,6 +30,11 @@
                     @method('PUT')
                 @endisset
 
+                <div class="mb-3">
+                    <label for="name" class="form-label">SKU Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $sku->name ?? '') }}">
+                </div>
+
                 {{-- Price --}}
                 <div class="mb-3">
                     <label for="price" class="form-label">Գինը:</label>

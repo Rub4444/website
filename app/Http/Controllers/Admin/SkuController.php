@@ -25,9 +25,11 @@ class SkuController extends Controller
     {
         $params = $request->validated();
         $params['price'] = $params['price'];
+        $params['name'] = $request->input('name', null);
         $params['product_id'] = $product->id;
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image'))
+        {
             $path = $request->file('image')->store('skus', 'public');
             $params['image'] = $path;
         }
@@ -58,10 +60,13 @@ class SkuController extends Controller
     public function update(SkuRequest $request, Product $product, Sku $sku)
 {
     $params = $request->validated();
+    $params['name'] = $request->input('name', null);
     $params['product_id'] = $product->id;
 
-    if ($request->hasFile('image')) {
-        if ($sku->image) {
+    if ($request->hasFile('image'))
+    {
+        if ($sku->image)
+        {
             Storage::disk('public')->delete($sku->image);
         }
 
@@ -70,7 +75,8 @@ class SkuController extends Controller
 
     $sku->update($params); // ← переместить сюда после image
 
-    if ($request->has('property_id')) {
+    if ($request->has('property_id'))
+    {
         $sku->propertyOptions()->sync($request->property_id);
     }
 

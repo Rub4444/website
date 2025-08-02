@@ -54,7 +54,8 @@
             <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}"
                class="text-decoration-none text-dark">
                 <h6 class="card-title fw-semibold text-break">
-                    {{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }}
+                    {{-- {{ $sku->product->__('name') }} {{ $sku->propertyOptions->map->name->implode(', ') }} --}}
+                    {{ $sku->product->__('name') }} {{ $sku->name ? '— ' . $sku->name : '' }} {{ $sku->propertyOptions->map->name->implode(', ') }}
                 </h6>
             </a>
 
