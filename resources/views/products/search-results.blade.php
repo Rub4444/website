@@ -11,9 +11,9 @@
         </div>
 
         <!-- Pagination -->
-        <nav class="d-flex justify-content-center">
+        {{-- <nav class="d-flex justify-content-center">
             {{ $skus->links('vendor.custom') }}
-        </nav>
+        </nav> --}}
    @else
         <div class="container my-5">
             <div class="alert alert-warning text-center shadow-lg p-4 rounded-4" role="alert" style="background: linear-gradient(135deg, #fff3cd, #ffeeba); border: none;">
