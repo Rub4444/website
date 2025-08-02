@@ -31,7 +31,7 @@
                 @endisset
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">SKU Name</label>
+                    <label for="name" class="form-label">SKU Անուն</label>
                     <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $sku->name ?? '') }}">
                 </div>
 
