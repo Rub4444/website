@@ -12,7 +12,7 @@ class SkuController extends Controller
 {
     public function index(Product $product)
     {
-        $skus = $product->skus()->with('propertyOptions.property')->paginate(10);
+        $skus = $product->skus()->with('propertyOptions.property')->paginate(50);
         return view('auth.skus.index', compact('skus', 'product'));
     }
 
