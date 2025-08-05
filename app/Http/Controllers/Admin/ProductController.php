@@ -38,7 +38,8 @@ class ProductController extends Controller
 
     $query = Product::query();
 
-    if ($search) {
+    if ($search)
+    {
         $query->where('name', 'like', '%' . $search . '%');
     }
 

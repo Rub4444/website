@@ -8,6 +8,11 @@
             <h3 class="mb-4 text-center">Ապրանքային առաջարկներ - <span>{{ $product->name }}</span></h3>
         </div>
         <div class="table-responsive">
+            <br>
+            <a class="btn btn-success" href="{{ route('skus.create', $product) }}">
+                Ավելացնել առաջարկ (SKU)
+            </a>
+            <br>
             <table class="table table-hover table-bordered align-middle text-center">
                 <thead class="">
                     <tr>
@@ -50,12 +55,17 @@
             </table>
         </div>
 
-        <div class="my-3">
+        {{-- <div class="my-3">
             {{ $skus->links() }}
+        </div> --}}
+        <!-- Products Listing -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5 align-items-stretch">
+            @foreach($skus as $sku)
+                <div class="col-6 col-xss-6 col-sm-4 col-lg-3 col-xxl-2 my-2 p-1 p-lg-2">
+                    @include('card', compact('sku'))
+                </div>
+            @endforeach
         </div>
 
-        <a class="btn btn-success" href="{{ route('skus.create', $product) }}">
-            Ավելացնել առաջարկ (SKU)
-        </a>
     </div>
 @endsection
