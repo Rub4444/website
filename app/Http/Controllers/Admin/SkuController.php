@@ -10,11 +10,31 @@ use Illuminate\Http\Request;
 
 class SkuController extends Controller
 {
-    public function index(Product $product)
-    {
-        $skus = $product->skus()->with('propertyOptions.property')->paginate(50);
-        return view('auth.skus.index', compact('skus', 'product'));
+    // public function index(Product $product)
+    // {
+    //     $skus = $product->skus()->with('propertyOptions.property')->paginate(50);
+    //     return view('auth.skus.index', compact('skus', 'product'));
+    // }
+    public function index(Product $product, Request $request)
+{
+    $search = $request->input('search');
+
+    $skusQuery = $product->skus()->with('propertyOptions.property');
+
+    if ($search) {
+        $skusQuery->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%$search%")
+              ->orWhere('price', 'like', "%$search%")
+              ->orWhereHas('propertyOptions', function ($q2) use ($search) {
+                  $q2->where('name', 'like', "%$search%");
+              });
+        });
     }
+
+    $skus = $skusQuery->paginate(50)->withQueryString();
+
+    return view('auth.skus.index', compact('skus', 'product', 'search'));
+}
 
     public function create(Product $product)
     {

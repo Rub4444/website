@@ -8,6 +8,24 @@
             <h3 class="mb-4 text-center">Ապրանքային առաջարկներ - <span>{{ $product->name }}</span></h3>
         </div>
         <div class="table-responsive">
+            <div class="card border-0 rounded-4 shadow-sm mb-4">
+                <div class="card-header bg-light rounded-top-4 fw-semibold text-secondary">
+                    🔍 Որոնում
+                </div>
+                <div class="card-body">
+                    <form method="GET" class="row mb-3 g-2">
+                        <div class="col-md-6">
+                            <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Որոնել SKU անվամբ կամ հատկությամբ">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" type="submit">Որոնել</button>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{{ route('skus.index', $product) }}" class="btn btn-outline-secondary">Ջնջել ֆիլտրը</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <br>
             <a class="btn btn-success" href="{{ route('skus.create', $product) }}">
                 Ավելացնել առաջարկ (SKU)

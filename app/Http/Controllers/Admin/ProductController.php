@@ -12,25 +12,8 @@ use App\Models\Property;
 
 class ProductController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     $search = $request->input('search');
 
-    //     $query = Product::query();
-
-    //     if ($search)
-    //     {
-    //         $query->where('name', 'like', '%' . $search . '%');
-    //     }
-
-    //     $products = $query->paginate(50);
-
-    //     // Чтобы пагинация сохраняла параметр поиска в ссылках
-    //     $products->appends(['search' => $search]);
-
-    //     return view('auth.products.index', compact('products', 'search'));
-    // }
-
+        //poisk productov
 
 //     public function index(Request $request)
 // {
@@ -53,6 +36,7 @@ class ProductController extends Controller
 
 //     return view('auth.products.index', compact('products', 'search'));
 // }
+    // poisk skusov
     public function index(Request $request)
 {
     $search = $request->input('search');
