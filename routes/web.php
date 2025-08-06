@@ -105,7 +105,8 @@ Route::middleware(['set_locale'])->group(function()
     })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
     Route::group([
-        'middleware' => ['auth', 'verified', 'basket_not_empty']
+        'middleware' => ['basket_not_empty']
+        // 'middleware' => ['auth', 'verified', 'basket_not_empty']
     ], function () {
 
         Route::post('/basket/ajax/add/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxAdd'])->name('basket.ajax.add');
