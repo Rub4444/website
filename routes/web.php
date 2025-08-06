@@ -106,6 +106,7 @@ Route::middleware(['set_locale'])->group(function()
 
     Route::group([
         'middleware' => ['basket_not_empty']
+        // ete uzum enq basket@ grancven nor qcen
         // 'middleware' => ['auth', 'verified', 'basket_not_empty']
     ], function () {
 
