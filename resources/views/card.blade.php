@@ -37,7 +37,7 @@
         </div>
 
         <!-- Кнопка избранного -->
-        {{-- @auth
+        @auth
             @php $isInWishlist = Auth::user()->hasInWishlist($sku->id); @endphp
             <button
                 class="btn btn-sm shadow position-absolute top-0 end-0 m-2 toggle-wishlist rounded-circle d-flex align-items-center justify-content-center"
@@ -47,20 +47,7 @@
                 title="{{ $isInWishlist ? 'Удалить из избранного' : 'Добавить в избранное' }}">
                 <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
             </button>
-        @endauth --}}
-        @php
-    $isInWishlist = auth()->check() && auth()->user()->hasInWishlist($sku->id);
-@endphp
-
-<button
-    class="btn btn-sm shadow position-absolute top-0 end-0 m-2 toggle-wishlist rounded-circle d-flex align-items-center justify-content-center"
-    data-id="{{ $sku->id }}"
-    aria-pressed="{{ $isInWishlist ? 'true' : 'false' }}"
-    style="z-index: 10; width: 36px; height: 36px; border: 2px solid white;"
-    title="{{ $isInWishlist ? 'Удалить из избранного' : 'Добавить в избранное' }}">
-    <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
-</button>
-
+        @endauth
 
         <!-- Контент -->
         <div class="card-body text-center px-3 pb-3 pt-2 ">
