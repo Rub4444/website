@@ -104,20 +104,20 @@ Route::middleware(['set_locale'])->group(function()
         return back()->with('message', 'Ссылка подтверждения отправлена на ваш email.');
     })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-    // Route::group([
-    //     'middleware' => ['auth', 'verified', 'basket_not_empty']
-    // ], function () {
+    Route::group([
+        'middleware' => ['auth', 'verified', 'basket_not_empty']
+    ], function () {
 
-    //     Route::post('/basket/ajax/add/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxAdd'])->name('basket.ajax.add');
-    //     Route::post('/basket/ajax/remove/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxRemove'])->name('basket.ajax.remove');
+        Route::post('/basket/ajax/add/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxAdd'])->name('basket.ajax.add');
+        Route::post('/basket/ajax/remove/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxRemove'])->name('basket.ajax.remove');
 
-    //     Route::delete('/basket/clear', [BasketController::class, 'basketClear'])->name('basket.clear');
+        Route::delete('/basket/clear', [BasketController::class, 'basketClear'])->name('basket.clear');
 
-    //     Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
-    //     Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
-    //     Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
-    //     Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
-    // });
+        Route::get('/basket', [BasketController::class, 'basket'])->name('basket');
+        Route::get('/basket/place', [BasketController::class, 'basketPlace'])->name('basket-place');
+        Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
+        Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
+    });
 
     Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
