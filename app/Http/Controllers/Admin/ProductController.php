@@ -32,23 +32,47 @@ class ProductController extends Controller
     // }
 
 
+//     public function index(Request $request)
+// {
+//     $search = $request->input('search');
+
+//     $query = Product::query();
+
+//     if ($search)
+//     {
+//         $query->where('name', 'like', '%' . $search . '%');
+//     }
+
+//     // Добавляем сортировку по дате создания (новые первыми)
+//     $query->orderBy('created_at', 'desc');
+
+//     $products = $query->paginate(50);
+
+//     // Сохраняем параметр поиска в ссылках пагинации
+//     $products->appends(['search' => $search]);
+
+//     return view('auth.products.index', compact('products', 'search'));
+// }
     public function index(Request $request)
 {
     $search = $request->input('search');
 
     $query = Product::query();
 
-    if ($search)
-    {
-        $query->where('name', 'like', '%' . $search . '%');
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+              ->orWhereHas('skus', function ($skuQuery) use ($search) {
+                  $skuQuery->where('name', 'like', '%' . $search . '%');
+              });
+        });
     }
 
-    // Добавляем сортировку по дате создания (новые первыми)
+    // Новые продукты первыми
     $query->orderBy('created_at', 'desc');
 
     $products = $query->paginate(50);
 
-    // Сохраняем параметр поиска в ссылках пагинации
     $products->appends(['search' => $search]);
 
     return view('auth.products.index', compact('products', 'search'));
