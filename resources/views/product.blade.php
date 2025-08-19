@@ -41,7 +41,7 @@
             <div class="col-lg-6">
                 <div class="product__details--info">
                     <h1 class="h3 fw-bold mb-3">
-                        {{ $skus->product->__('name') }} {{ $skus->name ? ' ' . $skus->name : '' }} {{ $option->__('name') }} {{ $option->property->__('name') }}
+                        {{ $skus->product->__('name') }} {{ $skus->name ? ' ' . $skus->name : '' }} {{ $skus->propertyOption->__('name') }} {{ $skus->propertyOption->property->__('name') }}
                     </h1>
 
                     <div class="mb-4">
