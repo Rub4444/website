@@ -105,45 +105,42 @@
 
     <div class="container py-3">
 
-        <div id="skuCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @foreach($randomSkus->chunk(2) as $chunkIndex => $skuChunk)
-                <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
-                    <div class="row">
-                    @foreach($skuChunk as $sku)
-                        <div class="col-12 col-md-6">
-                        <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                            <img src="{{ Storage::url($sku->image) }}"
-     class="img-fluid rounded shadow-sm"
-     style="height: 250px; object-fit: cover; width: 100%;"
-     alt="{{ $sku->product->__('name') }}">
+        <div class="container my-4">
+    <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
 
-                        </a>
+            @foreach($banners as $index => $banner)
+                <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                    <div class="position-relative">
+                        <img src="{{ Storage::url($banner->image) }}"
+                             class="d-block w-100 rounded"
+                             style="height: 300px; object-fit: cover;"
+                             alt="{{ $banner->title }}">
+
+                        <!-- Текст поверх -->
+                        <div class="carousel-caption d-none d-md-block text-start">
+                            <h5 class="fw-bold">{{ $banner->title }}</h5>
+                            <p>{{ $banner->description }}</p>
+                            <a href="{{ $banner->link }}" class="btn btn-primary btn-sm">
+                                Подробнее
+                            </a>
                         </div>
-                    @endforeach
                     </div>
                 </div>
-                @endforeach
-            </div>
+            @endforeach
 
-            <!-- Навигационные стрелки -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#skuCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#skuCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+        </div>
 
-            <!-- Индикаторы -->
-            <div class="carousel-indicators">
-                @foreach($randomSkus->chunk(2) as $chunkIndex => $skuChunk)
-                <button type="button" data-bs-target="#skuCarousel" data-bs-slide-to="{{ $chunkIndex }}"
-                        class="{{ $chunkIndex == 0 ? 'active' : '' }}"></button>
-                @endforeach
-            </div>
-            </div>
+        <!-- Навигация -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</div>
+
 
         {{-- <h2 class="text-center mb-4">@lang('main.all_categories')</h2> --}}
         <div class="container">
