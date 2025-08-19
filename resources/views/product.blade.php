@@ -64,6 +64,9 @@
                     </div>
 
                     @if ($skus->isAvailable())
+
+                        <p><strong>@lang('main.count')`</strong> {{ $skus->count }}</p>
+
                         <form action="{{ route('basket-add', $skus) }}" method="POST" class="d-flex align-items-center gap-3 mb-3">
                             @csrf
                             {{-- <input type="number" name="quantity" class="form-control w-auto" value="1" min="1" style="max-width: 100px;"> --}}
@@ -71,7 +74,6 @@
                                 <i class="bi bi-cart-plus me-2"></i> @lang('main.basket')
                             </button>
                         </form>
-                        <p><strong>@lang('main.count')`</strong> {{ $skus->count }}</p>
                     @else
                         <div class="alert alert-warning">
                             <p class="mb-3">@lang('main.available')</p>
