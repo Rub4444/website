@@ -41,18 +41,18 @@
             <div class="col-lg-6">
                 <div class="product__details--info">
                     <h1 class="h3 fw-bold mb-3">
-                        {{ $skus->product->__('name') }} {{ $skus->name ? ' ' . $skus->name : '' }}
+                        {{ $skus->product->__('name') }} {{ $skus->name ? ' ' . $skus->name : '' }} {{ $option->__('name') }} {{ $option->property->__('name') }}
                     </h1>
 
                     <div class="mb-4">
                         <span class="fs-3 fw-bold text-success">{{ $skus->price }} {{ $currencySymbol }}</span>
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         @foreach ($skus->propertyOptions as $option)
                             <p class="mb-1"><strong>{{ $option->property->__('name') }}:</strong> {{ $option->__('name') }}</p>
                         @endforeach
-                    </div>
+                    </div> --}}
 
                     <div class="mb-4">
                         <p class="text-muted">{{ $skus->product->__('description') }}</p>
