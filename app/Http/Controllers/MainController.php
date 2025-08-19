@@ -54,7 +54,9 @@ class MainController extends Controller
     // }
     public function index(ProductFilterRequest $request)
 {
-    $categories = Category::all();
+    $categories = Category::withCount('products')
+        ->orderBy('products_count', 'desc')
+        ->get();
 
     // --- Random 8 товаров ---
     $randomSkus = Sku::with(['product', 'product.category'])

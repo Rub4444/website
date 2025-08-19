@@ -104,6 +104,41 @@
     @endif
 
     <div class="container py-3">
+        <div id="skuCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @foreach($randomSkus->chunk(4) as $chunkIndex => $skuChunk)
+                    <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
+                        <div class="row">
+                            @foreach($skuChunk as $sku)
+                                <div class="col-6 col-md-3">
+                                    <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
+                                        <img src="{{ Storage::url($sku->image) }}" class="d-block w-100 img-fluid rounded shadow-sm" alt="{{ $sku->product->__('name') }}">
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Стрелки -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#skuCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#skuCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+
+            <!-- Индикаторы -->
+            <div class="carousel-indicators">
+                @foreach($randomSkus->chunk(4) as $chunkIndex => $skuChunk)
+                    <button type="button" data-bs-target="#skuCarousel" data-bs-slide-to="{{ $chunkIndex }}" class="{{ $chunkIndex == 0 ? 'active' : '' }}"></button>
+                @endforeach
+            </div>
+        </div>
+
         {{-- <h2 class="text-center mb-4">@lang('main.all_categories')</h2> --}}
         <div class="container">
             <div class="row" id="category-list">
@@ -131,7 +166,6 @@
         </div>
 
         <!-- Random 8 -->
-        {{-- <h2 class="text-center mb-4">🎲 @lang('main.random_products')</h2> --}}
         <h2 class="text-center mb-4">@lang('main.rec_product')</h2>
         <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
             @foreach($randomSkus as $sku)
@@ -140,7 +174,6 @@
         </div>
 
         <!-- Latest 8 -->
-        {{-- <h2 class="text-center mb-4">🆕 @lang('main.new_arrivals')</h2> --}}
         <h2 class="text-center mb-4">@lang('main.new_skus')</h2>
         <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
             @foreach($newSkus as $sku)
