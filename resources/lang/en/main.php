@@ -114,4 +114,6 @@ return [
     'we_prioritize' => 'We prioritize quality and customer satisfaction.',
     'we_ensure' => 'We ensure fast and reliable delivery to your doorstep.',
     'free_delivery' => 'Free delivery in Ijevan for orders over 10,000 AMD.',
+    'rec_product' => 'Offer',
+    'new_skus' => 'New products',
 ];

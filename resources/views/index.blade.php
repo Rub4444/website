@@ -105,7 +105,6 @@
 
     <div class="container py-3">
         {{-- <h2 class="text-center mb-4">@lang('main.all_categories')</h2> --}}
-
         <div class="container">
             <div class="row" id="category-list">
                 @foreach($categories as $index => $category)
@@ -133,7 +132,7 @@
 
         <!-- Random 8 -->
         {{-- <h2 class="text-center mb-4">🎲 @lang('main.random_products')</h2> --}}
-        <h2 class="text-center mb-4">Random</h2>
+        <h2 class="text-center mb-4">@lang('main.rec_product')</h2>
         <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
             @foreach($randomSkus as $sku)
                 <div class="col">@include('card', ['sku' => $sku])</div>
@@ -142,7 +141,7 @@
 
         <!-- Latest 8 -->
         {{-- <h2 class="text-center mb-4">🆕 @lang('main.new_arrivals')</h2> --}}
-        <h2 class="text-center mb-4">New Skus</h2>
+        <h2 class="text-center mb-4">@lang('main.new_skus')</h2>
         <div class="row row-cols-2 row-cols-md-4 g-3 mb-5">
             @foreach($newSkus as $sku)
                 <div class="col">@include('card', ['sku' => $sku])</div>
