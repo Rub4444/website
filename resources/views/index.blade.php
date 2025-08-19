@@ -62,6 +62,11 @@
             }
         }
 
+        @media (max-width: 767.98px) {
+            .hide-on-mobile {
+                display: none !important;
+            }
+        }
         .more-btn {
             padding: 0.25rem 0.5rem;
             border-radius: 50%;
@@ -104,46 +109,81 @@
     @endif
 
     <div class="container py-3">
+        {{-- Desktop Banner --}}
+        <div class="container my-4 hide-on-mobile">
+            <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @php $chunks = $banners->chunk(2); @endphp
+                    @foreach($chunks as $chunkIndex => $bannerChunk)
+                        <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
+                            <div class="row g-3">
+                                @foreach($bannerChunk as $banner)
+                                    <div class="col-12 col-md-6" style="height: 200px;">
+                                        <div class="position-relative h-100">
+                                            <a href="{{ $banner->link }}">
+                                                <img src="{{ Storage::url($banner->image) }}"
+                                                class="d-block w-100 rounded-4 h-100"
+                                                style="object-fit: cover;"
+                                                alt="{{ $banner->title }}">
+                                            </a>
+                                            {{-- <div class="carousel-caption d-none d-md-block text-start">
+                                                <h5 class="fw-bold">{{ $banner->title }}</h5>
+                                            </div> --}}
+                                        </div>
+                                    </div>
+                                @endforeach
 
-        {{-- <div id="skuCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                @foreach($randomSkus->chunk(2) as $chunkIndex => $skuChunk)
-                <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
-                    <div class="row">
-                    @foreach($skuChunk as $sku)
-                        <div class="col-12 col-md-6">
-                        <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                            <img src="{{ Storage::url($sku->image) }}"
-     class="img-fluid rounded shadow-sm"
-     style="height: 250px; object-fit: cover; width: 100%;"
-     alt="{{ $sku->product->__('name') }}">
-
-                        </a>
+                            </div>
                         </div>
                     @endforeach
-                    </div>
                 </div>
-                @endforeach
-            </div>
 
-            <!-- Навигационные стрелки -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#skuCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#skuCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-
-            <!-- Индикаторы -->
-            <div class="carousel-indicators">
-                @foreach($randomSkus->chunk(2) as $chunkIndex => $skuChunk)
-                <button type="button" data-bs-target="#skuCarousel" data-bs-slide-to="{{ $chunkIndex }}"
-                        class="{{ $chunkIndex == 0 ? 'active' : '' }}"></button>
-                @endforeach
+                <!-- Стрелки -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
-            </div> --}}
+        </div>
+
+        {{-- Mobile Banner --}}
+        <div class="container my-4">
+            <div id="bannerCarouselMobile" class="carousel slide d-block d-md-none" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach($banners as $index => $banner)
+                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                            <div style="height: 200px;">
+                                <div class="position-relative h-100">
+                                    <a href="{{ $banner->link }}">
+                                        <img src="{{ Storage::url($banner->image) }}"
+                                            class="d-block w-100 rounded-4 h-100"
+                                            style="object-fit: cover;"
+                                            alt="{{ $banner->title }}">
+                                    </a>
+                                    {{-- <div class="carousel-caption text-start">
+                                        <h5 class="fw-bold">{{ $banner->title }}</h5>
+                                    </div> --}}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Стрелки -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarouselMobile" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#bannerCarouselMobile" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
 
         {{-- <h2 class="text-center mb-4">@lang('main.all_categories')</h2> --}}
         <div class="container">

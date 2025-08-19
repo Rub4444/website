@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Currency;
+use App\Models\Banner;
 use App\Models\Product;
 use App\Models\Subscription;
 use App\Models\Sku;
@@ -53,25 +54,27 @@ class MainController extends Controller
     //     // return view('index', compact('skus'));
     // }
     public function index(ProductFilterRequest $request)
-{
-    $categories = Category::withCount('products')
-        ->orderBy('products_count', 'desc')
-        ->get();
+    {
+        $banners = \App\Models\Banner::where('is_active', true)->get();
 
-    // --- Random 8 товаров ---
-    $randomSkus = Sku::with(['product', 'product.category'])
-        ->inRandomOrder()
-        ->take(8)
-        ->get();
+        $categories = Category::withCount('products')
+            ->orderBy('products_count', 'desc')
+            ->get();
 
-    // --- Latest 8 товаров (новинки) ---
-    $newSkus = Sku::with(['product', 'product.category'])
-        ->latest()
-        ->take(8)
-        ->get();
+        // --- Random 8 товаров ---
+        $randomSkus = Sku::with(['product', 'product.category'])
+            ->inRandomOrder()
+            ->take(8)
+            ->get();
 
-    return view('index', compact('categories', 'randomSkus', 'newSkus'));
-}
+        // --- Latest 8 товаров (новинки) ---
+        $newSkus = Sku::with(['product', 'product.category'])
+            ->latest()
+            ->take(8)
+            ->get();
+
+        return view('index', compact('categories', 'randomSkus', 'newSkus', 'banners'));
+    }
 
     public function categories()
     {

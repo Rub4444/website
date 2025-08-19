@@ -121,6 +121,7 @@
                             <li class="nav-item"><a class="nav-link" href="{{route('coupons.index')}}">Կուպոններ</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{route('merchants.index')}}">Մատակարարներ</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{route('home')}}">Պատվերներ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{route('banners.index')}}">Բաններ</a></li>
                         @endadmin
 
                         @guest

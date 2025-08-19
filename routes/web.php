@@ -54,6 +54,8 @@ Route::middleware(['set_locale'])->group(function()
     {
          Route::prefix('admin')->middleware('is_admin')->group(function ()
         {
+            Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+
             Route::post('/products/import', [ProductImportController::class, 'import'])->name('products.import');
             Route::get('/products/tree', [ProductController::class, 'tree'])->name('products.tree');
 
