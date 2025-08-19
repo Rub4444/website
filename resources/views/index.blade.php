@@ -112,7 +112,12 @@
                             @foreach($skuChunk as $sku)
                                 <div class="col-6 col-md-3">
                                     <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                                        <img src="{{ Storage::url($sku->image) }}" class="d-block w-100 img-fluid rounded shadow-sm" alt="{{ $sku->product->__('name') }}">
+                                        {{-- <img src="{{ Storage::url($sku->image) }}" class="d-block w-100 img-fluid rounded shadow-sm" alt="{{ $sku->product->__('name') }}"> --}}
+                                        <img src="{{ Storage::url($sku->image) }}"
+                                        class="d-block w-100 img-fluid rounded shadow-sm"
+                                        style="height: 200px; object-fit: cover;"
+                                        alt="{{ $sku->product->__('name') }}">
+
                                     </a>
                                 </div>
                             @endforeach
