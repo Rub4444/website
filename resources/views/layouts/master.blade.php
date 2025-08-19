@@ -40,6 +40,32 @@
         padding: 0;
         overflow-y: auto; /* или: overflow-y: overlay (если поддерживается) */
         }
+        /* стандартный padding для ПК */
+.main__header {
+    padding-top: 50px; /* или сколько нужно */
+}
+
+/* планшеты */
+@media (max-width: 991.98px) {
+    .main__header {
+        padding-top: 60px;
+    }
+}
+
+/* мобильные */
+@media (max-width: 767.98px) {
+    .main__header {
+        padding-top: 40px;
+    }
+}
+
+/* очень маленькие экраны */
+@media (max-width: 575.98px) {
+    .main__header {
+        padding-top: 70px;
+    }
+}
+
     </style>
 </head>
 <body  style="background-color: white;">
@@ -81,7 +107,7 @@
     <!-- End preloader -->
     <!-- Start header area -->
     <header class="header__section header__transparent ">
-        <div class="header__topbar bg__primary2">
+        <div class="header__topbar bg__primary2 fixed-top">
             <div class="container">
                 <div class="header__topbar--inner d-flex align-items-center justify-content-center">
                     <div class="header__shipping d-flex align-items-center gap-2">
@@ -93,6 +119,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="main__header">
             <div class="container">
