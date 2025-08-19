@@ -104,29 +104,27 @@
     @endif
 
     <div class="container py-3">
+
         <div id="skuCarousel" class="carousel slide carousel-dark" data-bs-ride="carousel">
             <div class="carousel-inner">
-                @foreach($randomSkus->chunk(4) as $chunkIndex => $skuChunk)
-                    <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
-                        <div class="row">
-                            @foreach($skuChunk as $sku)
-                                <div class="col-6 col-md-3">
-                                    <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                                        {{-- <img src="{{ Storage::url($sku->image) }}" class="d-block w-100 img-fluid rounded shadow-sm" alt="{{ $sku->product->__('name') }}"> --}}
-                                        <img src="{{ Storage::url($sku->image) }}"
-                                        class="d-block w-100 img-fluid rounded shadow-sm"
-                                        style="height: 200px; object-fit: cover;"
-                                        alt="{{ $sku->product->__('name') }}">
-
-                                    </a>
-                                </div>
-                            @endforeach
+                @foreach($randomSkus->chunk(2) as $chunkIndex => $skuChunk)
+                <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
+                    <div class="row">
+                    @foreach($skuChunk as $sku)
+                        <div class="col-12 col-md-6">
+                        <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
+                            <img src="{{ Storage::url($sku->image) }}"
+                                class="img-fluid rounded shadow-sm"
+                                alt="{{ $sku->product->__('name') }}">
+                        </a>
                         </div>
+                    @endforeach
                     </div>
+                </div>
                 @endforeach
             </div>
 
-            <!-- Стрелки -->
+            <!-- Навигационные стрелки -->
             <button class="carousel-control-prev" type="button" data-bs-target="#skuCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon"></span>
                 <span class="visually-hidden">Previous</span>
@@ -138,11 +136,12 @@
 
             <!-- Индикаторы -->
             <div class="carousel-indicators">
-                @foreach($randomSkus->chunk(4) as $chunkIndex => $skuChunk)
-                    <button type="button" data-bs-target="#skuCarousel" data-bs-slide-to="{{ $chunkIndex }}" class="{{ $chunkIndex == 0 ? 'active' : '' }}"></button>
+                @foreach($randomSkus->chunk(2) as $chunkIndex => $skuChunk)
+                <button type="button" data-bs-target="#skuCarousel" data-bs-slide-to="{{ $chunkIndex }}"
+                        class="{{ $chunkIndex == 0 ? 'active' : '' }}"></button>
                 @endforeach
             </div>
-        </div>
+            </div>
 
         {{-- <h2 class="text-center mb-4">@lang('main.all_categories')</h2> --}}
         <div class="container">
