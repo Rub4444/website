@@ -114,8 +114,10 @@
                         <div class="col-12 col-md-6">
                         <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
                             <img src="{{ Storage::url($sku->image) }}"
-                                class="img-fluid rounded shadow-sm"
-                                alt="{{ $sku->product->__('name') }}">
+     class="img-fluid rounded shadow-sm"
+     style="height: 250px; object-fit: cover; width: 100%;"
+     alt="{{ $sku->product->__('name') }}">
+
                         </a>
                         </div>
                     @endforeach
