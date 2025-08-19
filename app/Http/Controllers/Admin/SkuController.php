@@ -7,6 +7,7 @@ use App\Http\Requests\SkuRequest;
 use App\Models\Product;
 use App\Models\Sku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SkuController extends Controller
 {
@@ -83,26 +84,28 @@ class SkuController extends Controller
     $params['name'] = $request->input('name', null);
     $params['product_id'] = $product->id;
 
-    if ($request->hasFile('image'))
-    {
-        if ($sku->image)
-        {
+    if ($request->hasFile('image')) {
+        // Удаляем старое изображение только если оно существует
+        if (!empty($sku->image) && Storage::disk('public')->exists($sku->image)) {
             Storage::disk('public')->delete($sku->image);
         }
 
+        // Сохраняем новое изображение
         $params['image'] = $request->file('image')->store('skus', 'public');
     }
 
-    $sku->update($params); // ← переместить сюда после image
+    // Обновляем модель после обработки изображения
+    $sku->update($params);
 
-    if ($request->has('property_id'))
-    {
+    // Обновляем свойства, если они пришли
+    if ($request->has('property_id')) {
         $sku->propertyOptions()->sync($request->property_id);
     }
 
     return redirect()->route('skus.show', [$product, $sku->id])
                      ->with('success', 'Ապրանքային առաջարկը հաջողությամբ թարմացվեց։');
 }
+
 
 
     public function destroy(Product $product, Sku $sku)
