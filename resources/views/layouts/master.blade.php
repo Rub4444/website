@@ -40,63 +40,6 @@
         padding: 0;
         overflow-y: auto; /* или: overflow-y: overlay (если поддерживается) */
         }
-        .header__topbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1050;
-    color: #fff;
-    padding: 0.5rem 0; /* вертикальный отступ */
-    height: auto; /* пусть высота подстраивается под контент */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap; /* перенос текста при маленьком экране */
-}
-
-.header__topbar .header__shipping {
-    display: flex;
-    flex-wrap: wrap; /* чтобы текст переносился */
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.header__topbar .header__shipping--text {
-    white-space: normal; /* разрешаем перенос */
-    text-align: center;
-    margin: 0;
-}
-
-
-    /* Базовая десктопная версия */
-.main__header {
-    position: relative;
-    z-index: 1040;
-    margin-top: 30px; /* отступ под topbar */
-}
-
-/* Мобильные устройства */
-@media (max-width: 576px) {
-    .main__header {
-        margin-top: 50px; /* меньше отступа для мобильных */
-    }
-
-    .header__topbar {
-        padding: 0.3rem 0; /* чуть меньше padding для мобильных */
-    }
-
-    .header__topbar .header__shipping {
-        gap: 0.25rem;
-    }
-
-    .header__topbar .header__shipping--text {
-        font-size: 0.85rem; /* уменьшаем шрифт */
-    }
-}
-
-
     </style>
 </head>
 <body  style="background-color: white;">
@@ -138,7 +81,7 @@
     <!-- End preloader -->
     <!-- Start header area -->
     <header class="header__section header__transparent ">
-        <div class="header__topbar bg__primary2 fixed-top">
+        <div class="header__topbar bg__primary2">
             <div class="container">
                 <div class="header__topbar--inner d-flex align-items-center justify-content-center">
                     <div class="header__shipping d-flex align-items-center gap-2">
