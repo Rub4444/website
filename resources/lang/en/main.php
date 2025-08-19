@@ -116,4 +116,5 @@ return [
     'free_delivery' => 'Free delivery in Ijevan for orders over 10,000 AMD.',
     'rec_product' => 'Offer',
     'new_skus' => 'New products',
+    'it_may_be_interest' => 'It might be interesting',
 ];
