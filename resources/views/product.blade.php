@@ -50,7 +50,9 @@
                     <div class="mb-4">
                         <span class="fs-3 fw-bold text-success">{{ $skus->price }} {{ $currencySymbol }}</span>
                     </div>
-
+                    <div class="mt-4">
+                        <p><strong>@lang('main.category')`</strong> {{ $skus->product->category->__('name') }}</p>
+                    </div>
                     {{-- <div class="mb-3">
                         @foreach ($skus->propertyOptions as $option)
                             <p class="mb-1"><strong>{{ $option->property->__('name') }}:</strong> {{ $option->__('name') }}</p>
@@ -69,7 +71,7 @@
                                 <i class="bi bi-cart-plus me-2"></i> @lang('main.basket')
                             </button>
                         </form>
-                        <p><strong>@lang('main.count'):</strong> {{ $skus->count }}</p>
+                        <p><strong>@lang('main.count')`</strong> {{ $skus->count }}</p>
                     @else
                         <div class="alert alert-warning">
                             <p class="mb-3">@lang('main.available')</p>
@@ -80,10 +82,6 @@
                             </form>
                         </div>
                     @endif
-
-                    <div class="mt-4">
-                        <p><strong>@lang('main.category'):</strong> {{ $skus->product->category->__('name') }}</p>
-                    </div>
                 </div>
             </div>
         </div>
