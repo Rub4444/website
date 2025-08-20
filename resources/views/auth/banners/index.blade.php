@@ -26,6 +26,8 @@
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm">Հեռացնել</button>
                         </form>
+                        <br>
+                        <a href="{{ route('banners.edit', $banner) }}" class="btn btn-primary btn-sm mb-1">Փոփոխել</a>
                     </td>
                 </tr>
             @endforeach

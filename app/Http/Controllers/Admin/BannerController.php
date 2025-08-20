@@ -54,4 +54,38 @@ class BannerController extends Controller
 
         return back()->with('success', 'Баннер удалён');
     }
+
+    public function edit(Banner $banner)
+    {
+        return view('auth.banners.edit', compact('banner'));
+    }
+
+    public function update(Request $request, Banner $banner)
+    {
+        $request->validate([
+            'image'      => 'nullable|image|max:2048',
+            'img_mobile' => 'nullable|image|max:2048',
+            'title'      => 'nullable|string|max:255',
+            'link'       => 'nullable|url'
+        ]);
+
+        // Если загружено новое desktop изображение
+        if ($request->hasFile('image')) {
+            Storage::disk('public')->delete($banner->image);
+            $banner->image = $request->file('image')->store('banners', 'public');
+        }
+
+        // Если загружено новое mobile изображение
+        if ($request->hasFile('img_mobile')) {
+            Storage::disk('public')->delete($banner->img_mobile);
+            $banner->img_mobile = $request->file('img_mobile')->store('banners/mobile', 'public');
+        }
+
+        $banner->title = $request->title;
+        $banner->link  = $request->link;
+        $banner->save();
+
+        return redirect()->route('banners.index')->with('success', 'Баннер обновлён!');
+    }
+
 }
