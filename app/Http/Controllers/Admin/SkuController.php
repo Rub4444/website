@@ -115,21 +115,42 @@ class SkuController extends Controller
                          ->with('success', 'Ապրանքային առաջարկը հաջողությամբ հեռացվեց։');
     }
 
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
+    // public function search(Request $request)
+    // {
+    //     $query = $request->input('query');
 
-        $skus = Sku::with(['product', 'propertyOptions.property'])
-            ->where(function ($q) use ($query) {
-                $q->whereHas('product', function ($q2) use ($query) {
-                    $q2->where('name', 'like', '%' . $query . '%');
-                })
-                ->orWhere('price', 'like', '%' . $query . '%')
-                ->orWhere('name', 'like', '%' . $query . '%'); // поиск по имени SKU
+    //     $skus = Sku::with(['product', 'propertyOptions.property'])
+    //         ->where(function ($q) use ($query) {
+    //             $q->whereHas('product', function ($q2) use ($query) {
+    //                 $q2->where('name', 'like', '%' . $query . '%');
+    //             })
+    //             ->orWhere('price', 'like', '%' . $query . '%')
+    //             ->orWhere('name', 'like', '%' . $query . '%'); // поиск по имени SKU
+    //         })
+    //         ->get();
+
+    //     return view('products.search-results', compact('skus', 'query'));
+    // }
+public function search(Request $request)
+{
+    $query = $request->input('query');
+
+    $skus = Sku::with(['product', 'propertyOptions.property'])
+        ->where(function ($q) use ($query) {
+            // Поиск по имени продукта
+            $q->whereHas('product', function ($q2) use ($query) {
+                $q2->where('name', 'like', '%' . $query . '%');
             })
-            ->get();
+            // Или по имени SKU
+            ->orWhere('name', 'like', '%' . $query . '%')
+            // Или по имени propertyOption
+            ->orWhereHas('propertyOptions', function($q3) use ($query) {
+                $q3->where('name', 'like', '%' . $query . '%');
+            });
+        })
+        ->get();
 
-        return view('products.search-results', compact('skus', 'query'));
-    }
+    return view('products.search-results', compact('skus', 'query'));
+}
 
 }
