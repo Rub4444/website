@@ -21,7 +21,8 @@
                     <td>{{ $banner->title }}</td>
                     <td>{{ $banner->link }}</td>
                     <td>
-                        <form method="POST" action="{{ route('banners.destroy', $banner) }}">
+                        <form method="POST" action="{{ route('banners.destroy', $banner) }}"
+                            onsubmit="return confirm('Вы уверены, что хотите удалить этот баннер?')">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm">Հեռացնել</button>
@@ -29,6 +30,7 @@
                         <br>
                         <a href="{{ route('banners.edit', $banner) }}" class="btn btn-primary btn-sm mb-1">Փոփոխել</a>
                     </td>
+
                 </tr>
             @endforeach
             </tbody>
