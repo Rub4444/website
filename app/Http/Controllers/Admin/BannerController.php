@@ -11,7 +11,7 @@ class BannerController extends Controller
     public function index()
     {
         $banners = Banner::all();
-        return view('banners.index', compact('banners'));
+        return view('auth.banners.index', compact('banners'));
     }
 
     public function create()
@@ -47,4 +47,3 @@ class BannerController extends Controller
         return back()->with('success', 'Баннер удалён');
     }
 }
-
