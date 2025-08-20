@@ -11,7 +11,7 @@ class BannerController extends Controller
     public function index()
     {
         $banners = Banner::all();
-        return view('auth.banners.index', compact('banners'));
+        return view('banners.index', compact('banners'));
     }
 
     public function create()
@@ -36,7 +36,7 @@ class BannerController extends Controller
             'is_active' => true,
         ]);
 
-        return redirect()->route('auth.banners.index')->with('success', 'Баннер добавлен!');
+        return redirect()->route('banners.index')->with('success', 'Баннер добавлен!');
     }
 
     public function destroy(Banner $banner)
