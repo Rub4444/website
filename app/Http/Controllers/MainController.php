@@ -81,12 +81,45 @@ class MainController extends Controller
         return view('categories');
     }
 
-    public function category($code)
-    {
-        $category = Category::where('code', $code)->firstOrFail();
-        $categories = Category::all();
-        return view('category', compact('category', 'categories'));
+    // public function category($code)
+    // {
+    //     $category = Category::where('code', $code)->firstOrFail();
+    //     $categories = Category::all();
+    //     return view('category', compact('category', 'categories'));
+    // }
+public function category(Request $request, $code)
+{
+    $category = Category::where('code', $code)->firstOrFail();
+    $categories = Category::all();
+
+    // Запрос к SKU только из этой категории
+    $query = Sku::whereHas('product', function ($q) use ($category) {
+        $q->where('category_id', $category->id);
+    });
+
+    // Фильтр по цене
+    if ($request->filled('min_price')) {
+        $query->where('price', '>=', $request->min_price);
     }
+
+    if ($request->filled('max_price')) {
+        $query->where('price', '<=', $request->max_price);
+    }
+
+    // Сортировка
+    if ($request->filled('sort')) {
+        if ($request->sort === 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($request->sort === 'price_desc') {
+            $query->orderBy('price', 'desc');
+        }
+    }
+
+    // Пагинация + сохранение query string
+    $skus = $query->paginate(60)->withQueryString();
+
+    return view('category', compact('category', 'categories', 'skus'));
+}
 
     public function sku($categoryCode, $productCode, Sku $skus)
     {
