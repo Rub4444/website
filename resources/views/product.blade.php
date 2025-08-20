@@ -45,7 +45,7 @@
                         <div class="mt-2">
                             <a href="{{ route('skus.edit', [$skus->product->id, $skus->id]) }}"
                                 class="btn btn-sm btn-outline-primary">
-                                Редактировать SKU
+                                Փոփոխել SKU
                             </a>
                         </div>
                     @endif
