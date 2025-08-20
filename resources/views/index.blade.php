@@ -122,7 +122,7 @@
                                         <div class="position-relative h-100">
                                             <a href="{{ $banner->link }}">
                                                 <img src="{{ Storage::url($banner->image) }}"
-                                                class="d-block w-100 rounded-4 h-100"
+                                                class="d-block w-100 rounded-4 h-100 img-fluid"
                                                 style="object-fit: cover;"
                                                 alt="{{ $banner->title }}">
                                             </a>
@@ -161,7 +161,7 @@
                                 <div class="position-relative h-100">
                                     <a href="{{ $banner->link }}">
                                         <img src="{{ Storage::url($banner->image) }}"
-                                            class="d-block w-100 rounded-4 h-100"
+                                            class="d-block w-100 rounded-4 h-100 img-fluid"
                                             style="object-fit: cover;"
                                             alt="{{ $banner->title }}">
                                     </a>

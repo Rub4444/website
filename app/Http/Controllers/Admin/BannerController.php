@@ -22,22 +22,30 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|max:2048',
-            'title' => 'nullable|string|max:255',
-            'link'  => 'nullable|url'
+            'image'      => 'required|image|max:2048',
+            'img_mobile' => 'nullable|image|max:2048',
+            'title'      => 'nullable|string|max:255',
+            'link'       => 'nullable|url'
         ]);
 
         $path = $request->file('image')->store('banners', 'public');
 
+        $mobilePath = null;
+        if ($request->hasFile('img_mobile')) {
+            $mobilePath = $request->file('img_mobile')->store('banners/mobile', 'public');
+        }
+
         Banner::create([
-            'title' => $request->title,
-            'image' => $path,
-            'link'  => $request->link,
-            'is_active' => true,
+            'title'      => $request->title,
+            'image'      => $path,
+            'img_mobile' => $mobilePath,
+            'link'       => $request->link,
+            'is_active'  => true,
         ]);
 
         return redirect()->route('banners.index')->with('success', 'Баннер добавлен!');
     }
+
 
     public function destroy(Banner $banner)
     {
