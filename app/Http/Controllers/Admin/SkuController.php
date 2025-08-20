@@ -131,26 +131,19 @@ class SkuController extends Controller
 
     //     return view('products.search-results', compact('skus', 'query'));
     // }
-public function search(Request $request)
-{
-    $query = $request->input('query');
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
 
-    $skus = Sku::with(['product', 'propertyOptions.property'])
-        ->where(function ($q) use ($query) {
-            // Поиск по имени продукта
-            $q->whereHas('product', function ($q2) use ($query) {
-                $q2->where('name', 'like', '%' . $query . '%');
+        $skus = Sku::with('product')
+            ->whereHas('product', function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
             })
-            // Или по имени SKU
             ->orWhere('name', 'like', '%' . $query . '%')
-            // Или по имени propertyOption
-            ->orWhereHas('propertyOptions', function($q3) use ($query) {
-                $q3->where('name', 'like', '%' . $query . '%');
-            });
-        })
-        ->get();
+            ->get();
 
-    return view('products.search-results', compact('skus', 'query'));
-}
+        return view('products.search-results', compact('skus', 'query'));
+    }
+
 
 }
