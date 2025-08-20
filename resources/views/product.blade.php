@@ -39,6 +39,18 @@
 
             <!-- Right: Product Info -->
             <div class="col-lg-6">
+                <!-- Внутри карточки или на странице продукта -->
+                @auth
+                    @if(auth()->user()->is_admin) <!-- или другое условие проверки админа -->
+                        <div class="mt-2">
+                            <a href="{{ route('skus.edit', [$skus->product->id, $skus->id]) }}"
+                                class="btn btn-sm btn-outline-primary">
+                                Редактировать SKU
+                            </a>
+                        </div>
+                    @endif
+                @endauth
+
                 <div class="product__details--info">
                     <h1 class="h3 fw-bold mb-3">
                         {{ $skus->product->__('name') }} {{ $skus->name ? ' ' . $skus->name : '' }}
