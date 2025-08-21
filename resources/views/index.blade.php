@@ -89,6 +89,25 @@
             font-size: 1rem;
             transition: transform 0.3s ease;
         }
+
+        .banner-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .banner-wrapper img.banner-img {
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+        }
+
     </style>
 
     @if (auth()->check() && !auth()->user()->hasVerifiedEmail())
@@ -118,18 +137,23 @@
                         <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
                             <div class="row g-3">
                                 @foreach($bannerChunk as $banner)
-                                    <div class="col-12 col-md-6" style="height: 200px;">
+                                    {{-- <div class="col-12 col-md-6" style="height: 200px;">
                                         <div class="position-relative h-100" style="overflow: hidden; border-radius: 1.5rem !important;">
                                             <a href="{{ $banner->link }}">
-                                                {{-- <img src="{{ Storage::url($banner->image) }}"
-                                                    style="object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
-                                                    alt="{{ $banner->title }}"> --}}
                                                 <img src="{{ Storage::url($banner->image) }}"
-                                                style="object-fit: cover !important; object-position: center center !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
-                                                alt="{{ $banner->title }}">
+                                                    style="object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
+                                                    alt="{{ $banner->title }}">
+                                            </a>
+                                        </div>
+                                    </div> --}}
+                                    <div class="col-12 col-md-6" style="height: 200px;">
+                                        <div class="banner-wrapper position-relative h-100">
+                                            <a href="{{ $banner->link }}">
+                                                <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title }}" class="banner-img">
                                             </a>
                                         </div>
                                     </div>
+
                                 @endforeach
 
                             </div>
