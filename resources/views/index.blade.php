@@ -121,9 +121,12 @@
                                     <div class="col-12 col-md-6" style="height: 200px;">
                                         <div class="position-relative h-100" style="overflow: hidden; border-radius: 1.5rem !important;">
                                             <a href="{{ $banner->link }}">
-                                                <img src="{{ Storage::url($banner->image) }}"
+                                                {{-- <img src="{{ Storage::url($banner->image) }}"
                                                     style="object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
-                                                    alt="{{ $banner->title }}">
+                                                    alt="{{ $banner->title }}"> --}}
+                                                <img src="{{ Storage::url($banner->image) }}"
+                                                style="object-fit: cover !important; object-position: center center !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
+                                                alt="{{ $banner->title }}">
                                             </a>
                                         </div>
                                     </div>

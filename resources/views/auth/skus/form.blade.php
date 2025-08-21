@@ -77,7 +77,7 @@
                             name="property_id[{{ $property->id }}]"
                             class="form-control"
                             value="@isset($sku) {{ optional($sku->propertyOptions->firstWhere('property_id', $property->id))->name }} @endisset"
-                            placeholder="Введите значение {{ strtolower($property->name) }}">
+                            placeholder="{{ strtolower($property->name) }}">
                     </div>
                 @endforeach
 
