@@ -57,9 +57,7 @@ class MainController extends Controller
     {
         $banners = \App\Models\Banner::where('is_active', true)->get();
 
-        $categories = Category::withCount('products')
-            ->orderBy('products_count', 'desc')
-            ->get();
+        $categories = Category::whereHas('products')->get();
 
         // --- Random 8 товаров ---
         $randomSkus = Sku::with(['product', 'product.category'])

@@ -52,7 +52,7 @@
                 </div>
 
                 {{-- Properties --}}
-                @foreach ($product->properties as $property)
+                {{-- @foreach ($product->properties as $property)
                     <div class="mb-3">
                         <label for="property_id[{{ $property->id }}]" class="form-label">{{ $property->name }}:</label>
                         <select name="property_id[{{ $property->id }}]" class="form-select" required>
@@ -66,6 +66,18 @@
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+                @endforeach --}}
+
+                {{-- Properties --}}
+                @foreach ($product->properties as $property)
+                    <div class="mb-3">
+                        <label for="property_id[{{ $property->id }}]" class="form-label">{{ $property->name }}:</label>
+                        <input type="text"
+                            name="property_id[{{ $property->id }}]"
+                            class="form-control"
+                            value="@isset($sku) {{ optional($sku->propertyOptions->firstWhere('property_id', $property->id))->name }} @endisset"
+                            placeholder="Введите значение {{ strtolower($property->name) }}">
                     </div>
                 @endforeach
 
