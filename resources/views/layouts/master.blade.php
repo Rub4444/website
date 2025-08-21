@@ -659,7 +659,7 @@
                         <li><i class="fas fa-phone-alt me-2 mb-4"></i><a href="tel:+37444464412">+374 44 464 412</a></li>
                     </ul>
                     <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2 mb-4"></i><a href="ijevanmarket@gmail.com">ijevanmarket@gmail.com</a></li>
+                        <li><i class="fas fa-envelope me-2 mb-4"></i><a href="mailto:ijevanmarket@gmail.com">ijevanmarket@gmail.com</a></li>
                     </ul>
                 </div>
 
@@ -668,7 +668,7 @@
                     <h5 class="text-uppercase mb-2">@lang('main.subscribe_to_the_news')</h5>
                     <form class="d-flex">
                         <input type="email" class="form-control me-2" placeholder="@lang('basket.email')">
-                        <button type="submit" class="btn btn-primary">OK</button>
+                        <button type="submit" class="btn btn-primary">@lang('basket.confirm')</button>
                     </form>
                     <div class="mt-3">
                         <ul>
