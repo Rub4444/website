@@ -404,8 +404,8 @@
         <!-- Start serch box area -->
         <div class="predictive__search--box ">
             <div class="predictive__search--box__inner">
-                <h2 class="predictive__search--title">@lang('main.product_search')</h2>
-                <form action="{{ route('products.search') }}" method="GET" class="predictive__search--form">
+                {{-- <h2 class="predictive__search--title">@lang('main.product_search')</h2> --}}
+                <form action="{{ route('products.search') }}" method="GET" class="predictive__search--form" style="margin-top: 50px;">
                     <label>
                         <input type="text" name="query" class="predictive__search--input" placeholder="@lang('main.product_search')..." value="{{ request('query') }}">
                     </label>
