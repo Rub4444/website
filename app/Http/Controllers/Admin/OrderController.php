@@ -32,10 +32,6 @@ class OrderController extends Controller
         $order->status = 2; // 2 = подтверждён, в пути
         $order->save();
 
-        $email = $order->user->email;
-        $name = $order->user->name;
-        Mail::to($email)->send(new OrderConfirmed($name, $this->getOrder()));
-
         return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
     }
 

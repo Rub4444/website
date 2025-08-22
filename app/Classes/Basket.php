@@ -71,10 +71,7 @@ class Basket
             return false;
         }
         $this->order->saveOrder($name, $phone, $deliveryType, $delivery_city, $delivery_street, $delivery_home);
-
-        // Mail Հաճախորդին
-        // Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
-
+        Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
         Mail::to("isahakyan06@gmail.com")->send(new OrderCreated($name, $this->getOrder()));
         return true;
     }
