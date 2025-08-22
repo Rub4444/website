@@ -30,12 +30,12 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
         }
 
-        $order->status = 2; // 2 = подтверждён, в пути
+        $order->status = 2; // подтверждён
         $order->save();
 
-         // Определяем email для уведомления
+        // Получаем email и имя из пользователя, если есть, иначе из заказа
         $email = $order->user->email ?? $order->email;
-        $name = $order->user->name ?? $order->name;
+        $name  = $order->user->name ?? $order->name;
 
         if ($email)
         {
@@ -44,6 +44,7 @@ class OrderController extends Controller
 
         return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
     }
+
 
     public function cancel(Request $request, Order $order)
     {
