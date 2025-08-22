@@ -76,40 +76,44 @@ class Basket
         return true;
     }
 
-  public function removeSku(Sku $sku)
-    {
-        if ($this->order->skus->contains($sku))
-        {
-            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-            if ($pivotRow->countInOrder < 2)
-            {
-                $this->order->skus->pop($sku->id);;
-            }
-            else
-            {
-                $pivotRow->countInOrder--;
-            }
+public function removeSku(Sku $sku, $quantity = null)
+{
+    $quantity = $quantity ?? ($sku->unit === 'kg' ? 0.1 : 1);
+
+    if ($this->order->skus->contains($sku)) {
+        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+
+        $pivotRow->countInOrder -= $quantity;
+        if ($pivotRow->countInOrder <= 0) {
+            $this->order->skus = $this->order->skus->filter(fn($s) => $s->id !== $sku->id);
         }
     }
+}
 
-    public function addSku(Sku $sku)
-    {
-        if ($this->order->skus->contains($sku)) {
-            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-            if ($pivotRow->countInOrder >= $sku->count) {
-                return false;
-            }
-            $pivotRow->countInOrder++;
-        } else {
-            if ($sku->count == 0) {
-                return false;
-            }
-            $sku->countInOrder = 1;
-            $this->order->skus->push($sku);
+
+    public function addSku(Sku $sku, $quantity = null)
+{
+    $quantity = $quantity ?? ($sku->unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1pcs
+
+    if ($this->order->skus->contains($sku)) {
+        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+        // Проверяем, чтобы не превышать доступный count для pcs
+        if ($sku->unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count) {
+            return false;
         }
-
-        return true;
+        $pivotRow->countInOrder += $quantity;
+    } else {
+        if ($sku->unit === 'pcs' && $quantity > $sku->count) {
+            return false;
+        }
+        $sku->countInOrder = $quantity;
+        $sku->unit = $sku->unit; // сохраняем единицу в объекте SKU для корзины
+        $this->order->skus->push($sku);
     }
+
+    return true;
+}
+
 
     public function setCoupon(Coupon $coupon)
     {

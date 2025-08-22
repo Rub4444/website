@@ -46,20 +46,23 @@
                             <div class="input-group justify-content-center" style="max-width: 130px; margin: auto;">
                                 <form action="{{ route('basket-remove', $sku) }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="quantity" value="{{ $sku->unit === 'kg' ? 0.1 : 1 }}">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-2">−</button>
                                 </form>
 
                                 <input type="text"
-                                       class="form-control form-control-sm text-center"
-                                       value="{{ $sku->countInOrder }}"
-                                       readonly
-                                       style="max-width: 45px;">
+                                    class="form-control form-control-sm text-center"
+                                    value="{{ $sku->countInOrder }}"
+                                    readonly
+                                    style="max-width: 45px;">
 
-                                <form action="{{ route('basket-add', $sku) }}" method="POST">
+                                 <form action="{{ route('basket-add', $sku) }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="quantity" value="{{ $sku->unit === 'kg' ? 0.5 : 1 }}">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-2">+</button>
                                 </form>
                             </div>
+                            <span>{{ $sku->unit === 'kg' ? 'կգ' : 'հատ' }}</span>
                         </td>
 
                         <!-- Цена -->

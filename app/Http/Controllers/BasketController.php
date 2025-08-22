@@ -76,27 +76,31 @@ class BasketController extends Controller
         return view('order', compact('order', 'categories'));
     }
 
-    public function basketAdd(Sku $skus)
-    {
-        $result = (new Basket(true))->addSku($skus);
-        if($result)
-        {
-            session()->flash('success', 'Товар "' . $skus->product->__('name') . '" добавлен в корзину');
-        }
-        else
-        {
-            session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" не добавлен в корзину');
-        }
-        return redirect()->route('basket');
+    public function basketAdd(Request $request, Sku $skus)
+{
+    $quantity = $request->input('quantity', $skus->unit === 'kg' ? 0.5 : 1);
+
+    $result = (new Basket(true))->addSku($skus, $quantity);
+
+    if($result) {
+        session()->flash('success', 'Товар "' . $skus->product->__('name') . '" добавлен в корзину');
+    } else {
+        session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" не добавлен в корзину');
     }
 
-    public function basketRemove(Sku $skus)
-    {
-        (new Basket())->removeSku($skus);
+    return redirect()->route('basket');
+}
 
-        session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" удалён из корзины');
-        return redirect()->route('basket');
-    }
+
+    public function basketRemove(Request $request, Sku $skus)
+{
+    $quantity = $request->input('quantity', $skus->unit === 'kg' ? 0.1 : 1);
+
+    (new Basket())->removeSku($skus, $quantity);
+
+    session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" удалён из корзины');
+    return redirect()->route('basket');
+}
 
     public function setCoupon(AddCouponRequest $request)
     {
