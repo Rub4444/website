@@ -58,7 +58,7 @@ class Order extends Model
     }
 
 
-    public function saveOrder($name, $phone, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
+    public function saveOrder($name, $phone, $email, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
         $this->name = $name;
         $this->phone = $phone;
