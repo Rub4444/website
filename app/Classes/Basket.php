@@ -127,4 +127,9 @@ public function removeSku(Sku $sku, $quantity = null)
     {
         $this->order->coupon()->dissociate();
     }
+    public function setUserId($userId)
+{
+    $this->order->user_id = $userId;
+}
+
 }
