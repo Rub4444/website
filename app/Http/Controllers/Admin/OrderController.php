@@ -31,7 +31,9 @@ class OrderController extends Controller
         $order->status = 2; // 2 = подтверждён, в пути
         $order->save();
 
-        return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է և առաքիչը ճանապարհին է։');
+        Mail::to($email)->send(new OrderConfirmed($name, $this->getOrder()));
+
+        return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
     }
 
     public function cancel(Request $request, Order $order)

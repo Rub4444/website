@@ -96,6 +96,7 @@ class ProductController extends Controller
     //     Product::create($params);
     //     return redirect()->route('products.index')->with('success', 'Продукт добавлен.');
     // }
+
     public function store(ProductRequest $request)
     {
         $params = $request->all();

@@ -41,7 +41,7 @@ class OrderCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Պատվերը գրանցված է',
+            subject: 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։',
         );
     }
 }
