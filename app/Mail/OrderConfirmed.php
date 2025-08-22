@@ -31,7 +31,7 @@ class OrderCreated extends Mailable
     public function build()
     {
         $fullSum = $this->order->getFullSum();
-        return $this->view('mail.order_created')->with([
+        return $this->view('mail.order_confirmed')->with([
             'name' => $this->name,
             'fullSum' => $fullSum,
             'order' => $this->order
