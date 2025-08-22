@@ -87,11 +87,12 @@
                         <input type="file" class="form-control" name="image" id="image">
                     </div> --}}
 
-                    <label for="unit">Կգ/Հատ:</label>
-                    <select name="unit" id="unit" class="form-control">
-                        <option value="pcs" {{ old('unit', $product->unit) === 'pcs' ? 'selected' : '' }}>Հատ</option>
-                        <option value="kg"  {{ old('unit', $product->unit) === 'kg' ? 'selected' : '' }}>Կգ</option>
-                    </select>
+                 <label for="unit">Կգ/Հատ:</label>
+<select name="unit" id="unit" class="form-control">
+    <option value="pcs" {{ old('unit', $product->unit ?? '') === 'pcs' ? 'selected' : '' }}>Հատ</option>
+    <option value="kg"  {{ old('unit', $product->unit ?? '') === 'kg' ? 'selected' : '' }}>Կգ</option>
+</select>
+
 
                     {{-- Properties --}}
                     <div class="mb-3">

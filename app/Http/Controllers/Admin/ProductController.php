@@ -80,10 +80,8 @@ class ProductController extends Controller
     {
         $categories = Category::get();
         $properties = Property::get();
-        $product = null; // <--- вот так
-        return view('auth.products.form', compact('categories', 'properties', 'product'));
+        return view('auth.products.form', compact('categories', 'properties'));
     }
-
 
     // public function store(ProductRequest $request)
     // {
