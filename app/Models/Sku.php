@@ -19,12 +19,40 @@ class Sku extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function relatedSkus($limit = 4)
+    // public function relatedSkus($limit = 4)
+    // {
+    //     return Sku::where('product_id', $this->product_id)
+    //             ->where('id', '!=', $this->id)
+    //             ->take($limit)
+    //             ->get();
+    // }
+    public function relatedSkus($limit = 16)
     {
-        return Sku::where('product_id', $this->product_id)
-                ->where('id', '!=', $this->id)
-                ->take($limit)
-                ->get();
+        // SKU того же продукта
+        $sameProductSkus = Sku::where('product_id', $this->product_id)
+                            ->where('id', '!=', $this->id)
+                            ->get();
+
+        $needed = $limit - $sameProductSkus->count();
+        if ($needed > 0) {
+
+            // Извлекаем текст в кавычках «…»
+            preg_match('/«(.*?)»/', $this->product->name, $matches);
+            $textInQuotes = $matches[1] ?? null;
+
+            if ($textInQuotes) {
+                $otherSkus = Sku::whereHas('product', function($q) use ($textInQuotes) {
+                                        $q->where('name', 'like', "%$textInQuotes%");
+                                    })
+                                ->where('product_id', '!=', $this->product_id)
+                                ->take($needed)
+                                ->get();
+
+                return $sameProductSkus->merge($otherSkus);
+            }
+        }
+
+        return $sameProductSkus->take($limit);
     }
 
     public function scopeAvailable($query)

@@ -121,18 +121,18 @@
 </section>
 
 @if($relatedSkus->count())
-<section class="related-products py-5 bg-light">
-    <div class="container">
-        <h3 class="mb-4 fw-bold">@lang('main.it_may_be_interest')</h3>
-        <div class="row g-4">
-            @foreach($relatedSkus as $sku)
-                <div class="col-6 col-md-4 col-lg-3">
-                    @include('card', ['sku' => $sku])
-                </div>
-            @endforeach
+    <section class="related-products py-5 bg-light">
+        <div class="container">
+            <h3 class="mb-4 fw-bold">@lang('main.it_may_be_interest')</h3>
+            <div class="row g-4">
+                @foreach($relatedSkus as $sku)
+                    <div class="col-6 col-md-4 col-lg-3">
+                        @include('card', ['sku' => $sku])
+                    </div>
+                @endforeach
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 @endif
 
 @endsection
