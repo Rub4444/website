@@ -98,20 +98,16 @@ public function cancel(Request $request, Order $order)
         'cancellation_comment' => 'required|string|max:1000',
     ]);
 
+    // Восстанавливаем товары на склад
+    foreach($order->skus as $sku) {
+        $sku->count += $sku->pivot->count;
+        $sku->save();
+    }
+
     $order->update([
         'status' => 3,
         'cancellation_comment' => $request->cancellation_comment,
     ]);
-
-    // 1. Создаем корзину для пользователя заказа
-    if ($order->user_id) {
-        $basket = new Basket(false); // false — не создаем новую сессию
-        $basket->setUserId($order->user_id); // нужно добавить метод setUserId в Basket
-
-        foreach ($order->skus as $sku) {
-            $basket->addSku($sku, $sku->pivot->count);
-        }
-    }
 
     // 2. Отправляем email
     $email = $order->user->email ?? $order->email;
@@ -119,7 +115,7 @@ public function cancel(Request $request, Order $order)
         Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
     }
 
-    return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է և товары возвращены в корзину пользователя.');
+    return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
 }
 
 }
