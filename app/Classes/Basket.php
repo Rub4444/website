@@ -65,19 +65,43 @@ class Basket
     }
 
     public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
-    {
-        if (!$this->countAvailable(true))
-        {
-            return false;
-        }
-
-        $this->order->saveOrder($name, $phone, $email, $deliveryType, $delivery_city, $delivery_street, $delivery_home);
-
-        Mail::to($email)->send(new OrderCreated($name, $this->getOrder()));
-        Mail::to("isahakyan06@gmail.com")->send(new OrderCreated($name, $this->getOrder()));
-
-        return true;
+{
+    if (!$this->countAvailable(true)) {
+        return false;
     }
+
+    $order = $this->order;
+
+    // 1️⃣ Сохраняем заказ
+    $order->name = $name;
+    $order->phone = $phone;
+    $order->email = $email;
+    $order->delivery_type = $deliveryType;
+    $order->delivery_city = $delivery_city;
+    $order->delivery_street = $delivery_street;
+    $order->delivery_home = $delivery_home;
+    $order->status = 1;
+    $order->sum = $order->getFullSum();
+    $order->save(); // <- теперь заказ точно сохраняется в базе
+
+    // 2️⃣ Привязываем товары через pivot
+    foreach ($order->skus as $sku) {
+        $order->skus()->attach($sku, [
+            'count' => $sku->countInOrder,
+            'price' => $sku->price,
+        ]);
+    }
+
+    // 3️⃣ Отправка уведомлений
+    Mail::to($email)->send(new OrderCreated($name, $order));
+    Mail::to("isahakyan06@gmail.com")->send(new OrderCreated($name, $order));
+
+    // 4️⃣ Очищаем сессию
+    session()->forget('order');
+
+    return true;
+}
+
 
 public function removeSku(Sku $sku, $quantity = null)
 {

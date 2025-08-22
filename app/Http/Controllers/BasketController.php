@@ -35,6 +35,7 @@ class BasketController extends Controller
         }
 
         $email = Auth::check() ? Auth::user()->email : $request->email;
+
         if ($basket->saveOrder($request->name,
         $request->phone,
         $email,

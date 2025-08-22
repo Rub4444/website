@@ -83,15 +83,15 @@ class Order extends Model
             }
         }
 
-        $skus = $this->skus;
-        $this->save();
+        // $skus = $this->skus;
+        // $this->save();
 
-        foreach ($skus as $skuInOrder) {
-            $this->skus()->attach($skuInOrder, [
-                'count' => $skuInOrder->countInOrder,
-                'price' => $skuInOrder->price,
-            ]);
-        }
+        // foreach ($skus as $skuInOrder) {
+        //     $this->skus()->attach($skuInOrder, [
+        //         'count' => $skuInOrder->countInOrder,
+        //         'price' => $skuInOrder->price,
+        //     ]);
+        // }
 
         session()->forget('order');
         return true;
