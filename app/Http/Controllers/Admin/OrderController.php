@@ -99,7 +99,9 @@ public function cancel(Request $request, Order $order)
     ]);
 
     // Восстанавливаем товары на склад
-    foreach($order->skus as $sku) {
+    foreach($order->skus as $sku)
+    {
+        dump( $sku->count, $sku->pivot->count);
         $sku->count += $sku->pivot->count;
         $sku->save();
     }
