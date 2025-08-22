@@ -24,26 +24,26 @@ class OrderController extends Controller
     }
 
     public function confirm(Order $order)
-    {
-        if ($order->status != 1)
-        {
-            return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
-        }
-
-        $order->status = 2; // подтверждён
-        $order->save();
-
-        // Получаем email и имя из пользователя, если есть, иначе из заказа
-        $email = $order->user->email ?? $order->email;
-        $name  = $order->user->name ?? $order->name;
-
-        if ($email)
-        {
-            Mail::to($email)->send(new OrderConfirmed($name, $order));
-        }
-
-        return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
+{
+    if ($order->status != 1) {
+        return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
     }
+
+    $order->status = 2;
+    $order->save();
+
+    // Берём email из пользователя, если есть, иначе из заказа
+    $email = $order->user->email ?? $order->email;
+    $name  = $order->user->name ?? $order->name;
+
+    // Проверяем, что это валидный email
+    if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        Mail::to($email)->send(new OrderConfirmed($name, $order));
+    }
+
+    return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
+}
+
 
 
     public function cancel(Request $request, Order $order)
