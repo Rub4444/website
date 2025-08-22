@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Mail\OrderConfirmed;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderCancelled;
+use App\Classes\Basket;
 
 class OrderController extends Controller
 {
@@ -46,18 +48,47 @@ class OrderController extends Controller
 
 
 
+    // public function cancel(Request $request, Order $order)
+    // {
+    //     $request->validate([
+    //         'cancellation_comment' => 'required|string|max:1000',
+    //     ]);
+
+    //     $order->update([
+    //         'status' => 3, // статус 3 = отменён
+    //         'cancellation_comment' => $request->cancellation_comment,
+    //     ]);
+
+    //     return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է։');
+    // }
+
+
     public function cancel(Request $request, Order $order)
     {
         $request->validate([
             'cancellation_comment' => 'required|string|max:1000',
         ]);
 
+        // 1️⃣ Меняем статус заказа и сохраняем причину отмены
         $order->update([
-            'status' => 3, // статус 3 = отменён
+            'status' => 3, // отменён
             'cancellation_comment' => $request->cancellation_comment,
         ]);
 
-        return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է։');
+        // 2️⃣ Возвращаем товары обратно в корзину
+        $basket = new Basket(true); // создаем корзину, если нет
+        foreach ($order->skus as $sku) {
+            $basket->addSku($sku, $sku->pivot->count); // добавляем все позиции обратно
+        }
+
+        // 3️⃣ Отправляем уведомление клиенту
+        $email = $order->user->email ?? $order->email;
+        if ($email) {
+            Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
+
+        }
+
+        return redirect()->route('home')->with('success', 'Заказ отменен, товары возвращены в корзину, клиент уведомлен.');
     }
 
 
