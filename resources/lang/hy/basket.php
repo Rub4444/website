@@ -41,4 +41,13 @@ return [
     'delivery' => 'Առաքում հասցեով',
     'clear_cart' => 'Մաքրել զամբյուղը',
     'clear_all_question' => 'Ջնջե՞լ բոլոր ապրանքները զամբյուղից',
+    'coupon_is_not_available' => 'Կուպոնը հասանելի չէ',
+    'product_is_not_available' => 'Ապրանքը հասանելի չէ',
+    'basket_cleared' => 'Զամբյուղը մաքրված է',
+    'product' => 'Ապրանք',
+    'added_to_cart' => 'Ավելացված է զամբյուղի մեջ',
+    'not_added_to_cart' => 'զամբյուղի մեջ չի ավելացվել',
+    'deleted_from_cart' => 'ջնջված է զամբյուղից',
+    'coupon_added_to_the_order' => 'Կուպոնը կցվել է պատվերին',
+    'coupon_cannot_be_used' => 'Կուպոնը չի կարող օգտագործվել',
 ];

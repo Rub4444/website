@@ -30,7 +30,7 @@ class BasketController extends Controller
         if($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
         {
             $basket->clearCoupon();
-            session()->flash('warning', 'Купон не доступен!');
+            session()->flash('warning',  __('basket.coupon_is_not_available'));
             return redirect()->route('basket');
         }
 
@@ -42,12 +42,12 @@ class BasketController extends Controller
         $request->delivery_type,
         $request->delivery_city,
         $request->delivery_street,
-        $request->delivery_home,
+        $request->delivery_home
         ))
         {
             session()->flash('success', __('basket.your_order_confirmed'));
         } else {
-            session()->flash('warning', 'Товар не доступен!');
+            session()->flash('warning', __('basket.product_is_not_available'));
         }
 
         return redirect()->route('index');
@@ -59,7 +59,7 @@ class BasketController extends Controller
         // Можно создать метод clear() в Basket, который сбросит session('order')
         session()->forget('order');
 
-        session()->flash('success', 'Корзина очищена');
+        session()->flash('success', __('basket.basket_cleared'));
         return redirect()->route('basket');
     }
 
@@ -70,7 +70,7 @@ class BasketController extends Controller
         $order = $basket->getOrder();
         if(!$basket->countAvailable())
         {
-            session()->flash('warning', 'Товар не доступен!');
+            session()->flash('warning', __('basket.product_is_not_available'));
             return redirect()->route('basket');
         }
         $categories = Category::all();
@@ -83,11 +83,17 @@ class BasketController extends Controller
 
     $result = (new Basket(true))->addSku($skus, $quantity);
 
-    if($result) {
-        session()->flash('success', 'Товар "' . $skus->product->__('name') . '" добавлен в корзину');
-    } else {
-        session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" не добавлен в корзину');
-    }
+    // if($result)
+    // {
+    //     session()->flash(
+    //         'success',
+    //         __('basket.Product') . ' "' . $skus->product->__('name') . '" ' . __('basket.added_to_cart')
+    //     );
+    // }
+    // else
+    // {
+    //     session()->flash('warning', __('basket.Product') . '"' . $skus->product->__('name') . '" '. __('basket.not_added_to_cart'));
+    // }
 
     return redirect()->route('basket');
 }
@@ -99,7 +105,7 @@ class BasketController extends Controller
 
     (new Basket())->removeSku($skus, $quantity);
 
-    session()->flash('warning', 'Товар "' . $skus->product->__('name') . '" удалён из корзины');
+    session()->flash('warning', __('basket.Product') . '"' . $skus->product->__('name') . '"' . __('basket.deleted_from_cart'));
     return redirect()->route('basket');
 }
 
@@ -109,11 +115,11 @@ class BasketController extends Controller
         if($coupon->availableForUse())
         {
             (new Basket())->setCoupon($coupon);
-            session()->flash('success', 'Купон был добавлен к заказу');
+            session()->flash('success', __('basket.coupon_added_to_the_order'));
         }
         else
         {
-             session()->flash('warning', 'Купон не может быть использован');
+             session()->flash('warning', __('basket.coupon_cannot_be_used'));
         }
         return redirect()->route('basket');
     }

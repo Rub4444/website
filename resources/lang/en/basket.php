@@ -41,5 +41,14 @@ return [
     'delivery' => 'Delivery to the address',
     'clear_cart' => 'Clear the cart',
     'clear_all_question' => 'Delete all items from the shopping cart',
+    'coupon_is_not_available' => 'The coupon is not available',
+    'product_is_not_available' => 'The product is not available',
+    'basket_cleared' => 'The basket is cleared',
+    'product' => 'Product',
+    'added_to_cart' => 'added to cart',
+    'not_added_to_cart' => 'not added to cart',
+    'deleted_from_cart' => 'deleted from the cart',
+    'coupon_added_to_the_order' => 'The coupon was added to the order',
+    'coupon_cannot_be_used' => 'The coupon cannot be used',
 ];
 
