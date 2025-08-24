@@ -62,12 +62,12 @@
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-2">+</button>
                                 </form>
                             </div>
-                            <span>{{ $sku->unit === 'kg' ? 'կգ' : 'հատ' }}</span>
+                            <span>{{ $sku->unit === 'kg' ? 'Կգ' : 'Հատ' }}</span>
                         </td>
 
                         <!-- Цена -->
                         <td class="text-center">
-                            {{ $sku->price }} {{ $currencySymbol }}
+                            {{ number_format($sku->price, 0, '.', '') }} {{ $currencySymbol }}
                         </td>
 
                         <!-- Сумма -->

@@ -47,8 +47,18 @@
                 <div class="mb-3">
                     <label for="count" class="form-label">Քանակը:</label>
                     @include('auth.layouts.error', ['fieldName' => 'count'])
-                    <input type="number" class="form-control" name="count"
-                           value="{{ old('count', $sku->count ?? '') }}" required>
+                    {{-- <input type="number" class="form-control" name="count"
+                           value="{{ old('count', $sku->count ?? '') }}" required> --}}
+                    <input
+                        type="number"
+                        name="count"
+                        class="form-control"
+                        value="{{ old('count', $sku->count ?? '') }}"
+                        required
+                        min="0"
+                        step="0.01"  {{-- или step="any" если шаг не фиксирован --}}
+                        inputmode="decimal"
+                        />
                 </div>
 
                 {{-- Properties --}}

@@ -87,13 +87,27 @@
                         <input type="file" class="form-control" name="image" id="image">
                     </div> --}}
 
-                 <label for="unit">Կգ/Հատ:</label>
-<select name="unit" id="unit" class="form-control">
-    <option value="pcs" {{ old('unit', $product->unit ?? '') === 'pcs' ? 'selected' : '' }}>Հատ</option>
-    <option value="kg"  {{ old('unit', $product->unit ?? '') === 'kg' ? 'selected' : '' }}>Կգ</option>
-</select>
+                 <label for="unit">Կգ/Հատ</label>
+                <select name="unit" id="unit" class="form-control">
+                    <option value="pcs" {{ old('unit', $product->unit ?? '') === 'pcs' ? 'selected' : '' }}>Հատ</option>
+                    <option value="kg"  {{ old('unit', $product->unit ?? '') === 'kg' ? 'selected' : '' }}>Կգ</option>
+                </select>
 
 
+                    {{-- Properties
+                    <div class="mb-3">
+                        <label for="property_id[]" class="form-label">Հատկություններ</label>
+                        @include('auth.layouts.error', ['fieldName' => 'property_id[]'])
+                        <select name="property_id[]" id="property_id" class="form-select" multiple>
+                            @foreach($properties as $property)
+                                <option value="{{ $property->id }}"
+                                    @isset($product)
+                                        @if($product->properties->contains($property->id)) selected @endif
+                                    @endisset
+                                >{{ $property->name }}</option>
+                            @endforeach
+                        </select>
+                    </div> --}}
                     {{-- Properties --}}
                     <div class="mb-3">
                         <label for="property_id[]" class="form-label">Հատկություններ</label>
@@ -108,6 +122,8 @@
                             @endforeach
                         </select>
                     </div>
+
+
 
                     {{-- Checkboxes --}}
                     <div class="mb-4">
@@ -133,3 +149,21 @@
         </div>
     </div>
 @endsection
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const select = document.getElementById("property_id");
+
+    // Запоминаем последнее состояние
+    let lastClicked = null;
+
+    select.addEventListener("mousedown", function(e) {
+        e.preventDefault(); // отменяем стандартное выделение
+
+        const option = e.target;
+        if (option.tagName === "OPTION") {
+            option.selected = !option.selected; // переключаем вручную
+            option.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+    });
+});
+</script>

@@ -73,10 +73,11 @@
                     {{ $sku->propertyOptions->map(function($option) {
                         return $option->name . ' ' . $option->property->name;})->implode(', ')
                     }}
+                    @if($sku->product->unit === 'kg')<span>Կգ</span>@endif
                 </h6>
             </a>
 
-            <p class="card-text fw-bold text-success mb-2">{{ $sku->price }} {{ $currencySymbol }}</p>
+            <p class="card-text fw-bold text-success mb-2">{{ number_format($sku->price, 0, '.', '') }} {{ $currencySymbol }}</p>
 
             <!-- Описание в режиме списка -->
             <p class="card-text small text-muted description-for-list d-none">

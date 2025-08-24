@@ -20,31 +20,35 @@
                             <div class="d-flex align-items-center">
                                 @auth
                                     @php $isInWishlist = Auth::user()->hasInWishlist($sku->id); @endphp
-                                    <button class="btn btn-sm btn-outline-danger me-2 rounded-circle d-flex align-items-center justify-content-center"
+                                    <button class="toggle-wishlist btn btn-sm btn-outline-danger me-2 rounded-circle d-flex align-items-center justify-content-center"
                                             data-id="{{ $sku->id }}"
                                             aria-pressed="{{ $isInWishlist ? 'true' : 'false' }}"
                                             style="width: 36px; height: 36px;">
                                         <i class="bi {{ $isInWishlist ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
                                     </button>
+
                                 @endauth
 
                                 <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
                                     <img src="{{ asset('storage/' . $sku->image) }}" class="rounded me-3" width="60" height="60"
-                                         alt="{{ $sku->product->__('name') }}" style="width: 70px; height: 70px; object-fit: contain;">
+                                         alt="" style="width: 70px; height: 70px; object-fit: contain;">
                                 </a>
 
                                 <div>
-                                    <h6 class="mb-1">{{ $sku->product->__('name') }}</h6>
-                                    @foreach ($sku->propertyOptions as $option)
-                                        <div class="text-muted small">{{ $option->property->name }}: {{ $option->name }}</div>
-                                    @endforeach
+                                    <h6 class="mb-1">
+                                        {{ $sku->product->__('name') }}
+                                        @foreach ($sku->propertyOptions as $option)
+                                            {{ $option->name }} {{ $option->property->name }}
+                                        @endforeach
+                                    </h6>
+
                                 </div>
                             </div>
                         </td>
 
                         <!-- Price -->
                         <td>
-                            <span class="fw-bold text-success">{{ $sku->price }} {{ $currencySymbol }}</span>
+                            <span class="fw-bold text-success">{{ number_format($sku->price, 0, '.', '') }} {{ $currencySymbol }}</span>
                         </td>
 
 

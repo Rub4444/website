@@ -79,6 +79,7 @@
 
                         <p><strong>@lang('main.count')`</strong> {{ $skus->count }}</p>
 
+
                         <form action="{{ route('basket-add', $skus) }}" method="POST" class="d-flex align-items-center gap-3 mb-3">
                             @csrf
                             @if($skus->product->unit === 'kg')
@@ -89,7 +90,7 @@
                                     min="0.1"
                                     step="0.01"
                                     style="max-width: 120px;">
-                                <span>կգ</span>
+                                <span>Կգ</span>
                             @else
                                 <input type="number"
                                     name="quantity"
@@ -98,7 +99,7 @@
                                     min="1"
                                     step="1"
                                     style="max-width: 120px;">
-                                <span>հատ</span>
+                                <span>Հատ</span>
                             @endif
                             <button type="submit" class="btn btn-success px-4">
                                 <i class="bi bi-cart-plus me-2"></i> @lang('main.basket')
