@@ -105,7 +105,10 @@ class Basket
 
 public function removeSku(Sku $sku, $quantity = null)
 {
-    $quantity = $quantity ?? ($sku->unit === 'kg' ? 0.1 : 1);
+    // Проверяем единицу измерения у продукта
+    $unit = $sku->product->unit;
+
+    $quantity = $quantity ?? ($unit === 'kg' ? 0.1 : 1);
 
     if ($this->order->skus->contains($sku)) {
         $pivotRow = $this->order->skus->where('id', $sku->id)->first();
@@ -118,28 +121,29 @@ public function removeSku(Sku $sku, $quantity = null)
 }
 
 
+
     public function addSku(Sku $sku, $quantity = null)
 {
-    $quantity = $quantity ?? ($sku->unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1pcs
+    $unit = $sku->product->unit; // берём unit у продукта
+    $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1шт
 
     if ($this->order->skus->contains($sku)) {
         $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-        // Проверяем, чтобы не превышать доступный count для pcs
-        if ($sku->unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count) {
+        // Проверяем, чтобы не превышать доступный count для шт
+        if ($unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count) {
             return false;
         }
         $pivotRow->countInOrder += $quantity;
     } else {
-        if ($sku->unit === 'pcs' && $quantity > $sku->count) {
+        if ($unit === 'pcs' && $quantity > $sku->count) {
             return false;
         }
         $sku->countInOrder = $quantity;
-        $sku->unit = $sku->unit; // сохраняем единицу в объекте SKU для корзины
+        $sku->unit = $unit; // сохраняем единицу для корзины
         $this->order->skus->push($sku);
     }
-
-    return true;
 }
+
 
 
     public function setCoupon(Coupon $coupon)

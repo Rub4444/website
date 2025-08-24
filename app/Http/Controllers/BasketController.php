@@ -105,7 +105,7 @@ class BasketController extends Controller
 
     (new Basket())->removeSku($skus, $quantity);
 
-    session()->flash('warning', __('basket.Product') . '"' . $skus->product->__('name') . '"' . __('basket.deleted_from_cart'));
+    session()->flash('warning','"' . $skus->product->__('name') . '"' . __('basket.deleted_from_cart'));
     return redirect()->route('basket');
 }
 
@@ -123,4 +123,21 @@ class BasketController extends Controller
         }
         return redirect()->route('basket');
     }
+    public function update(Request $request, Sku $sku)
+{
+    $request->validate([
+        'quantity' => 'required|numeric|min:0',
+    ]);
+
+    $quantity = $request->input('quantity');
+
+    if ($quantity == 0) {
+        $this->basket->remove($sku);
+    } else {
+        $this->basket->update($sku, $quantity);
+    }
+
+    return response()->json(['success' => true]);
+}
+
 }

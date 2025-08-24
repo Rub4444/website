@@ -46,7 +46,7 @@
                             <div class="input-group justify-content-center" style="max-width: 130px; margin: auto;">
                                 <form action="{{ route('basket-remove', $sku) }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="quantity" value="{{ $sku->unit === 'kg' ? 0.1 : 1 }}">
+                                    <input type="hidden" name="quantity" value="{{ $sku->product->unit === 'kg' ? 0.5 : 1 }}">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-2">−</button>
                                 </form>
 
@@ -58,11 +58,11 @@
 
                                  <form action="{{ route('basket-add', $sku) }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="quantity" value="{{ $sku->unit === 'kg' ? 0.5 : 1 }}">
+                                    <input type="hidden" name="quantity" value="{{ $sku->product->unit === 'kg' ? 0.5 : 1 }}">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-2">+</button>
                                 </form>
                             </div>
-                            <span>{{ $sku->unit === 'kg' ? 'Կգ' : 'Հատ' }}</span>
+                            <span>{{ $sku->product->unit === 'kg' ? 'Կգ' : 'Հատ' }}</span>
                         </td>
 
                         <!-- Цена -->
