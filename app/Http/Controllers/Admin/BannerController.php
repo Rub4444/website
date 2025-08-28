@@ -11,8 +11,13 @@ class BannerController extends Controller
 {
     public function index()
     {
+
+        $totalVisits = Visit::count();
+        $uniqueIPs = Visit::distinct('ip')->count('ip');
+        $todayVisits = Visit::whereDate('created_at', today())->count();
+
         $banners = Banner::all();
-        return view('auth.banners.index', compact('banners'));
+        return view('auth.banners.index', compact('banners','totalVisits', 'uniqueIPs', 'todayVisits'));
     }
 
     public function create()
@@ -89,13 +94,5 @@ class BannerController extends Controller
         return redirect()->route('banners.index')->with('success', 'Баннер обновлён!');
     }
 
-    public function stats()
-    {
-        $totalVisits = Visit::count();
-        $uniqueIPs = Visit::distinct('ip')->count('ip');
-        $todayVisits = Visit::whereDate('created_at', today())->count();
-
-        return view('admin.stats', compact('totalVisits', 'uniqueIPs', 'todayVisits'));
-    }
 
 }
