@@ -1,21 +1,10 @@
 <!doctype html>
 <html lang="hy">
 <head>
-    {{-- <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MQR7JSLWM"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
 
-    gtag('config', 'G-8MQR7JSLWM');
-    </script> --}}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MQR7JSLWM"></script>
-        <script src="{{ asset('js/ga.js') }}" async></script>
 
     <title>@lang('main.online_shop')</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
