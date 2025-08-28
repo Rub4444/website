@@ -125,7 +125,7 @@ Route::middleware(['set_locale'])->group(function()
 
     Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
-    Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+    Route::get('/shop', [ShopController::class, 'index'])->name('shop')->middleware(\App\Http\Middleware\LogVisit::class);
 
     Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');
     Route::post('/basket/remove/{skus}', [BasketController::class, 'basketRemove'])->name('basket-remove');
