@@ -13,6 +13,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MQR7JSLWM"></script>
+        <script src="{{ asset('js/ga.js') }}" async></script>
 
     <title>@lang('main.online_shop')</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -183,9 +186,6 @@
         <script src="{{ asset('js/script.js') }}"></script>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MQR7JSLWM"></script>
-        <script src="{{ asset('js/ga.js') }}" async></script>
 
 
         <div class="container">

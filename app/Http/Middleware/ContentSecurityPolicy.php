@@ -11,13 +11,17 @@ class ContentSecurityPolicy
     {
         $response = $next($request);
 
-        $csp = "default-src 'self'; "
-             . "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; "
-             . "connect-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net; "
-             . "img-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net data:; "
-             . "style-src 'self' 'unsafe-inline';";
+        // Проверяем, что ответ поддерживает заголовки
+        if (method_exists($response, 'headers')) {
+            $csp = "default-src 'self'; "
+                 . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; "
+                 . "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; "
+                 . "img-src 'self' https://www.google-analytics.com https://www.googletagmanager.com data:; "
+                 . "style-src 'self' 'unsafe-inline'; "
+                 . "font-src 'self';";
 
-        $response->headers->set('Content-Security-Policy', $csp);
+            $response->headers->set('Content-Security-Policy', $csp);
+        }
 
         return $response;
     }
