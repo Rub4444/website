@@ -12,9 +12,9 @@ class ContentSecurityPolicy
         $response = $next($request);
 
         $csp = "default-src 'self'; "
-             . "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; "
-             . "connect-src 'self' https://www.google-analytics.com; "
-             . "img-src 'self' https://www.google-analytics.com data:; "
+             . "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; "
+             . "connect-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net; "
+             . "img-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net data:; "
              . "style-src 'self' 'unsafe-inline';";
 
         $response->headers->set('Content-Security-Policy', $csp);

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="hy">
 <head>
-    <!-- Google tag (gtag.js) -->
+    {{-- <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MQR7JSLWM"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
@@ -9,7 +9,7 @@
     gtag('js', new Date());
 
     gtag('config', 'G-8MQR7JSLWM');
-    </script>
+    </script> --}}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -183,6 +183,9 @@
         <script src="{{ asset('js/script.js') }}"></script>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8MQR7JSLWM"></script>
+        <script src="{{ asset('js/ga.js') }}" async></script>
 
 
         <div class="container">
