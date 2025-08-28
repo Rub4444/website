@@ -36,4 +36,11 @@
             </tbody>
         </table>
     </div>
+    <h3>Статистика сайта</h3>
+    <ul>
+        <li>Всего посещений: {{ $totalVisits }}</li>
+        <li>Уникальных пользователей: {{ $uniqueIPs }}</li>
+        <li>Посещений сегодня: {{ $todayVisits }}</li>
+    </ul>
+
 @endsection

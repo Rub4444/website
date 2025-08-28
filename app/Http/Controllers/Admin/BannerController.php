@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Visit;
 
 class BannerController extends Controller
 {
@@ -86,6 +87,15 @@ class BannerController extends Controller
         $banner->save();
 
         return redirect()->route('banners.index')->with('success', 'Баннер обновлён!');
+    }
+
+    public function stats()
+    {
+        $totalVisits = Visit::count();
+        $uniqueIPs = Visit::distinct('ip')->count('ip');
+        $todayVisits = Visit::whereDate('created_at', today())->count();
+
+        return view('admin.stats', compact('totalVisits', 'uniqueIPs', 'todayVisits'));
     }
 
 }
