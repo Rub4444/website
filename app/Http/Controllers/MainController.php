@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use DebugBar\DebugBar;
+use Illuminate\Support\Facades\Cache;
 
 
 class MainController extends Controller
