@@ -36,11 +36,77 @@
             </tbody>
         </table>
     </div>
-    <h3>Статистика сайта</h3>
-    <ul>
-        <li>Всего посещений: {{ $totalVisits }}</li>
-        <li>Уникальных пользователей: {{ $uniqueIPs }}</li>
-        <li>Посещений сегодня: {{ $todayVisits }}</li>
-    </ul>
+    <div class="container py-4">
+    <h2>📊 Статистика посещений</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-4"><div class="card p-3">Всего визитов: <b>{{ $totalVisits }}</b></div></div>
+        <div class="col-md-4"><div class="card p-3">Уникальных посетителей: <b>{{ $uniqueVisitors }}</b></div></div>
+        <div class="col-md-4"><div class="card p-3">Сегодня: <b>{{ $todayVisits }}</b></div></div>
+    </div>
+
+    <canvas id="visitsChart" height="100"></canvas>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h5>🌍 Устройства</h5>
+            <ul>
+                @foreach($devices as $device => $count)
+                    <li>{{ ucfirst($device) }} — {{ $count }}</li>
+                @endforeach
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h5>🖥 Браузеры</h5>
+            <ul>
+                @foreach($browsers as $browser => $count)
+                    <li>{{ $browser }} — {{ $count }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+
+    <h5 class="mt-4">🕵️ Последние визиты</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IP</th>
+                <th>Устройство</th>
+                <th>Браузер</th>
+                <th>Страница</th>
+                <th>Время</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($lastVisits as $visit)
+            <tr>
+                <td>{{ $visit->ip }}</td>
+                <td>{{ $visit->device }}</td>
+                <td>{{ $visit->browser }}</td>
+                <td>{{ $visit->path }}</td>
+                <td>{{ $visit->created_at }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('visitsChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {!! json_encode($chartData->keys()) !!},
+        datasets: [{
+            label: 'Визиты за 7 дней',
+            data: {!! json_encode($chartData->values()) !!},
+            borderColor: 'green',
+            tension: 0.3,
+            fill: false
+        }]
+    }
+});
+</script>
 
 @endsection

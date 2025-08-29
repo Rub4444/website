@@ -27,6 +27,28 @@ class LogVisit
             }
         }
 
+        // Определяем устройство
+        $device = 'desktop';
+        if (preg_match('/mobile/i', $userAgent)) {
+            $device = 'mobile';
+        } elseif (preg_match('/tablet|ipad/i', $userAgent)) {
+            $device = 'tablet';
+        }
+
+        // Определяем браузер
+        $browser = 'Unknown';
+        if (preg_match('/chrome/i', $userAgent)) {
+            $browser = 'Chrome';
+        } elseif (preg_match('/firefox/i', $userAgent)) {
+            $browser = 'Firefox';
+        } elseif (preg_match('/safari/i', $userAgent) && !preg_match('/chrome/i', $userAgent)) {
+            $browser = 'Safari';
+        } elseif (preg_match('/edg/i', $userAgent)) {
+            $browser = 'Edge';
+        } elseif (preg_match('/opera|opr/i', $userAgent)) {
+            $browser = 'Opera';
+        }
+
         // Проверка: был ли визит с этого IP в последние 10 минут
         $recent = DB::table('visits')
             ->where('ip', $ip)
@@ -36,6 +58,8 @@ class LogVisit
         if (!$recent) {
             DB::table('visits')->insert([
                 'ip' => $ip,
+                'device' => $device,
+                'browser' => $browser,
                 'user_agent' => $userAgent,
                 'path' => $path,
                 'created_at' => now(),

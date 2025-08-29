@@ -6,18 +6,57 @@ use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Visit;
+use Illuminate\Support\Facades\DB;
 
 class BannerController extends Controller
 {
     public function index()
     {
 
-        $totalVisits = Visit::count();
-        $uniqueIPs = Visit::distinct('ip')->count('ip');
-        $todayVisits = Visit::whereDate('created_at', today())->count();
+        // $totalVisits = Visit::count();
+        // $uniqueIPs = Visit::distinct('ip')->count('ip');
+        // $todayVisits = Visit::whereDate('created_at', today())->count();
+        // Счётчики
+        $totalVisits = DB::table('visits')->count();
+        $uniqueVisitors = DB::table('visits')->distinct('ip')->count('ip');
+        $todayVisits = DB::table('visits')
+            ->whereDate('created_at', today())
+            ->count();
+
+        // График за 7 дней
+        $chartData = DB::table('visits')
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('created_at', '>=', now()->subDays(7))
+            ->groupBy('date')
+            ->pluck('count', 'date');
+
+        // Последние 20 визитов
+        $lastVisits = DB::table('visits')
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        // Топ браузеры
+        $browsers = DB::table('visits')
+            ->selectRaw('browser, COUNT(*) as count')
+            ->groupBy('browser')
+            ->pluck('count', 'browser');
+
+        // Топ устройства
+        $devices = DB::table('visits')
+            ->selectRaw('device, COUNT(*) as count')
+            ->groupBy('device')
+            ->pluck('count', 'device');
 
         $banners = Banner::all();
-        return view('auth.banners.index', compact('banners','totalVisits', 'uniqueIPs', 'todayVisits'));
+        return view('auth.banners.index', compact('banners',
+            'totalVisits',
+            'uniqueVisitors',
+            'todayVisits',
+            'chartData',
+            'lastVisits',
+            'browsers',
+            'devices'));
     }
 
     public function create()
