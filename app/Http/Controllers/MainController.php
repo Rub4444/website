@@ -88,12 +88,20 @@ class MainController extends Controller
 public function category(Request $request, $code)
 {
     $category = Category::where('code', $code)->firstOrFail();
-    $categories = Category::all();
+    // $categories = Category::all();
+    $categories = Cache::remember('categories', 3600, function ()
+    {
+        return Category::all();
+    });
 
     // Запрос к SKU только из этой категории
-    $query = Sku::whereHas('product', function ($q) use ($category) {
-        $q->where('category_id', $category->id);
-    });
+    // $query = Sku::whereHas('product', function ($q) use ($category) {
+    //     $q->where('category_id', $category->id);
+    // });
+    $query = Sku::query()
+    ->select('skus.*')
+    ->join('products', 'skus.product_id', '=', 'products.id')
+    ->where('products.category_id', $category->id);
 
     // Фильтр по цене
     if ($request->filled('min_price')) {
