@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -19,10 +18,13 @@ class LogVisit
             return $next($request);
         }
 
-        // 🚫 Исключаем ботов и инструменты
-        $blockedAgents = ['PostmanRuntime', 'curl', 'HttpClient', 'ApacheBench'];
-        foreach ($blockedAgents as $bad) {
-            if (stripos($userAgent, $bad) !== false) {
+        // 🚫 Исключаем ботов
+        $botPatterns = [
+            'bot', 'crawl', 'slurp', 'spider', 'bingpreview', 'yandex',
+            'AhrefsBot', 'PostmanRuntime', 'curl', 'HttpClient', 'ApacheBench'
+        ];
+        foreach ($botPatterns as $pattern) {
+            if (stripos($userAgent, $pattern) !== false) {
                 return $next($request);
             }
         }
@@ -37,19 +39,13 @@ class LogVisit
 
         // Определяем браузер
         $browser = 'Unknown';
-        if (preg_match('/chrome/i', $userAgent)) {
-            $browser = 'Chrome';
-        } elseif (preg_match('/firefox/i', $userAgent)) {
-            $browser = 'Firefox';
-        } elseif (preg_match('/safari/i', $userAgent) && !preg_match('/chrome/i', $userAgent)) {
-            $browser = 'Safari';
-        } elseif (preg_match('/edg/i', $userAgent)) {
-            $browser = 'Edge';
-        } elseif (preg_match('/opera|opr/i', $userAgent)) {
-            $browser = 'Opera';
-        }
+        if (preg_match('/chrome/i', $userAgent)) $browser = 'Chrome';
+        elseif (preg_match('/firefox/i', $userAgent)) $browser = 'Firefox';
+        elseif (preg_match('/safari/i', $userAgent) && !preg_match('/chrome/i', $userAgent)) $browser = 'Safari';
+        elseif (preg_match('/edg/i', $userAgent)) $browser = 'Edge';
+        elseif (preg_match('/opera|opr/i', $userAgent)) $browser = 'Opera';
 
-        // Проверка: был ли визит с этого IP в последние 10 минут
+        // Проверка повторного визита
         $recent = DB::table('visits')
             ->where('ip', $ip)
             ->where('created_at', '>=', now()->subMinutes(10))
