@@ -123,7 +123,7 @@ public function category(Request $request, $code)
     }
 
     // Пагинация + сохранение query string
-    $skus = $query->paginate(60)->withQueryString();
+    $skus = $query->paginate(30)->withQueryString();
 
     return view('category', compact('category', 'categories', 'skus'));
 }
