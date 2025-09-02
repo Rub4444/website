@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'telcell' => [
+        'issuer' => env('TELCELL_ISSUER'),
+        'key' => env('TELCELL_KEY'),
+        'url' => env('TELCELL_URL', 'https://telcellmoney.am/invoices'),
+    ],
+
+
 ];

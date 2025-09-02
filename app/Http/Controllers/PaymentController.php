@@ -2,166 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Services\TelcellService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
-    public function pay()
+    // Создание счёта и редирект на оплату
+    public function create(Order $order, TelcellService $telcell)
     {
-        $orderId = rand(3954001, 3955000);
-        $amount = 10;
+        $buyer = $order->phone ?: $order->email;
+        $response = $telcell->createInvoice(
+            $buyer,
+            $order->total,
+            "Оплата заказа #{$order->id}",
+            (string) $order->id
+        );
 
-        $response = Http::post(env('AMERIA_INIT_URL'), [
-            'ClientID'    => env('AMERIA_CLIENT_ID'),
-            'Username'    => env('AMERIA_USERNAME'),
-            'Password'    => env('AMERIA_PASSWORD'),
-            'OrderID'     => $orderId,
-            'Amount'      => $amount,
-            'Currency'    => '051',
-            'Description' => 'Test Payment Order #' . $orderId,
-            'BackURL'     => env('AMERIA_BACK_URL'),
-        ]);
-
-        if ($response->failed()) {
-            return "❌ Սխալ InitPayment հարցման ժամանակ։\n" . $response->body();
+        if (!$response || empty($response['invoice'])) {
+            return back()->with('error', 'Ошибка при создании счёта.');
         }
 
-        $data = $response->json();
-        $paymentId = $data['PaymentID'] ?? $data['MDOrderID'] ?? null;
+        $invoiceId = $response['invoice'];
 
-        if (isset($data['ResponseCode']) && (in_array($data['ResponseCode'], ['00', 1, '1']))) {
-            return redirect()->to(env('AMERIA_GATEWAY_URL') . "?id=" . $paymentId . "&lang=am");
-        }
-
-        return "❌ Սխալ ինիցիալիզացիայի ժամանակ: " . ($data['ResponseMessage'] ?? 'Անհայտ սխալ');
+        return redirect()->away("https://telcellmoney.am/payments/invoice/?invoice={$invoiceId}&return_url=" . route('payment.return'));
     }
 
-    public function callback(Request $request)
+    // Callback от Telcell
+    public function callback(Request $request, TelcellService $telcell)
     {
-        $paymentId = $request->input('paymentID') ?? $request->get('paymentID');
+        $data = $request->all();
 
-        if (!$paymentId) {
-            return "❌ PaymentID բացակայում է callback-ում։";
+        if (!$telcell->verifyCallback($data)) {
+            return response('Invalid checksum', 400);
         }
 
-        $data = $this->getPaymentDetails($paymentId);
+        $orderId = base64_decode($data['issuer_id']);
+        $order = Order::find($orderId);
 
-        if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00' && $data['PaymentState'] === 'payment_deposited') {
-            return view('payment.success', compact('data'));
+        if (!$order) {
+            return response('Order not found', 404);
         }
 
-        return view('payment.failed', compact('data'));
+        switch ($data['status']) {
+            case 'PAID':
+                $order->status = 2; // оплачено
+                break;
+            case 'REJECTED':
+                $order->status = 3; // отменено
+                break;
+            case 'EXPIRED':
+                $order->status = 4; // срок истек
+                break;
+        }
+
+
+        $order->save();
+
+        return response('OK', 200);
     }
 
-    public function cancel(string $paymentId)
+    // Возврат клиента после оплаты
+    public function return()
     {
-        // dd('CANCEL PaymentID:', $paymentId);
-
-        if (empty($paymentId)) {
-            return "❌ PaymentID չի փոխանցվել։";
-        }
-
-        $details = $this->getPaymentDetails($paymentId);
-
-        if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
-            return "❌ PaymentID գոյություն չունի կամ սխալ է։";
-        }
-
-        if ($details['PaymentState'] === 'payment_deposited') {
-            return "❌ Չի կարելի չեղարկել, քանի որ վճարումը արդեն կատարվել է։ Փորձիր կատարել վերադարձ (refund):";
-        }
-
-        return $this->sendCancelRequest($paymentId);
+        return view('payment.success');
     }
-
-    public function refund(string $paymentId)
-    {
-        dd('REFUND PaymentID:', $paymentId);
-
-        if (empty($paymentId)) {
-            return "❌ PaymentID չի փոխանցվել։";
-        }
-
-        $details = $this->getPaymentDetails($paymentId);
-
-        if (!isset($details['ResponseCode']) || $details['ResponseCode'] !== '00') {
-            return "❌ Սխալ `PaymentDetails` հարցման ժամանակ։";
-        }
-
-        if ($details['PaymentState'] !== 'payment_deposited') {
-            return "❌ Չի կարելի կատարել վերադարձ։ Վճարումը դեռ չի կատարվել։";
-        }
-
-        $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/RefundPayment', [
-            'PaymentID' => $paymentId,
-            'Username'  => env('AMERIA_USERNAME'),
-            'Password'  => env('AMERIA_PASSWORD'),
-            'Amount'    => 10, // կարգաբերվող
-        ]);
-
-        if ($response->failed()) {
-            return "❌ HTTP սխալ վերադարձի ժամանակ:\n" . $response->body();
-        }
-
-        $data = $response->json();
-
-        if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
-            return "💸 Վերադարձը հաջողությամբ կատարվեց։";
-        }
-
-        return "❌ Սխալ վերադարձի ժամանակ: " . ($data['ResponseMessage'] ?? 'Անհայտ սխալ');
-    }
-
-    private function sendCancelRequest(string $paymentId)
-    {
-        $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/CancelPayment', [
-            'PaymentID' => $paymentId,
-            'Username'  => env('AMERIA_USERNAME'),
-            'Password'  => env('AMERIA_PASSWORD'),
-        ]);
-
-        if ($response->failed()) {
-            return "❌ HTTP սխալ չեղարկման ժամանակ:\n" . $response->body();
-        }
-
-        $data = $response->json();
-
-        if (isset($data['ResponseCode']) && $data['ResponseCode'] === '00') {
-            return "❌ Վճարումը հաջողությամբ չեղարկվեց։";
-        }
-
-        return "Չեղարկման սխալ: " . ($data['ResponseMessage'] ?? 'Չի հաջողվել ստանալ մանրամասներ։');
-    }
-
-    public function getPaymentDetails(string $paymentId)
-    {
-        $response = Http::post('https://servicestest.ameriabank.am/VPOS/api/VPOS/GetPaymentDetails', [
-            'PaymentID' => $paymentId,
-            'Username'  => env('AMERIA_USERNAME'),
-            'Password'  => env('AMERIA_PASSWORD'),
-        ]);
-
-        if ($response->failed()) {
-            return [
-                'ResponseCode' => '99',
-                'ResponseMessage' => 'Սերվերի հետ խնդիր է։ ' . $response->body()
-            ];
-        }
-        // dd('✅ Response OK:', $response->json());
-        return $response->json();
-    }
-
-    public function cancelPost(Request $request)
-    {
-        $paymentId = $request->input('paymentId');
-        return $this->cancel($paymentId);
-    }
-
-    public function refundPost(Request $request)
-    {
-        $paymentId = $request->input('paymentId');
-        return $this->refund($paymentId);
-    }
-
 }
+
+
+

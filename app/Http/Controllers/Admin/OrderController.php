@@ -31,7 +31,7 @@ class OrderController extends Controller
         return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
     }
 
-    $order->status = 2;
+    $order->status = 5;
     $order->save();
 
     // Берём email из пользователя, если есть, иначе из заказа
