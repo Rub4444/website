@@ -40,7 +40,7 @@ class PaymentController extends Controller
             return response('Invalid checksum', 400);
         }
 
-        $orderId = base64_decode($data['issuer_id']);
+$orderId = base64_decode($data['issuer_id']); // это наш order_id
         $order = Order::find($orderId);
 
         if (!$order) {

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
@@ -28,23 +27,22 @@ class TelcellService
         $checksum = md5(
             $this->key .
             $this->issuer .
-            $buyer .
-            51 . // AMD = 51
+            51 . // код драма
             $sum .
             $descriptionEncoded .
-            $validDays .
             $issuerIdEncoded
         );
 
         $response = Http::asForm()->post($this->url, [
-            'bill:issuer' => $this->issuer,
-            'buyer' => $buyer,
-            'currency' => 51,
-            'sum' => $sum,
-            'description' => $descriptionEncoded,
-            'issuer_id' => $issuerIdEncoded,
-            'valid_days' => $validDays,
-            'checksum' => $checksum,
+            'action'      => 'PostInvoice',
+            'issuer'      => $this->issuer,
+            'currency'    => 51,
+            'price'       => $sum,
+            'product'     => $descriptionEncoded,
+            'issuer_id'   => $issuerIdEncoded,
+            'valid_days'  => $validDays,
+            'security_code' => $checksum,
+            'lang'        => 'ru',
         ]);
 
         return $response->json();
@@ -53,21 +51,19 @@ class TelcellService
     /**
      * Проверка подписи коллбэка
      */
-public function verifyCallback(array $data): bool
-{
-    $checksum = md5(
-        $this->key .
-        $this->issuer . // вместо $data['invoice']
-        $data['issuer_id'] .
-        $data['payment_id'] .
-        $data['buyer'] .
-        $data['currency'] .
-        $data['sum'] .
-        $data['time'] .
-        $data['status']
-    );
+    public function verifyCallback(array $data): bool
+    {
+        $checksum = md5(
+            $this->key .
+            $data['invoice'] .
+            $data['issuer_id'] .
+            $data['payment_id'] .
+            $data['currency'] .
+            $data['sum'] .
+            $data['time'] .
+            $data['status']
+        );
 
-    return $checksum === ($data['checksum'] ?? null);
-}
-
+        return $checksum === ($data['checksum'] ?? null);
+    }
 }
