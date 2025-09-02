@@ -33,6 +33,8 @@ class PaymentController extends Controller
     {
         $data = $request->all();
 
+        \Log::info('Telcell callback', $request->all());
+
         if (!$telcell->verifyCallback($data)) {
             return response('Invalid checksum', 400);
         }
