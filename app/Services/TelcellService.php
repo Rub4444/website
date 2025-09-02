@@ -53,20 +53,21 @@ class TelcellService
     /**
      * Проверка подписи коллбэка
      */
-    public function verifyCallback(array $data): bool
-    {
-        $checksum = md5(
-            $this->key .
-            $data['invoice'] .
-            $data['issuer_id'] .
-            $data['payment_id'] .
-            $data['buyer'] .
-            $data['currency'] .
-            $data['sum'] .
-            $data['time'] .
-            $data['status']
-        );
+public function verifyCallback(array $data): bool
+{
+    $checksum = md5(
+        $this->key .
+        $this->issuer . // вместо $data['invoice']
+        $data['issuer_id'] .
+        $data['payment_id'] .
+        $data['buyer'] .
+        $data['currency'] .
+        $data['sum'] .
+        $data['time'] .
+        $data['status']
+    );
 
-        return $checksum === $data['checksum'];
-    }
+    return $checksum === ($data['checksum'] ?? null);
+}
+
 }
