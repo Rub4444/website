@@ -18,6 +18,7 @@ class PaymentController extends Controller
             "Оплата заказа #{$order->id}",
             (string) $order->id
         );
+        \Log::info('Telcell createInvoice response', $response);
 
         if (!$response || empty($response['invoice'])) {
             return back()->with('error', 'Ошибка при создании счёта.');
@@ -33,7 +34,7 @@ class PaymentController extends Controller
     {
         $data = $request->all();
 
-        \Log::info('Telcell callback', $request->all());
+\Log::info('Telcell callback payload', $request->all());
 
         if (!$telcell->verifyCallback($data)) {
             return response('Invalid checksum', 400);
