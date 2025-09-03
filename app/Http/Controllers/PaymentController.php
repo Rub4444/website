@@ -40,7 +40,7 @@ class PaymentController extends Controller
 
         // Редирект клиента на оплату
         return redirect()->away(
-            "https://telcellmoney.am/payments/invoice/?invoice={$invoiceId}&return_url=" . route('payment.return')
+            "https://telcellmoney.am/payments/invoice/?invoice={$invoiceId}&return_url=" . route('auth.orders.index')
         );
     }
 
