@@ -101,8 +101,18 @@ class PaymentController extends Controller
     /**
      * Возврат клиента после оплаты
      */
-    public function return()
+    public function return(Request $request)
     {
-        return view('payment.success');
+        $orderId = $request->query('order'); // получаем order_id из URL
+        $order = Order::find($orderId);
+
+        if (!$order)
+        {
+            abort(404, 'Заказ не найден');
+        }
+
+        return redirect()->route('home', $order->id)
+                        ->with('success', 'Оплата прошла успешно!');
     }
+
 }
