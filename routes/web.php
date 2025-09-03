@@ -95,6 +95,7 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             Route::post('/payment/refund', [PaymentController::class, 'refundPost']);
             Route::get('/payment/return/{order}', [PaymentController::class, 'return'])->name('payment.return');
             Route::get('/payment/success/{order}', [OrderController::class, 'success'])->name('order.success');
+            Route::get('/payment/return', [PaymentController::class, 'return'])->name('payment.return');
 
             Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
             Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -197,9 +197,16 @@ public function success(Order $order)
     //     return redirect()->route('home', $order->id)
     //                     ->with('success', 'Оплата прошла успешно!');
     // }
-    public function return(Order $order)
+public function return(Request $request)
 {
-    // Можно проверить статус заказа, чтобы показать правильное сообщение
+    \Log::info('Telcell return hit', $request->all());
+
+    $order = Order::find($request->order);
+
+    if (!$order) {
+        return redirect()->route('home')->with('error', 'Заказ не найден');
+    }
+
     if ($order->status === Order::STATUS_PAID) {
         return redirect()->route('auth.orders.show', $order)
                          ->with('success', 'Оплата прошла успешно!');
@@ -208,5 +215,6 @@ public function success(Order $order)
     return redirect()->route('auth.orders.show', $order)
                      ->with('error', 'Оплата не была завершена.');
 }
+
 
 }
