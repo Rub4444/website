@@ -103,14 +103,6 @@ class PaymentController extends Controller
      */
     public function return(Request $request)
     {
-        $orderId = $request->query('order'); // получаем order_id из URL
-        $order = Order::find($orderId);
-
-        if (!$order)
-        {
-            abort(404, 'Заказ не найден');
-        }
-
         return redirect()->route('home', $order->id)
                         ->with('success', 'Оплата прошла успешно!');
     }
