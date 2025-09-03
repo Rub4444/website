@@ -115,9 +115,15 @@ class TelcellService
 // }
 public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
 {
+     // Находим заказ по ID
+    $order = \App\Models\Order::findOrFail($orderId);
+
     $issuer = $this->issuer; // Email магазина
     $shopKey = $this->key;   // Секретный ключ магазина
     $currency = '֏';
+
+     // Берём сумму с учётом доставки
+    $sum = $order->getTotalForPayment();
 
     // Base64 описание продукта и ID заказа
     $productEncoded  = base64_encode("IjevanMarket");

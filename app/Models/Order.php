@@ -125,6 +125,18 @@ class Order extends Model
         }
         return $sum;
     }
+    // В модели Order
+public function getTotalForPayment(): int
+{
+    $total = $this->sum;
+
+    // Если доставка и сумма < 10000, добавляем 500
+    if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
+        $total += 500;
+    }
+
+    return $total;
+}
 
     public function saveOrder($name, $phone, $email, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
