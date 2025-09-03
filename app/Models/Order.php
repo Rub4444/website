@@ -32,16 +32,17 @@ class Order extends Model
      * Получить человекочитаемое название статуса
      */
     public function getStatusName(): string
-    {
-        return match($this->status) {
-            self::STATUS_PENDING => 'Заказ принят',
-            self::STATUS_PAID => 'Заказ оплачен',
-            self::STATUS_SHIPPED => 'Отправлен / В пути',
-            self::STATUS_DELIVERED => 'Доставлен',
-            self::STATUS_CANCELLED => 'Отменён',
-            default => 'Неизвестно',
-        };
-    }
+{
+    return match($this->status) {
+        self::STATUS_PENDING => __('order.pending'),
+        self::STATUS_PAID => __('order.paid'),
+        self::STATUS_SHIPPED => __('order.shipped'),
+        self::STATUS_DELIVERED => __('order.delivered'),
+        self::STATUS_CANCELLED => __('order.cancelled'),
+        default => __('order.unknown'),
+    };
+}
+
 
      // --- Методы для управления статусами ---
     // public function markAsRefunded()

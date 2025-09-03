@@ -27,6 +27,7 @@
                                             <th class="account__table--header__child--items">@lang('basket.phone_number')</th>
                                             <th class="account__table--header__child--items">@lang('basket.when_send')</th>
                                             <th class="account__table--header__child--items">@lang('basket.cost')</th>
+                                            <th class="account__table--header__child--items">@lang('order.status')</th>
                                             <th class="account__table--header__child--items">@lang('basket.actions')</th>
                                         </tr>
                                     </thead>
@@ -38,6 +39,7 @@
                                                 <td class="account__table--body__child--items">{{ $order->phone }}</td>
                                                 <td class="account__table--body__child--items">{{ $order->created_at->format('H:i d/m/Y') }}</td>
                                                 <td class="account__table--body__child--items">{{ $order->sum}} ֏</td>
+                                                <td class="account__table--body__child--items">{{ $order->getStatusName() }}</td>
                                                 <td class="account__table--body__child--items">
                                                     <div class="btn-group" role="group">
                                                         <a
@@ -76,6 +78,10 @@
                                                 <td class="account__table--body__child--items">
                                                     <strong>@lang('basket.cost')</strong>
                                                     <span>{{ $order->sum}} ֏</span>
+                                                </td>
+                                                <td class="account__table--body__child--items">
+                                                    <strong>@lang('order.status')</strong>
+                                                    <span>{{ $order->getStatusName()}}</span>
                                                 </td>
                                                 <td class="account__table--body__child--items">
                                                     <strong>@lang('basket.actions')</strong>
