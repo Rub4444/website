@@ -108,27 +108,11 @@
                     <p><strong>Հեռախոսահամար՝</strong> {{ $order->phone }}</p>
                     <!-- Карта -->
                     <p><strong>Պատվերի տեսակը՝</strong> {{ $order->delivery_type === 'delivery' ? 'Առաքում' : 'Վերցնել խանութից' }}</p>
-                    <p><strong>Կարգավիճակ՝</strong>
-                        @switch($order->status)
-                            @case(1)
-                                <span class="text-warning">Ընթացքի մեջ</span>
-                                @break
-                            @case(2)
-                                @if($order->delivery_type === 'delivery')
-                                    <span class="text-primary">Հաստատված է, առաքիչը ճանապարհին է</span>
-                                @else
-                                    <span class="text-primary">Հաստատված է, կարող եք մոտենալ</span>
-                                @endif
-                                @break
-                            @case(3)
-                                <span class="text-danger">Պատվերը չեղարկվել է</span>
-                                <p><strong>Մեկնաբանություն՝</strong> {{ $order->cancellation_comment }}</p>
-                                @break
-                            @default
-                                <span class="text-muted">Անհայտ կարգավիճակ</span>
-                        @endswitch
+                    <p>
+                        <strong>Կարգավիճակ՝</strong>
+                        {{ $order->getStatusName()}}
+                        {{ $order->cancellation_comment }}
                     </p>
-
                     @if($order->address)<p><strong>Հասցե՝</strong> {{ $order->address }}</p>@endif
 
                     <div id="map" style="width: 100%; height: 400px; margin-top: 20px;"></div>
