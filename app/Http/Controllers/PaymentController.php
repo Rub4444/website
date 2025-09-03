@@ -179,15 +179,14 @@ public function callback(Request $request)
 
     return response('OK', 200);
 }
-public function check(Request $request)
+public function success(Order $order)
 {
-    if ($request->has('order')) {
-        $order = Order::findOrFail($request->order);
-        // Можно тут сделать проверку в Telcell API, чтобы подтвердить оплату
-        return redirect()->route('payment.success', ['order' => $order->id]);
+    if ($order->status !== 'paid') {
+        // Тут можешь сделать дополнительную проверку на всякий случай
+        return redirect()->route('home')->with('warning', 'Платёж обрабатывается.');
     }
 
-    abort(404);
+    return view('orders.success', compact('order'));
 }
 
     /**
