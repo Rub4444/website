@@ -141,4 +141,46 @@ class OrderController extends Controller
         return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
     }
 
+    //tellcelll
+    public function cancelOrder(Request $request, Order $order)
+    {
+        $this->authorize('cancel', $order); // проверка через Policy
+
+        $telcell = new \App\Services\TelcellService();
+
+        $response = $telcell->cancelBill($order);
+
+        if($response['status'] == 'OK') {
+            $order->status = 3; // Отменён
+            $order->cancellation_comment = $request->cancellation_comment ?? null;
+            $order->save();
+
+            return back()->with('success', 'Заказ успешно отменён.');
+        }
+
+        return back()->with('error', 'Не удалось отменить заказ: ' . $response['message']);
+    }
+
+    public function refundOrder(Request $request, Order $order)
+    {
+        $this->authorize('refund', $order); // проверка через Policy
+
+        $request->validate([
+            'refund_sum' => 'required|numeric|min:1|max:' . $order->paid_amount,
+        ]);
+
+        $telcell = new \App\Services\TelcellService();
+        $response = $telcell->refundBill($order, $request->refund_sum);
+
+        if($response['status'] == 'OK') {
+            $order->paid_amount -= $request->refund_sum; // уменьшаем оплаченный остаток
+            $order->save();
+
+            return back()->with('success', 'Частичный возврат выполнен.');
+        }
+
+        return back()->with('error', 'Не удалось выполнить возврат: ' . $response['message']);
+    }
+
+
 }

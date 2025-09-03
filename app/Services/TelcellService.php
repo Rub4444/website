@@ -212,4 +212,42 @@ public function createInvoice(string $buyer, float $sum, int $orderId, int $vali
 
         return $checksum === ($data['checksum'] ?? null);
     }
+
+    public function cancelBill(\App\Models\Order $order)
+    {
+        $issuer_id = base64_encode($order->id);
+        $invoice = $order->invoice_id; // должно быть сохранено при создании счета
+        $shopKey = config('services.telcell.shop_key');
+
+        $checksum = md5($shopKey . $order->issuer . $invoice . $issuer_id);
+
+        $response = Http::asForm()->post('https://telcellmoney.am/invoices', [
+            'cancel_bill:issuer' => $order->issuer,
+            'invoice' => $invoice,
+            'issuer_id' => $issuer_id,
+            'checksum' => $checksum
+        ]);
+
+        return $response->json();
+    }
+
+    public function refundBill(\App\Models\Order $order, $refundSum)
+    {
+        $issuer_id = base64_encode($order->id);
+        $invoice = $order->invoice_id;
+        $shopKey = config('services.telcell.shop_key');
+
+        $checksum = md5($shopKey . $order->issuer . $invoice . $issuer_id . $refundSum);
+
+        $response = Http::asForm()->post('https://telcellmoney.am/invoices', [
+            'refund_bill:issuer' => $order->issuer,
+            'invoice' => $invoice,
+            'issuer_id' => $issuer_id,
+            'refund_sum' => $refundSum,
+            'checksum' => $checksum
+        ]);
+
+        return $response->json();
+    }
+
 }

@@ -39,6 +39,21 @@
                         @endif
                     @endadmin
 
+                    @if($order->status === 2) {{-- 2 — оплаченный --}}
+                        <form method="POST" action="{{ route('order.cancel', $order) }}">
+                            @csrf
+                            <textarea name="cancellation_comment" placeholder="Причина отмены"></textarea>
+                            <button type="submit">Отменить заказ</button>
+                        </form>
+
+                        <form method="POST" action="{{ route('order.refund', $order) }}">
+                            @csrf
+                            <input type="number" name="refund_sum" max="{{ $order->paid_amount }}" value="1" step="1">
+                            <button type="submit">Частичный возврат</button>
+                        </form>
+                    @endif
+
+
 
                     <div class="table-responsive">
                         <table class="table table-striped align-middle text-center">

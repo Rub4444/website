@@ -125,5 +125,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    App\Providers\AppServiceProvider::class,
+    App\Providers\AuthServiceProvider::class,
     App\Providers\ViewServiceProvider::class,
+
 ];

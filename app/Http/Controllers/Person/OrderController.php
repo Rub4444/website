@@ -18,7 +18,6 @@ class OrderController extends Controller
 
     }
 
-
     public function show(Order $order)
     {
         // Проверка, что заказ принадлежит текущему пользователю
