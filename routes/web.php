@@ -123,9 +123,10 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
         });
 
-        Route::get('/payment/{order}/create', [PaymentController::class, 'create'])->name('payment.create');
+        Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
         Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
         Route::get('/payment/return', [PaymentController::class, 'return'])->name('payment.return');
+
 
         Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
