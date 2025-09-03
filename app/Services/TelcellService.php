@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
@@ -12,8 +13,8 @@ class TelcellService
     public function __construct()
     {
         $this->issuer = config('services.telcell.issuer');
-        $this->key = config('services.telcell.key');
-        $this->url = config('services.telcell.url');
+        $this->key    = config('services.telcell.key');
+        $this->url    = config('services.telcell.url');
     }
 
     /**
@@ -22,34 +23,36 @@ class TelcellService
     public function createInvoice(string $buyer, float $sum, string $description, string $issuerId, int $validDays = 1): ?array
     {
         $descriptionEncoded = base64_encode($description);
-        $issuerIdEncoded = base64_encode($issuerId);
+        $issuerIdEncoded    = base64_encode($issuerId);
 
+        // Хэш подпись
         $checksum = md5(
             $this->key .
             $this->issuer .
+            $buyer .
             51 . // код драма
             $sum .
             $descriptionEncoded .
+            $validDays .
             $issuerIdEncoded
         );
 
         $response = Http::asForm()->post($this->url, [
-            'action'      => 'PostInvoice',
             'issuer'      => $this->issuer,
+            'buyer'       => $buyer,
             'currency'    => 51,
-            'price'       => $sum,
-            'product'     => $descriptionEncoded,
+            'sum'         => $sum,
+            'description' => $descriptionEncoded,
             'issuer_id'   => $issuerIdEncoded,
             'valid_days'  => $validDays,
-            'security_code' => $checksum,
-            'lang'        => 'ru',
+            'checksum'    => $checksum,
         ]);
 
         return $response->json();
     }
 
     /**
-     * Проверка подписи коллбэка
+     * Проверка подписи callback-а
      */
     public function verifyCallback(array $data): bool
     {

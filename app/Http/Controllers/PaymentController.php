@@ -3,49 +3,59 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Services\TelcellService;
 use Illuminate\Http\Request;
+use App\Services\TelcellService;
 
 class PaymentController extends Controller
 {
-    // Создание счёта и редирект на оплату
-    public function create(Order $order, TelcellService $telcell)
+    protected TelcellService $telcell;
+
+    public function __construct(TelcellService $telcell)
     {
-        $buyer = $order->phone ?: $order->email;
-        $response = $telcell->createInvoice(
-            $buyer,
-            $order->total,
-            "Оплата заказа #{$order->id}",
-            (string) $order->id
-        );
-        \Log::info('Telcell createInvoice response', $response);
-
-        if (!$response || empty($response['invoice'])) {
-            return back()->with('error', 'Ошибка при создании счёта.');
-        }
-
-        $invoiceId = $response['invoice'];
-
-        return redirect()->away("https://telcellmoney.am/payments/invoice/?invoice={$invoiceId}&return_url=" . route('payment.return'));
+        $this->telcell = $telcell;
     }
 
-    // Callback от Telcell
-    public function callback(Request $request, TelcellService $telcell)
+    /**
+     * Создание платежа и редирект на страницу Telcell
+     */
+    public function create(Order $order)
+    {
+        // buyer = телефон (ean13) или email
+        $buyer = $order->phone ?: $order->email;
+
+        $result = $this->telcell->createInvoice(
+            $buyer,
+            $order->total,
+            "Оплата заказа №{$order->id}",
+            (string) $order->id
+        );
+
+        if (!$result || empty($result['invoice'])) {
+            return back()->withErrors(['Ошибка создания платежа']);
+        }
+
+        $invoiceId = $result['invoice'];
+
+        return redirect()->away(
+            "https://telcellmoney.am/payments/invoice/?invoice={$invoiceId}&return_url=" . route('payment.return')
+        );
+    }
+
+    /**
+     * Callback от Telcell
+     */
+    public function callback(Request $request)
     {
         $data = $request->all();
 
-\Log::info('Telcell callback RAW', [
-    'all' => $request->all(),
-    'raw' => $request->getContent(),
-    'headers' => $request->headers->all(),
-]);
+        \Log::info('Telcell callback', $data);
 
-        if (!$telcell->verifyCallback($data)) {
+        if (!$this->telcell->verifyCallback($data)) {
             return response('Invalid checksum', 400);
         }
 
-$orderId = base64_decode($data['issuer_id']); // это наш order_id
-        $order = Order::find($orderId);
+        $orderId = base64_decode($data['issuer_id']); // наш order_id
+        $order   = Order::find($orderId);
 
         if (!$order) {
             return response('Order not found', 404);
@@ -53,28 +63,28 @@ $orderId = base64_decode($data['issuer_id']); // это наш order_id
 
         switch ($data['status']) {
             case 'PAID':
-                $order->status = 2; // оплачено
+                $order->status = 'paid';
                 break;
             case 'REJECTED':
-                $order->status = 3; // отменено
+                $order->status = 'failed';
                 break;
             case 'EXPIRED':
-                $order->status = 4; // срок истек
+                $order->status = 'expired';
                 break;
+            default:
+                $order->status = 'pending';
         }
-
 
         $order->save();
 
         return response('OK', 200);
     }
 
-    // Возврат клиента после оплаты
+    /**
+     * Возврат клиента после оплаты
+     */
     public function return()
     {
         return view('payment.success');
     }
 }
-
-
-
