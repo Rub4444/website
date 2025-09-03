@@ -118,5 +118,6 @@ return [
     'rec_product' => 'Առաջարկ',
     'new_skus' => 'Նոր ապրանքներ',
     'it_may_be_interest' => 'Կարող է հետաքրքրել`',
+    'payment_methods' => 'Ընդունում ենք վճարման',
 
 ];

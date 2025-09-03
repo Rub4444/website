@@ -117,4 +117,5 @@ return [
     'rec_product' => 'Offer',
     'new_skus' => 'New products',
     'it_may_be_interest' => 'It might be interesting',
+    'payment_methods' => 'We accept payment',
 ];
