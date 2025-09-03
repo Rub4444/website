@@ -63,56 +63,105 @@ class TelcellService
 
 //     return $response->json() ?: [];
 // }
-public function createInvoice(string $buyer, float $sum, string $description, string $issuerId, int $validDays = 1, ?string $info = null): array
+// public function createInvoice(string $buyer, float $sum, string $description, string $issuerId, int $validDays = 1, ?string $info = null): array
+// {
+//     // Base64-кодирование
+//     $productEncoded = 'SWpldmFubWFya2V0'; // Base64 от названия магазина
+//     $issuerIdEncoded = base64_encode((string)$issuerId);     // Base64 от ID заказа
+
+//     // Валюта — символ драма
+//     $currency = '51';
+
+//     // Контрольная сумма (security_code)
+//     $checksumString = $this->key .
+//                 $this->issuer .
+//                 $currency .
+//                 number_format($sum, 2, '.', '') .
+//                 $productEncoded .
+//                 $issuerIdEncoded .
+//                 $validDays;
+
+
+//     $checksum = md5($checksumString);
+//     \Log::info('Telcell Checksum String: '.$checksumString);
+//     \Log::info('Telcell MD5: '.$checksum);
+
+//     // POST-данные
+//     $postData = [
+//         'action'       => 'PostInvoice',           // с маленькой 'i' согласно примеру
+//         'bill:issuer'  => $this->issuer,
+//         'buyer'        => $buyer,
+//         'currency'     => $currency,
+//         'price' => (string) intval($sum),
+//         'product'      => $productEncoded,
+//         'issuer_id'    => $issuerIdEncoded,
+//         'valid_days'   => $validDays,
+//         'security_code'=> $checksum,
+//         'lang'         => 'am',
+//     ];
+
+//     if ($info) {
+//         $postData['info'] = base64_encode($info);
+//     }
+
+//     \Log::info('Telcell POST Request:', $postData);
+
+//     // Отправка запроса
+//     $response = Http::asForm()->post($this->url, $postData);
+
+//     \Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
+
+//     return $response->json() ?: [];
+// }
+public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
 {
-    // Base64-кодирование
-    $productEncoded = 'SWpldmFubWFya2V0'; // Base64 от названия магазина
-    $issuerIdEncoded = base64_encode((string)$issuerId);     // Base64 от ID заказа
+    $issuer = $this->issuer; // Email магазина
+    $shopKey = $this->key;   // Секретный ключ магазина
+    $currency = '֏';
 
-    // Валюта — символ драма
-    $currency = '51';
+    // Base64 описание продукта и ID заказа
+    $productEncoded  = base64_encode("IjevanMarket");
+    $issuerIdEncoded = base64_encode((string)$orderId);
 
-    // Контрольная сумма (security_code)
-    $checksumString = $this->key .
-                $this->issuer .
-                $currency .
-                number_format($sum, 2, '.', '') .
-                $productEncoded .
-                $issuerIdEncoded .
-                $validDays;
+    // Контрольная сумма
+    $checksumString = $shopKey .
+                      $issuer .
+                      $currency .
+                      number_format($sum, 2, '.', '') .
+                      $productEncoded .
+                      $issuerIdEncoded .
+                      $validDays;
 
-
-    $checksum = md5($checksumString);
-    \Log::info('Telcell Checksum String: '.$checksumString);
-    \Log::info('Telcell MD5: '.$checksum);
+    $securityCode = md5($checksumString);
 
     // POST-данные
     $postData = [
-        'action'       => 'PostInvoice',           // с маленькой 'i' согласно примеру
-        'bill:issuer'  => $this->issuer,
-        'buyer'        => $buyer,
+        'action'       => 'PostInvoice',
+        'issuer'       => $issuer,
         'currency'     => $currency,
-        'price' => (string) intval($sum),
+        'price'        => number_format($sum, 2, '.', ''),
         'product'      => $productEncoded,
         'issuer_id'    => $issuerIdEncoded,
         'valid_days'   => $validDays,
-        'security_code'=> $checksum,
+        'security_code'=> $securityCode,
         'lang'         => 'am',
+        'buyer'        => $buyer, // номер покупателя
     ];
 
     if ($info) {
         $postData['info'] = base64_encode($info);
     }
 
-    \Log::info('Telcell POST Request:', $postData);
+    Log::info('Telcell POST Request:', $postData);
 
     // Отправка запроса
-    $response = Http::asForm()->post($this->url, $postData);
+    $response = Http::asForm()->post('https://telcellmoney.am/invoices', $postData);
 
-    \Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
+    Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
 
     return $response->json() ?: [];
 }
+
 
     /**
      * Проверка статуса счёта

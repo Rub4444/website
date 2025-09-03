@@ -94,14 +94,14 @@ public function basketConfirm(Request $request, TelcellService $telcell)
     // Создаем счёт через Telcell
     $buyer = $request->phone ?: $email;
     $description = "Оплата заказа #{$order->id}";
-    $issuerId = (string)$order->id;
+    // $issuerId = (string)$order->id;
 
     $result = $telcell->createInvoice(
-        $buyer,
-        $order->sum,       // сумма заказа
-        $description,
-        $issuerId,
-        1                     // valid_days
+        $buyer,         // string
+        $order->sum,    // float
+        $order->id,     // int — ID заказа
+        1,              // valid_days
+        $description    // строка описания (опционально)
     );
 
     if (isset($result['invoice']))
