@@ -179,6 +179,16 @@ public function callback(Request $request)
 
     return response('OK', 200);
 }
+public function check(Request $request)
+{
+    if ($request->has('order')) {
+        $order = Order::findOrFail($request->order);
+        // Можно тут сделать проверку в Telcell API, чтобы подтвердить оплату
+        return redirect()->route('payment.success', ['order' => $order->id]);
+    }
+
+    abort(404);
+}
 
     /**
      * Возврат клиента после оплаты
