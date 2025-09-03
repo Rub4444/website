@@ -35,6 +35,13 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
 
     // Route::get('/locale/{locale}', [MainController::class, 'changeLocale'])->name('locale');
     // routes/web.php
+    Route::get('/payment/invoice', function (Illuminate\Http\Request $request) {
+            if ($request->has('order')) {
+                return redirect()->route('payment.return', ['order' => $request->order]);
+            }
+            abort(404);
+        });
+
     Route::get('/locale/{lang}', function ($lang) {
         if (in_array($lang, ['en', 'hy'])) {
             session(['locale' => $lang]);
@@ -88,12 +95,6 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             Route::post('/payment/refund', [PaymentController::class, 'refundPost']);
             Route::get('/payment/return/{order}', [PaymentController::class, 'return'])->name('payment.return');
             Route::get('/payment/success/{order}', [OrderController::class, 'success'])->name('order.success');
-            Route::get('/payment/invoice', function (Illuminate\Http\Request $request) {
-                if ($request->has('order')) {
-                    return redirect()->route('payment.return', ['order' => $request->order]);
-                }
-                abort(404);
-            });
 
             Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
             Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
