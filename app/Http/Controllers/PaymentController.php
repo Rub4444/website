@@ -40,8 +40,10 @@ class PaymentController extends Controller
 
         // Редирект клиента на оплату
         return redirect()->away(
-            "https://telcellmoney.am/payments/invoice/?invoice={$invoiceId}&return_url=" . route('auth.orders.index')
+            "https://telcellmoney.am/payments/invoice/?invoice={$invoiceId}&return_url="
+            . route('payment.return', ['order' => $order->id])
         );
+
     }
 
     /**
@@ -101,10 +103,21 @@ class PaymentController extends Controller
     /**
      * Возврат клиента после оплаты
      */
-    public function return(Request $request)
-    {
-        return redirect()->route('home', $order->id)
-                        ->with('success', 'Оплата прошла успешно!');
+    // public function return(Request $request)
+    // {
+    //     return redirect()->route('home', $order->id)
+    //                     ->with('success', 'Оплата прошла успешно!');
+    // }
+    public function return(Order $order)
+{
+    // Можно проверить статус заказа, чтобы показать правильное сообщение
+    if ($order->status === Order::STATUS_PAID) {
+        return redirect()->route('auth.orders.show', $order)
+                         ->with('success', 'Оплата прошла успешно!');
     }
+
+    return redirect()->route('auth.orders.show', $order)
+                     ->with('error', 'Оплата не была завершена.');
+}
 
 }
