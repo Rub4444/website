@@ -16,7 +16,7 @@ class Order extends Model
     public const STATUS_CANCELLED   = 3; // Отменён
     public const STATUS_DELIVERED   = 4; // Доставлен
     public const STATUS_SHIPPED     = 5; // Отправлен / В пути
-
+    // public const STATUS_REFUNDED    = 6; // Vazvrat
     public function setStatus(int $status): void
     {
         $this->status = $status;
@@ -44,6 +44,11 @@ class Order extends Model
     }
 
      // --- Методы для управления статусами ---
+    // public function markAsRefunded()
+    // {
+    //     $this->status = self::STATUS_REFUNDED;
+    //     $this->save();
+    // }
     public function markAsPending(): void
     {
         $this->update(['status' => self::STATUS_PENDING]);

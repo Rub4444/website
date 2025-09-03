@@ -130,7 +130,7 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
 
         Route::middleware(['auth'])->group(function () {
             Route::post('/order/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('order.cancel');
-            Route::post('/order/{order}/refund', [OrderController::class, 'refundOrder'])->name('order.refund');
+            // Route::post('/order/{order}/refund', [OrderController::class, 'refundOrder'])->name('order.refund');
         });
 
 

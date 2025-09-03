@@ -22,7 +22,7 @@
                                 </div>
 
                                 <!-- Отмена заказа -->
-                                <div class="col-lg-6 mb-3">
+                                @if($order->status === 2) {{-- 2 — оплаченный --}}
                                     <form action="{{ route('admin.orders.cancel', $order) }}" method="POST">
                                         @csrf
                                         @method('PUT')
@@ -34,24 +34,31 @@
                                             <i class="bi bi-x-circle"></i> Չեղարկվել պատվերը
                                         </button>
                                     </form>
-                                </div>
+                                    <form method="POST" action="{{ route('order.cancel', $order) }}">
+                                        @csrf
+                                        <textarea name="cancellation_comment" placeholder="Причина отмены"></textarea>
+                                        <button type="submit">Отменить заказ</button>
+                                    </form>
+                                @else
+                                      <div class="col-lg-6 mb-3">
+                                        <form action="{{ route('admin.orders.cancel', $order) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="mb-2">
+                                                <label for="cancellation_comment" class="form-label">Մեկնաբանություն՝</label>
+                                                <textarea name="cancellation_comment" id="cancellation_comment" class="form-control" rows="3" ></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-danger w-100">
+                                                <i class="bi bi-x-circle"></i> Չեղարկվել պատվերը
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     @endadmin
 
-                    @if($order->status === 2) {{-- 2 — оплаченный --}}
-                        <form method="POST" action="{{ route('order.cancel', $order) }}">
-                            @csrf
-                            <textarea name="cancellation_comment" placeholder="Причина отмены"></textarea>
-                            <button type="submit">Отменить заказ</button>
-                        </form>
 
-                        <form method="POST" action="{{ route('order.refund', $order) }}">
-                            @csrf
-                            <input type="number" name="refund_sum" max="{{ $order->paid_amount }}" value="1" step="1">
-                            <button type="submit">Частичный возврат</button>
-                        </form>
-                    @endif
 
 
 

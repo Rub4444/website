@@ -43,56 +43,51 @@ class OrderController extends Controller
         return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
     }
 
+    private function performCancel(Order $order, ?string $comment = null)
+    {
+        foreach ($order->skus as $sku) {
+            $sku->count += $sku->pivot->count;
+            $sku->save();
+        }
+
+        $order->markAsCancelled();
+        $order->cancellation_comment = $comment;
+        $order->save();
+    }
+    // Админ
+    public function cancel(Request $request, Order $order)
+    {
+        $request->validate(['cancellation_comment' => 'nullable|string|max:1000']);
+        $this->performCancel($order, $request->cancellation_comment);
+
+        // email уведомление
+        $email = $order->user->email ?? $order->email;
+        if ($email) Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
+
+        return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
+    }
+
+    // Пользователь
+    public function cancelOrder(Request $request, Order $order)
+    {
+        $this->authorize('cancel', $order);
+        $telcell = new \App\Services\TelcellService();
+        $response = $telcell->cancelBill($order);
+
+        if (is_array($response) && ($response['status'] ?? null) === 'OK') {
+            $this->performCancel($order, $request->cancellation_comment ?? null);
+            return back()->with('success', 'Заказ успешно отменён.');
+        }
+
+        $message = is_array($response) ? ($response['message'] ?? 'Неизвестная ошибка') : 'Ошибка связи с Telcell';
+        return back()->with('error', 'Не удалось отменить заказ: ' . $message);
+    }
 
 
     // public function cancel(Request $request, Order $order)
     // {
     //     $request->validate([
-    //         'cancellation_comment' => 'required|string|max:1000',
-    //     ]);
-
-    //     $order->update([
-    //         'status' => 3, // статус 3 = отменён
-    //         'cancellation_comment' => $request->cancellation_comment,
-    //     ]);
-
-    //     return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է։');
-    // }
-
-
-    // public function cancel(Request $request, Order $order)
-    // {
-    //     $request->validate([
-    //         'cancellation_comment' => 'required|string|max:1000',
-    //     ]);
-
-    //     // 1️⃣ Меняем статус заказа и сохраняем причину отмены
-    //     $order->update([
-    //         'status' => 3, // отменён
-    //         'cancellation_comment' => $request->cancellation_comment,
-    //     ]);
-
-    //     // 2️⃣ Возвращаем товары обратно в корзину
-    //     $basket = new Basket(true); // создаем корзину, если нет
-    //     foreach ($order->skus as $sku) {
-    //         $basket->addSku($sku, $sku->pivot->count); // добавляем все позиции обратно
-    //     }
-
-    //     // 3️⃣ Отправляем уведомление клиенту
-    //     $email = $order->user->email ?? $order->email;
-    //     if ($email) {
-    //         Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
-
-    //     }
-
-    //     return redirect()->route('home')->with('success', 'Заказ отменен, товары возвращены в корзину, клиент уведомлен.');
-    // }
-
-
-    // public function cancel(Request $request, Order $order)
-    // {
-    //     $request->validate([
-    //         'cancellation_comment' => 'required|string|max:1000',
+    //         'cancellation_comment' => 'nullable|string|max:1000',
     //     ]);
 
     //     // Восстанавливаем товары на склад
@@ -102,12 +97,11 @@ class OrderController extends Controller
     //         $sku->save();
     //     }
 
-    //     $order->update([
-    //         'status' => 3,
-    //         'cancellation_comment' => $request->cancellation_comment,
-    //     ]);
+    //     $order->markAsCancelled(); // вместо $order->status = 3
+    //     $order->cancellation_comment = $request->cancellation_comment;
+    //     $order->save();
 
-    //     // 2. Отправляем email
+    //     // Отправка email
     //     $email = $order->user->email ?? $order->email;
     //     if ($email) {
     //         Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
@@ -115,72 +109,54 @@ class OrderController extends Controller
 
     //     return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
     // }
-    public function cancel(Request $request, Order $order)
-    {
-        $request->validate([
-            'cancellation_comment' => 'nullable|string|max:1000',
-        ]);
 
-        // Восстанавливаем товары на склад
-        foreach($order->skus as $sku)
-        {
-            $sku->count += $sku->pivot->count;
-            $sku->save();
-        }
+    // public function cancelOrder(Request $request, Order $order)
+    // {
+    //     $this->authorize('cancel', $order); // проверка через Policy
 
-        $order->markAsCancelled(); // вместо $order->status = 3
-        $order->cancellation_comment = $request->cancellation_comment;
-        $order->save();
+    //     $telcell = new \App\Services\TelcellService();
 
-        // Отправка email
-        $email = $order->user->email ?? $order->email;
-        if ($email) {
-            Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
-        }
+    //     $response = $telcell->cancelBill($order);
 
-        return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
-    }
+    //     if (is_array($response) && ($response['status'] ?? null) === 'OK') {
+    //         $order->markAsCancelled();
+    //         $order->cancellation_comment = $request->cancellation_comment ?? null;
+    //         $order->save();
 
-    //tellcelll
-    public function cancelOrder(Request $request, Order $order)
-    {
-        $this->authorize('cancel', $order); // проверка через Policy
+    //         return back()->with('success', 'Заказ успешно отменён.');
+    //     }
 
-        $telcell = new \App\Services\TelcellService();
+    //     $message = is_array($response) ? ($response['message'] ?? 'Неизвестная ошибка') : 'Ошибка связи с Telcell';
+    //     return back()->with('error', 'Не удалось отменить заказ: ' . $message);
+    // }
 
-        $response = $telcell->cancelBill($order);
 
-        if($response['status'] == 'OK') {
-            $order->status = 3; // Отменён
-            $order->cancellation_comment = $request->cancellation_comment ?? null;
-            $order->save();
+    // public function refundOrder(Request $request, Order $order)
+    // {
+    //     $this->authorize('refund', $order); // проверка через Policy
 
-            return back()->with('success', 'Заказ успешно отменён.');
-        }
+    //     $request->validate([
+    //         'refund_sum' => 'required|numeric|min:1|max:' . ($order->paid_amount ?? 0),
+    //     ]);
 
-        return back()->with('error', 'Не удалось отменить заказ: ' . $response['message']);
-    }
+    //     $telcell = new \App\Services\TelcellService();
+    //     $response = $telcell->refundBill($order, $request->refund_sum);
 
-    public function refundOrder(Request $request, Order $order)
-    {
-        $this->authorize('refund', $order); // проверка через Policy
+    //     if($response['status'] == 'OK') {
+    //         $order->paid_amount -= $request->refund_sum; // уменьшаем оплаченный остаток
 
-        $request->validate([
-            'refund_sum' => 'required|numeric|min:1|max:' . $order->paid_amount,
-        ]);
+    //         if ($order->paid_amount <= 0)
+    //         {
+    //             $order->markAsRefunded();
+    //         }
 
-        $telcell = new \App\Services\TelcellService();
-        $response = $telcell->refundBill($order, $request->refund_sum);
+    //         $order->save();
 
-        if($response['status'] == 'OK') {
-            $order->paid_amount -= $request->refund_sum; // уменьшаем оплаченный остаток
-            $order->save();
+    //         return back()->with('success', 'Частичный возврат выполнен.');
+    //     }
 
-            return back()->with('success', 'Частичный возврат выполнен.');
-        }
-
-        return back()->with('error', 'Не удалось выполнить возврат: ' . $response['message']);
-    }
+    //     return back()->with('error', 'Не удалось выполнить возврат: ' . $response['message']);
+    // }
 
 
 }
