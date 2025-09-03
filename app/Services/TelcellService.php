@@ -146,10 +146,8 @@ public function createInvoice(string $buyer, float $sum, int $orderId, int $vali
         'security_code'=> $securityCode,
         'lang'         => 'am',
         'buyer'        => $buyer, // номер покупателя
-        // 🔑 вот здесь добавляем полный success URL
-        'success_url'  => route('payment.return', ['order' => $orderId], true),
-        // можно добавить и fail_url, если нужно
-        'fail_url'     => route('payment.return', ['order' => $orderId], true),
+        'successUrl'   => route('payment.return', ['order' => $orderId], true),
+        'failUrl'      => route('payment.return', ['order' => $orderId], true),
     ];
 
     if ($info) {
