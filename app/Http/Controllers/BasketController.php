@@ -66,7 +66,7 @@ public function basketConfirm(Request $request, TelcellService $telcell)
 
     $email = Auth::check() ? Auth::user()->email : $request->email;
 
-    $orderId  = $basket->saveOrder(
+    $order = $basket->saveOrder(
         $request->name,
         $request->phone,
         $email,
@@ -75,7 +75,13 @@ public function basketConfirm(Request $request, TelcellService $telcell)
         $request->delivery_street,
         $request->delivery_home
     );
-    $order = \App\Models\Order::find($orderId);
+
+    if ($order === true)
+    {
+        $order = \App\Models\Order::latest()->first();
+    }
+    \Log::info('ORDER ID:', ['order_id' => $order->id]);
+
 
     if (!$order) {
         session()->flash('warning', __('basket.product_is_not_available'));
