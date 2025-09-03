@@ -10,6 +10,64 @@ class Order extends Model
     'delivery_street',
     'delivery_home',];
 
+    // Определяем константы статусов
+    public const STATUS_PENDING     = 1; // Заказ принят
+    public const STATUS_PAID        = 2; // Заказ оплачен
+    public const STATUS_CANCELLED   = 3; // Отменён
+    public const STATUS_DELIVERED   = 4; // Доставлен
+    public const STATUS_SHIPPED     = 5; // Отправлен / В пути
+
+    public function setStatus(int $status): void
+    {
+        $this->status = $status;
+        $this->save();
+    }
+
+    public function isStatus(int $status): bool
+    {
+        return $this->status === $status;
+    }
+
+    /**
+     * Получить человекочитаемое название статуса
+     */
+    public function getStatusName(): string
+    {
+        return match($this->status) {
+            self::STATUS_PENDING => 'Заказ принят',
+            self::STATUS_PAID => 'Заказ оплачен',
+            self::STATUS_SHIPPED => 'Отправлен / В пути',
+            self::STATUS_DELIVERED => 'Доставлен',
+            self::STATUS_CANCELLED => 'Отменён',
+            default => 'Неизвестно',
+        };
+    }
+
+     // --- Методы для управления статусами ---
+    public function markAsPending(): void
+    {
+        $this->update(['status' => self::STATUS_PENDING]);
+    }
+    public function markAsCancelled(): void
+    {
+        $this->update(['status' => self::STATUS_CANCELLED]);
+    }
+
+    public function markAsPaid(): void
+    {
+        $this->update(['status' => self::STATUS_PAID]);
+    }
+
+    public function markAsShipped(): void
+    {
+        $this->update(['status' => self::STATUS_SHIPPED]);
+    }
+
+    public function markAsDelivered(): void
+    {
+        $this->update(['status' => self::STATUS_DELIVERED]);
+    }
+
     public function skus()
     {
         return $this->belongsToMany(Sku::class, 'order_sku')
@@ -33,8 +91,9 @@ class Order extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 1);
+        return $query->where('status', self::STATUS_PENDING);
     }
+
 
     public function calculateFullSum()
     {
@@ -61,7 +120,6 @@ class Order extends Model
         return $sum;
     }
 
-
     public function saveOrder($name, $phone, $email, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
         $this->name = $name;
@@ -71,31 +129,54 @@ class Order extends Model
         $this->delivery_city = $delivery_city;
         $this->delivery_street = $delivery_street;
         $this->delivery_home = $delivery_home;
-        $this->status = 1;
+        $this->status = self::STATUS_PENDING;
 
-        $this->sum = $this->getFullSum();
+        // Защита от отрицательной суммы из-за купонов
+        $this->sum = max(0, $this->getFullSum());
 
-        if ($this->delivery_type === 'delivery')
-        {
-            if($this->sum < 10000)
-            {
-                $this->sum += 500;
-            }
+        if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
+            $this->sum += 500;
         }
 
-        // $skus = $this->skus;
-        // $this->save();
-
-        // foreach ($skus as $skuInOrder) {
-        //     $this->skus()->attach($skuInOrder, [
-        //         'count' => $skuInOrder->countInOrder,
-        //         'price' => $skuInOrder->price,
-        //     ]);
-        // }
+        $this->save();
 
         session()->forget('order');
         return true;
     }
+    // public function saveOrder($name, $phone, $email, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
+    // {
+    //     $this->name = $name;
+    //     $this->phone = $phone;
+    //     $this->email = $email;
+    //     $this->delivery_type = $deliveryType;
+    //     $this->delivery_city = $delivery_city;
+    //     $this->delivery_street = $delivery_street;
+    //     $this->delivery_home = $delivery_home;
+    //     $this->status = 1;
+
+    //     $this->sum = $this->getFullSum();
+
+    //     if ($this->delivery_type === 'delivery')
+    //     {
+    //         if($this->sum < 10000)
+    //         {
+    //             $this->sum += 500;
+    //         }
+    //     }
+
+    //     // $skus = $this->skus;
+    //     // $this->save();
+
+    //     // foreach ($skus as $skuInOrder) {
+    //     //     $this->skus()->attach($skuInOrder, [
+    //     //         'count' => $skuInOrder->countInOrder,
+    //     //         'price' => $skuInOrder->price,
+    //     //     ]);
+    //     // }
+
+    //     session()->forget('order');
+    //     return true;
+    // }
 
     public function hasCoupon()
     {

@@ -103,16 +103,23 @@ public function basketConfirm(Request $request, TelcellService $telcell)
         1,              // valid_days
         $description    // строка описания (опционально)
     );
+    $invoiceHtml = $telcell->createInvoiceHtml(
+        $buyer,
+        $order->sum,
+        $order->id
+    );
 
-    if (isset($result['invoice']))
-    {
-        // Редирект на страницу оплаты Telcell
-        $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
-        return redirect()->away($paymentUrl);
-    }
+    // if (isset($result['invoice']))
+    // {
+    //     // Редирект на страницу оплаты Telcell
+    //     $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
+    //     return redirect()->away($paymentUrl);
+    // }
 
-    session()->flash('warning', 'Ошибка при создании платежа Telcell.');
-    return redirect()->route('index');
+    // session()->flash('warning', 'Ошибка при создании платежа Telcell.');
+    return response($invoiceHtml);
+
+    // return redirect()->route('index');
 }
 
     public function basketClear()
@@ -138,6 +145,21 @@ public function basketConfirm(Request $request, TelcellService $telcell)
         $categories = Category::all();
         return view('order', compact('order', 'categories'));
     }
+
+    public function payWithTelcell($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+
+        $buyer = $order->buyer; // номер телефона
+        $sum = $order->total;   // сумма заказа
+
+        // Генерируем HTML форму Telcell
+        $formHtml = app(TelcellService::class)->createInvoiceHtml($buyer, $sum, $orderId);
+
+        return response()->view('telcell.autopost', ['formHtml' => $formHtml]);
+    }
+
+
 
     public function basketAdd(Request $request, Sku $skus)
 {

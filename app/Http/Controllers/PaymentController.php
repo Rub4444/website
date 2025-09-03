@@ -21,11 +21,12 @@ class PaymentController extends Controller
     public function createPayment(Order $order)
     {
         $buyer = $order->phone ?: $order->email;
+
         $response = $this->telcell->createInvoice(
             $buyer,
-            $order->total,
+            $order->sum, // ✅ лучше использовать $order->sum из модели
             "Оплата заказа #{$order->id}",
-            (string)$order->id,
+            (string) $order->id,
             1
         );
 
@@ -62,14 +63,14 @@ class PaymentController extends Controller
 
         // Проверка checksum
         $checksumString = config('services.telcell.shop_key') .
-                          $invoiceId .
-                          $issuerId .
-                          ($data['payment_id'] ?? '') .
-                          ($data['buyer'] ?? '') .
-                          ($data['currency'] ?? '') .
-                          ($data['sum'] ?? '') .
-                          ($data['time'] ?? '') .
-                          $status;
+            $invoiceId .
+            $issuerId .
+            ($data['payment_id'] ?? '') .
+            ($data['buyer'] ?? '') .
+            ($data['currency'] ?? '') .
+            ($data['sum'] ?? '') .
+            ($data['time'] ?? '') .
+            $status;
 
         if (md5($checksumString) !== ($data['checksum'] ?? '')) {
             return response('Invalid checksum', 400);
@@ -77,24 +78,22 @@ class PaymentController extends Controller
 
         $orderId = base64_decode($issuerId);
         $order = Order::find($orderId);
+
         if (!$order) {
             return response('Order not found', 404);
         }
 
-        // Обновляем статус
-        switch ($status) {
+        // Централизованное обновление статусов
+        switch ($status)
+        {
             case 'PAID':
-                $order->status = 2; // оплачено
+                $order->markAsPaid();
                 break;
             case 'REJECTED':
-                $order->status = 3; // отменено
-                break;
             case 'EXPIRED':
-                $order->status = 4; // срок истёк
+                $order->markAsCancelled();
                 break;
         }
-
-        $order->save();
 
         return response('OK', 200);
     }

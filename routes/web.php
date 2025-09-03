@@ -126,6 +126,76 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
         Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
         Route::get('/payment/return', [PaymentController::class, 'return'])->name('payment.return');
+        Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
+        Route::get('/test-telcell-refund', function() {
+            // $order = App\Models\Order::first();
+            $orderId = 35;
+            $refundSum = 50; // например, частичная сумма
+            $data = [
+                'invoice' => 'test_invoice_001',
+                'issuer_id' => base64_encode($orderId),
+                'payment_id' => 'test_payment_001',
+                'refund_sum' => $refundSum,
+                'status' => 'PAID', // статус по-прежнему PAID, но часть возвращена
+                'checksum' => md5(config('services.telcell.shop_key') . 'test_invoice_001' . base64_encode($orderId) . $refundSum),
+            ];
+
+            // Здесь нужно создать отдельный метод в PaymentController для обработки частичного возврата
+            return response()->json($data);
+        });
+
+        Route::get('/test-telcell-cancel', function() {
+            // $order = App\Models\Order::first(); // выбираем заказ
+            $orderId = 35;
+            $data = [
+                'invoice' => 'test_invoice_001',
+                'issuer_id' => base64_encode($orderId),
+                'payment_id' => 'test_payment_001',
+                'status' => 'CANCELLED',
+                'checksum' => md5(config('services.telcell.shop_key') . 'test_invoice_001' . base64_encode($orderId) . 'test_payment_001' . '' . '' . '' . '' . 'CANCELLED'),
+            ];
+
+            // имитация callback
+            $controller = new App\Http\Controllers\PaymentController(new App\Services\TelcellService());
+            return $controller->callback(new \Illuminate\Http\Request($data));
+        });
+
+        Route::get('/test-telcell-callback', function() {
+            $orderId = 35; // id твоего тестового заказа
+            $issuerId = base64_encode($orderId);
+
+            $data = [
+                'invoice' => 'test_invoice_123',
+                'issuer_id' => $issuerId,
+                'payment_id' => 'test_payment_123',
+                'buyer' => 'test@example.com',
+                'currency' => '֏',
+                'sum' => 990,
+                'time' => date('Y-m-d H:i:s'),
+                'status' => 'PAID',
+            ];
+
+            // Формируем checksum точно так же, как в callback
+            $shopKey = config('services.telcell.shop_key');
+            $checksumString = $shopKey .
+                            $data['invoice'] .
+                            $data['issuer_id'] .
+                            $data['payment_id'] .
+                            $data['buyer'] .
+                            $data['currency'] .
+                            $data['sum'] .
+                            $data['time'] .
+                            $data['status'];
+
+            $data['checksum'] = md5($checksumString);
+
+            // Создаём запрос в контроллер
+            $request = new \Illuminate\Http\Request();
+            $request->replace($data);
+
+            $controller = app(\App\Http\Controllers\PaymentController::class);
+            return $controller->callback($request);
+        });
 
 
         Route::get('/reset', [ResetController::class, 'reset'])->name('reset');

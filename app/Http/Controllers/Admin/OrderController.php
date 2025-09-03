@@ -26,25 +26,22 @@ class OrderController extends Controller
     }
 
     public function confirm(Order $order)
-{
-    if ($order->status != 1) {
-        return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
+    {
+        if (!$order->isStatus(Order::STATUS_PENDING)) {
+            return redirect()->back()->with('error', 'Պատվերը արդեն հաստատված է կամ ավարտված։');
+        }
+
+        $order->markAsShipped(); // вместо $order->status = 5
+        // Берём email из пользователя, если есть, иначе из заказа
+        $email = $order->user->email ?? $order->email;
+        $name  = $order->user->name ?? $order->name;
+
+        if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Mail::to($email)->send(new OrderConfirmed($name, $order));
+        }
+
+        return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
     }
-
-    $order->status = 5;
-    $order->save();
-
-    // Берём email из пользователя, если есть, иначе из заказа
-    $email = $order->user->email ?? $order->email;
-    $name  = $order->user->name ?? $order->name;
-
-    // Проверяем, что это валидный email
-    if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        Mail::to($email)->send(new OrderConfirmed($name, $order));
-    }
-
-    return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
-}
 
 
 
@@ -92,31 +89,56 @@ class OrderController extends Controller
     // }
 
 
-public function cancel(Request $request, Order $order)
-{
-    $request->validate([
-        'cancellation_comment' => 'required|string|max:1000',
-    ]);
+    // public function cancel(Request $request, Order $order)
+    // {
+    //     $request->validate([
+    //         'cancellation_comment' => 'required|string|max:1000',
+    //     ]);
 
-    // Восстанавливаем товары на склад
-    foreach($order->skus as $sku)
+    //     // Восстанавливаем товары на склад
+    //     foreach($order->skus as $sku)
+    //     {
+    //         $sku->count += $sku->pivot->count;
+    //         $sku->save();
+    //     }
+
+    //     $order->update([
+    //         'status' => 3,
+    //         'cancellation_comment' => $request->cancellation_comment,
+    //     ]);
+
+    //     // 2. Отправляем email
+    //     $email = $order->user->email ?? $order->email;
+    //     if ($email) {
+    //         Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
+    //     }
+
+    //     return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
+    // }
+    public function cancel(Request $request, Order $order)
     {
-        $sku->count += $sku->pivot->count;
-        $sku->save();
+        $request->validate([
+            'cancellation_comment' => 'nullable|string|max:1000',
+        ]);
+
+        // Восстанавливаем товары на склад
+        foreach($order->skus as $sku)
+        {
+            $sku->count += $sku->pivot->count;
+            $sku->save();
+        }
+
+        $order->markAsCancelled(); // вместо $order->status = 3
+        $order->cancellation_comment = $request->cancellation_comment;
+        $order->save();
+
+        // Отправка email
+        $email = $order->user->email ?? $order->email;
+        if ($email) {
+            Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
+        }
+
+        return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
     }
-
-    $order->update([
-        'status' => 3,
-        'cancellation_comment' => $request->cancellation_comment,
-    ]);
-
-    // 2. Отправляем email
-    $email = $order->user->email ?? $order->email;
-    if ($email) {
-        Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
-    }
-
-    return redirect()->route('home')->with('success', 'Պատվերը հաջողությամբ չեղարկվել է');
-}
 
 }

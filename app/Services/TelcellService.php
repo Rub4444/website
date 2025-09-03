@@ -159,8 +159,21 @@ public function createInvoice(string $buyer, float $sum, int $orderId, int $vali
 
     Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
 
-    return $response->json() ?: [];
+    return $postData;
 }
+    public function createInvoiceHtml(string $buyer, float $sum, int $orderId): string
+    {
+        $invoiceData = $this->createInvoice($buyer, $sum, $orderId);
+
+        $html = '<form id="telcellForm" action="https://telcellmoney.am/invoices" method="POST">';
+        foreach ($invoiceData as $key => $value) {
+            $html .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
+        }
+        $html .= '</form>';
+        $html .= '<script>document.getElementById("telcellForm").submit();</script>';
+
+        return $html;
+    }
 
 
     /**

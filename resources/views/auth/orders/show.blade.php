@@ -28,7 +28,7 @@
                                         @method('PUT')
                                         <div class="mb-2">
                                             <label for="cancellation_comment" class="form-label">Մեկնաբանություն՝</label>
-                                            <textarea name="cancellation_comment" id="cancellation_comment" class="form-control" rows="3" required></textarea>
+                                            <textarea name="cancellation_comment" id="cancellation_comment" class="form-control" rows="3" ></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-danger w-100">
                                             <i class="bi bi-x-circle"></i> Չեղարկվել պատվերը
