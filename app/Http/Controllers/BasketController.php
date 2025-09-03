@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Classes\Basket;
 use App\Models\Category;
+use App\Services\TelcellService;
 
 
 class BasketController extends Controller
@@ -23,35 +24,90 @@ class BasketController extends Controller
         return view('basket', compact('order', 'categories'));
     }
 
-    public function basketConfirm(Request $request)
+    // public function basketConfirm(Request $request)
+    // {
+    //     $basket = new Basket();
+
+    //     if($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
+    //     {
+    //         $basket->clearCoupon();
+    //         session()->flash('warning',  __('basket.coupon_is_not_available'));
+    //         return redirect()->route('basket');
+    //     }
+
+    //     $email = Auth::check() ? Auth::user()->email : $request->email;
+
+    //     if ($basket->saveOrder($request->name,
+    //     $request->phone,
+    //     $email,
+    //     $request->delivery_type,
+    //     $request->delivery_city,
+    //     $request->delivery_street,
+    //     $request->delivery_home
+    //     ))
+    //     {
+    //         session()->flash('success', __('basket.your_order_confirmed'));
+    //     } else {
+    //         session()->flash('warning', __('basket.product_is_not_available'));
+    //     }
+
+    //     return redirect()->route('index');
+    // }
+public function basketConfirm(Request $request, TelcellService $telcell)
+{
+    $basket = new Basket();
+
+    if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
     {
-        $basket = new Basket();
+        $basket->clearCoupon();
+        session()->flash('warning', __('basket.coupon_is_not_available'));
+        return redirect()->route('basket');
+    }
 
-        if($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
-        {
-            $basket->clearCoupon();
-            session()->flash('warning',  __('basket.coupon_is_not_available'));
-            return redirect()->route('basket');
-        }
+    $email = Auth::check() ? Auth::user()->email : $request->email;
 
-        $email = Auth::check() ? Auth::user()->email : $request->email;
-
-        if ($basket->saveOrder($request->name,
+    $orderId  = $basket->saveOrder(
+        $request->name,
         $request->phone,
         $email,
         $request->delivery_type,
         $request->delivery_city,
         $request->delivery_street,
         $request->delivery_home
-        ))
-        {
-            session()->flash('success', __('basket.your_order_confirmed'));
-        } else {
-            session()->flash('warning', __('basket.product_is_not_available'));
-        }
+    );
+    $order = \App\Models\Order::find($orderId);
 
-        return redirect()->route('index');
+    if (!$order) {
+        session()->flash('warning', __('basket.product_is_not_available'));
+        return redirect()->route('basket');
     }
+
+    session()->flash('success', __('basket.your_order_confirmed'));
+
+
+    // Создаем счёт через Telcell
+    $buyer = $request->phone ?: $email;
+    $description = "Оплата заказа #{$order->id}";
+    $issuerId = (string)$order->id;
+
+    $result = $telcell->createInvoice(
+        $buyer,
+        $order->sum,       // сумма заказа
+        $description,
+        $issuerId,
+        1                     // valid_days
+    );
+
+    if (isset($result['invoice']))
+    {
+        // Редирект на страницу оплаты Telcell
+        $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
+        return redirect()->away($paymentUrl);
+    }
+
+    session()->flash('warning', 'Ошибка при создании платежа Telcell.');
+    return redirect()->route('index');
+}
 
     public function basketClear()
     {

@@ -35,11 +35,13 @@ return [
         ],
     ],
 
-    'telcell' => [
-        'issuer' => env('TELCELL_ISSUER'),
-        'key'    => env('TELCELL_KEY'),
-        'url'    => env('TELCELL_URL', 'https://telcellmoney.am/invoices'),
-    ],
+   // config/services.php
+'telcell' => [
+    'shop_id' => env('TELCELL_ISSUER'), // <-- обращаемся как shop_id
+    'shop_key'=> env('TELCELL_KEY'),    // <-- обращаемся как shop_key
+    'url'     => env('TELCELL_URL', 'https://telcellmoney.am/invoices'),
+],
+
 
 
 

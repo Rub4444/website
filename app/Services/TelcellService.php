@@ -62,7 +62,7 @@ class TelcellService
         // Отправка запроса
         $response = Http::asForm()->post($this->url, $postData);
 
-        return $response->json();
+        return $response->json() ?: [];
     }
 
     /**
