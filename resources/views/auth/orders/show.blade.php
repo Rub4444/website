@@ -8,9 +8,6 @@
             <div class="card shadow rounded-4">
                 <div class="card-body">
                     <h2 class="mb-3 text-center" style="color:#2E8B57;">Պատվեր №{{ $order->id }}</h2>
-                    @php
-                        dump($order->status);
-                    @endphp
                     @admin
                         @if($order->status == 1) {{-- 1 = в обработке --}}
                             <div class="row">

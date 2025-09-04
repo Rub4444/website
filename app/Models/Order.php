@@ -35,9 +35,6 @@ class Order extends Model
 {
     $status = (int) $this->status;
 
-    dump(gettype($this->status)); // string
-    dump(gettype($status));       // integer
-
     return match($status) {       // <- здесь $status, а не $this->status
         self::STATUS_PENDING => __('order.pending'),
         self::STATUS_PAID => __('order.paid'),
