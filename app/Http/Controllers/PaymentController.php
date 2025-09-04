@@ -202,12 +202,14 @@ public function handleReturn(Request $request)
     $orderId = $request->query('order'); // получаем из ?order=42
     $order = Order::find($orderId);
 
-    if (! $order) {
+    if (! $order)
+    {
         abort(404, 'Order not found');
     }
+    return response()->json(['ok' => true, 'order' => $order->id]);
 
     // тут твоя логика: например, показать страницу статуса заказа
-    return view('payment.success', ['order' => $order]);
+    // return view('payment.success', ['order' => $order]);
 }
 
 
