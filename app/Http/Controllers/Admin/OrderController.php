@@ -129,34 +129,24 @@ class OrderController extends Controller
     //     $message = is_array($response) ? ($response['message'] ?? 'Неизвестная ошибка') : 'Ошибка связи с Telcell';
     //     return back()->with('error', 'Не удалось отменить заказ: ' . $message);
     // }
+    public function handleReturn(Request $request)
+    {
+        $orderId = $request->query('order'); // получаем ?order=40
+        if (!$orderId) {
+            return redirect('/')->with('error', 'Не указан номер заказа.');
+        }
 
+        $order = Order::find($orderId);
+        if (!$order) {
+            return redirect('/')->with('error', 'Заказ не найден.');
+        }
 
-    // public function refundOrder(Request $request, Order $order)
-    // {
-    //     $this->authorize('refund', $order); // проверка через Policy
-
-    //     $request->validate([
-    //         'refund_sum' => 'required|numeric|min:1|max:' . ($order->paid_amount ?? 0),
-    //     ]);
-
-    //     $telcell = new \App\Services\TelcellService();
-    //     $response = $telcell->refundBill($order, $request->refund_sum);
-
-    //     if($response['status'] == 'OK') {
-    //         $order->paid_amount -= $request->refund_sum; // уменьшаем оплаченный остаток
-
-    //         if ($order->paid_amount <= 0)
-    //         {
-    //             $order->markAsRefunded();
-    //         }
-
-    //         $order->save();
-
-    //         return back()->with('success', 'Частичный возврат выполнен.');
-    //     }
-
-    //     return back()->with('error', 'Не удалось выполнить возврат: ' . $response['message']);
-    // }
-
+        // Если статус оплаты в базе уже обновился после callback-а
+        if ($order->status == 2) {
+            return view('payments.success', compact('order'));
+        } else {
+            return view('payments.fail', compact('order'));
+        }
+    }
 
 }
