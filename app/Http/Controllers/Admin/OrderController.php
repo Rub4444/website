@@ -69,19 +69,44 @@ class OrderController extends Controller
 
     // Пользователь
     public function cancelOrder(Request $request, Order $order)
-    {
-        $this->authorize('cancel', $order);
-        $telcell = new \App\Services\TelcellService();
-        $response = $telcell->cancelBill($order);
+{
+    $this->authorize('cancel', $order);
 
-        if (is_array($response) && ($response['status'] ?? null) === 'OK') {
-            $this->performCancel($order, $request->cancellation_comment ?? null);
-            return back()->with('success', 'Заказ успешно отменён.');
-        }
+    \Log::info('Cancel order start', [
+        'order_id' => $order->id,
+        'status' => $order->status
+    ]);
 
-        $message = is_array($response) ? ($response['message'] ?? 'Неизвестная ошибка') : 'Ошибка связи с Telcell';
-        return back()->with('error', 'Не удалось отменить заказ: ' . $message);
+    $telcell = new \App\Services\TelcellService();
+    $response = $telcell->cancelBill($order);
+
+    \Log::info('Telcell cancelBill response', [
+        'order_id' => $order->id,
+        'response' => $response
+    ]);
+
+    if (is_array($response) && ($response['status'] ?? null) === 'OK') {
+        $this->performCancel($order, $request->cancellation_comment ?? null);
+
+        \Log::info('Order successfully cancelled', [
+            'order_id' => $order->id,
+            'new_status' => $order->status
+        ]);
+
+        return back()->with('success', 'Заказ успешно отменён.');
     }
+
+    $message = is_array($response) ? ($response['message'] ?? 'Неизвестная ошибка') : 'Ошибка связи с Telcell';
+
+    \Log::error('Failed to cancel order', [
+        'order_id' => $order->id,
+        'response' => $response,
+        'message' => $message
+    ]);
+
+    return back()->with('error', 'Не удалось отменить заказ: ' . $message);
+}
+
 
 
     // public function cancel(Request $request, Order $order)
