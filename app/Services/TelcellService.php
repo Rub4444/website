@@ -154,6 +154,7 @@ public function createInvoice(string $buyer, float $sum, int $orderId, int $vali
         'buyer'        => $buyer, // номер покупателя
         'successUrl'   => route('payment.return', ['order' => $orderId], true),
         'failUrl'      => route('payment.return', ['order' => $orderId], true),
+        'callbackUrl' => route('payment.callback', [], true),
     ];
 
     if ($info) {

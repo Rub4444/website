@@ -101,10 +101,23 @@ class PaymentController extends Controller
     // }
 public function callback(Request $request)
 {
+    \Log::info('Telcell callback START', [
+        'headers' => $request->headers->all(),
+        'payload' => $request->all(),
+    ]);
+
     $data = $request->all();
 
-    // Логируем весь callback
-    // \Log::info('Telcell callback received', $data);
+    if (! isset($data['orderId'])) {
+        \Log::warning('Telcell callback missing orderId', $data);
+        return response('Missing orderId', 400);
+    }
+
+    $order = Order::find($data['orderId']);
+    if (! $order) {
+        \Log::warning('Telcell callback order not found', ['orderId' => $data['orderId']]);
+        return response('Order not found', 404);
+    }
 
     $invoiceId = $data['invoice'] ?? null;
     $issuerId  = $data['issuer_id'] ?? null;
@@ -139,46 +152,20 @@ public function callback(Request $request)
         ]);
         return response('Invalid checksum', 400);
     }
-
-    $orderId = base64_decode($issuerId);
+    $order->markAsPaid();
+    // $orderId = base64_decode($issuerId);
     // \Log::info('Decoded order ID from issuer_id', ['orderId' => $orderId]);
 
-    $order = Order::find($orderId);
+    // $order = Order::find($orderId);
 
-    if (!$order) {
-        \Log::error('Order not found by ID', ['orderId' => $orderId]);
-        return response('Order not found', 404);
-    }
-
-    // \Log::info('Order found, updating status', [
-    //     'orderId' => $order->id,
-    //     'currentStatus' => $order->status,
-    //     'newStatus' => $status,
-    // ]);
-
-    // Централизованное обновление статусов
-    switch ($status) {
-        case 'PAID':
-            $order->markAsPaid();
-            // \Log::info('Order marked as PAID', ['orderId' => $order->id]);
-            break;
-
-        case 'REJECTED':
-        case 'EXPIRED':
-            $order->markAsCancelled();
-            // \Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
-            break;
-
-        default:
-            \Log::warning('Unknown status received from Telcell', [
-                'orderId' => $order->id,
-                'status' => $status
-            ]);
-            break;
-    }
+    \Log::info('Telcell callback SUCCESS', [
+            'orderId' => $order->id,
+            'newStatus' => $order->status,
+        ]);
 
     return response('OK', 200);
 }
+
 public function success(Order $order)
 {
     if ($order->status !== 'paid') {
