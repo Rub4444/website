@@ -35,10 +35,10 @@ class Order extends Model
 {
     $status = (int) $this->status;
 
-    dump(gettype($this->status));
-    dump(gettype($status));
+    dump(gettype($this->status)); // string
+    dump(gettype($status));       // integer
 
-    return match($this->status) {
+    return match($status) {       // <- здесь $status, а не $this->status
         self::STATUS_PENDING => __('order.pending'),
         self::STATUS_PAID => __('order.paid'),
         self::STATUS_SHIPPED => __('order.shipped'),
@@ -47,6 +47,7 @@ class Order extends Model
         default => __('order.unknown'),
     };
 }
+
 
 
      // --- Методы для управления статусами ---
