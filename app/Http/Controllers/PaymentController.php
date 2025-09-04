@@ -206,10 +206,10 @@ public function handleReturn(Request $request)
     {
         abort(404, 'Order not found');
     }
-    return response()->json(['ok' => true, 'order' => $order->id]);
+    // return response()->json(['ok' => true, 'order' => $order->id]);
 
     // тут твоя логика: например, показать страницу статуса заказа
-    // return view('payment.success', ['order' => $order]);
+    return view('payment.success', ['order' => $order]);
 }
 
 
