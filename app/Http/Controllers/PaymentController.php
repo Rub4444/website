@@ -30,7 +30,7 @@ class PaymentController extends Controller
             1
         );
 
-        \Log::info('Telcell createInvoice response', $response);
+        // \Log::info('Telcell createInvoice response', $response);
 
         if (!isset($response['invoice'])) {
             return back()->withErrors(['Ошибка создания счёта']);
@@ -104,7 +104,7 @@ public function callback(Request $request)
     $data = $request->all();
 
     // Логируем весь callback
-    \Log::info('Telcell callback received', $data);
+    // \Log::info('Telcell callback received', $data);
 
     $invoiceId = $data['invoice'] ?? null;
     $issuerId  = $data['issuer_id'] ?? null;
@@ -141,7 +141,7 @@ public function callback(Request $request)
     }
 
     $orderId = base64_decode($issuerId);
-    \Log::info('Decoded order ID from issuer_id', ['orderId' => $orderId]);
+    // \Log::info('Decoded order ID from issuer_id', ['orderId' => $orderId]);
 
     $order = Order::find($orderId);
 
@@ -150,23 +150,23 @@ public function callback(Request $request)
         return response('Order not found', 404);
     }
 
-    \Log::info('Order found, updating status', [
-        'orderId' => $order->id,
-        'currentStatus' => $order->status,
-        'newStatus' => $status,
-    ]);
+    // \Log::info('Order found, updating status', [
+    //     'orderId' => $order->id,
+    //     'currentStatus' => $order->status,
+    //     'newStatus' => $status,
+    // ]);
 
     // Централизованное обновление статусов
     switch ($status) {
         case 'PAID':
             $order->markAsPaid();
-            \Log::info('Order marked as PAID', ['orderId' => $order->id]);
+            // \Log::info('Order marked as PAID', ['orderId' => $order->id]);
             break;
 
         case 'REJECTED':
         case 'EXPIRED':
             $order->markAsCancelled();
-            \Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
+            // \Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
             break;
 
         default:
@@ -197,24 +197,19 @@ public function success(Order $order)
     //     return redirect()->route('home', $order->id)
     //                     ->with('success', 'Оплата прошла успешно!');
     // }
-public function return(Request $request)
+public function handleReturn(Request $request)
 {
-    \Log::info('Telcell return hit', $request->all());
+    $orderId = $request->query('order'); // получаем из ?order=42
+    $order = Order::find($orderId);
 
-    $order = Order::find($request->order);
-
-    if (!$order) {
-        return redirect()->route('home')->with('error', 'Заказ не найден');
+    if (! $order) {
+        abort(404, 'Order not found');
     }
 
-    if ($order->status === Order::STATUS_PAID) {
-        return redirect()->route('auth.orders.show', $order)
-                         ->with('success', 'Оплата прошла успешно!');
-    }
-
-    return redirect()->route('auth.orders.show', $order)
-                     ->with('error', 'Оплата не была завершена.');
+    // тут твоя логика: например, показать страницу статуса заказа
+    return view('payment.success', ['order' => $order]);
 }
+
 
 
 }

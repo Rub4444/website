@@ -160,12 +160,12 @@ public function createInvoice(string $buyer, float $sum, int $orderId, int $vali
         $postData['info'] = base64_encode($info);
     }
 
-    Log::info('Telcell POST Request:', $postData);
+    // Log::info('Telcell POST Request:', $postData);
 
     // Отправка запроса
     $response = Http::asForm()->post('https://telcellmoney.am/invoices', $postData);
 
-    Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
+    // Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
 
     return $postData;
 }

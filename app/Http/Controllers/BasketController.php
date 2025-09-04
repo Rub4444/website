@@ -80,7 +80,7 @@ public function basketConfirm(Request $request, TelcellService $telcell)
     {
         $order = \App\Models\Order::latest()->first();
     }
-    \Log::info('ORDER ID:', ['order_id' => $order->id]);
+    // \Log::info('ORDER ID:', ['order_id' => $order->id]);
 
 
     if (!$order) {
