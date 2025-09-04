@@ -161,7 +161,7 @@ public function createInvoice(string $buyer, float $sum, int $orderId, int $vali
         $postData['info'] = base64_encode($info);
     }
 
-    // Log::info('Telcell POST Request:', $postData);
+    Log::info('Telcell POST Request:', $postData);
 
     // Отправка запроса
     $response = Http::asForm()->post('https://telcellmoney.am/invoices', $postData);
@@ -222,23 +222,37 @@ public function createInvoice(string $buyer, float $sum, int $orderId, int $vali
         return $checksum === ($data['checksum'] ?? null);
     }
 
-    public function cancelBill(\App\Models\Order $order)
-    {
-        $issuer_id = base64_encode($order->id);
-        $invoice = $order->invoice_id; // должно быть сохранено при создании счета
-        $shopKey = config('services.telcell.shop_key');
-
-        $checksum = md5($shopKey . $order->issuer . $invoice . $issuer_id);
-
-        $response = Http::asForm()->post('https://telcellmoney.am/invoices', [
-            'cancel_bill:issuer' => $order->issuer,
-            'invoice' => $invoice,
-            'issuer_id' => $issuer_id,
-            'checksum' => $checksum
-        ]);
-
-        return $response->json();
+   public function cancelBill(\App\Models\Order $order)
+{
+    if (!$order->invoice_id) {
+        \Log::error('CancelBill failed: invoice_id is missing', ['order_id' => $order->id]);
+        return null;
     }
+
+    $issuer_id = base64_encode($order->id);
+    $invoice = $order->invoice_id;
+    $shopKey = config('services.telcell.shop_key');
+
+    $checksum = md5($shopKey . $order->issuer . $invoice . $issuer_id);
+
+    \Log::info('Telcell cancelBill request', [
+        'invoice' => $invoice,
+        'issuer_id' => $issuer_id,
+        'checksum' => $checksum,
+    ]);
+
+    $response = Http::asForm()->post('https://telcellmoney.am/invoices', [
+        'cancel_bill:issuer' => $order->issuer,
+        'invoice' => $invoice,
+        'issuer_id' => $issuer_id,
+        'checksum' => $checksum
+    ]);
+
+    \Log::info('Telcell cancelBill response', ['body' => $response->body()]);
+
+    return $response->json();
+}
+
 
     public function refundBill(\App\Models\Order $order, $refundSum)
     {
