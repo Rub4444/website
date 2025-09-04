@@ -33,6 +33,8 @@ class Order extends Model
      */
     public function getStatusName(): string
 {
+    $status = (int) $this->status;
+
     return match($this->status) {
         self::STATUS_PENDING => __('order.pending'),
         self::STATUS_PAID => __('order.paid'),
