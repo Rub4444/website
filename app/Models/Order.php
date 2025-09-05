@@ -8,7 +8,9 @@ class Order extends Model
 {
     protected $fillable = ['user_id', 'name', 'phone', 'email', 'status', 'cancellation_comment', 'currency_id', 'sum', 'coupon_id', 'delivery_type', 'delivery_city',
     'delivery_street',
-    'delivery_home',];
+    'delivery_home',
+    'invoice_id',
+    'invoice_status'];
 
     // Определяем константы статусов
     public const STATUS_PENDING     = 1; // Заказ принят
