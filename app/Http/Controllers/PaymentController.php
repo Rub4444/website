@@ -199,10 +199,13 @@ class PaymentController extends Controller
         }
 
         // Если статус оплаты в базе уже обновился после callback-а
-        if ($order->status == 2) {
-            return view('payments.success', compact('order'));
-        } else {
-            return view('payments.fail', compact('order'));
+        if ($order->status == 2)
+        {
+            return view('payment.success', compact('order'));
+        }
+        else
+        {
+            return view('payment.fail', compact('order'));
         }
     }
     /**
