@@ -29,7 +29,6 @@ class TelcellService
     $issuer = $this->issuer;
     $shopKey = $this->key;
     $currency = '֏';
-
     $sum = $order->getTotalForPayment();
 
     $productEncoded  = base64_encode("IjevanMarket");
@@ -68,21 +67,26 @@ class TelcellService
     \Log::info('Telcell createInvoice POST:', $postData);
 
     $response = Http::asForm()->post($this->url, $postData);
+    $responseBody = $response->body();
     $responseData = $response->json();
 
     \Log::info('Telcell createInvoice RESPONSE:', [
         'order_id' => $order->id,
         'response' => $responseData,
         'status_code' => $response->status(),
-        'body' => $response->body()
+        'body' => $responseBody
     ]);
 
-    // Если JSON не пришёл, создаём пустой массив
+    // Если JSON не пришёл, создаём массив
     if (!is_array($responseData)) {
         $responseData = [];
+        // Попытка вытащить invoice_id из HTML
+        if (preg_match('/name="invoice" value="([^"]+)"/', $responseBody, $matches)) {
+            $responseData['invoice'] = $matches[1];
+            $responseData['status'] = 'CREATED';
+        }
     }
 
-    // Сохраняем invoice_id и статус, если они есть
     if (!empty($responseData['invoice'])) {
         $order->invoice_id = $responseData['invoice'];
         $order->invoice_status = $responseData['status'] ?? null;
@@ -91,6 +95,7 @@ class TelcellService
 
     return $responseData;
 }
+
 
 
     /**
