@@ -34,13 +34,26 @@
                         @endif
                     @endadmin
 
-                    @if((int)$order->status === 2)
-                        <form method="POST" action="{{ route('order.cancel', $order) }}">
-                            @csrf
-                            <textarea name="cancellation_comment" placeholder="Причина отмены"></textarea>
-                            <button type="submit">Отменить заказ</button>
-                        </form>
-                    @endif
+                   @if((int)$order->status === 2)
+    <form method="POST" action="{{ route('order.cancel', $order) }}">
+        @csrf
+        <div style="margin-bottom: 10px;">
+            <label for="cancellation_comment">Причина отмены</label>
+            <textarea
+                id="cancellation_comment"
+                name="cancellation_comment"
+                placeholder="Введите причину отмены"
+                rows="3"
+                style="width: 100%; padding: 5px;"
+                required
+            ></textarea>
+        </div>
+        <button type="submit" style="padding: 8px 16px; background-color: #e74c3c; color: white; border: none; cursor: pointer;">
+            Отменить заказ
+        </button>
+    </form>
+@endif
+
                 </div>
 
                 <div class="table-responsive">

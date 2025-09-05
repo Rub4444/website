@@ -43,17 +43,17 @@ class OrderController extends Controller
         return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
     }
 
-    private function performCancel(Order $order, ?string $comment = null)
-    {
-        foreach ($order->skus as $sku) {
-            $sku->count += $sku->pivot->count;
-            $sku->save();
-        }
+    // private function performCancel(Order $order, ?string $comment = null)
+    // {
+    //     foreach ($order->skus as $sku) {
+    //         $sku->count += $sku->pivot->count;
+    //         $sku->save();
+    //     }
 
-        $order->markAsCancelled();
-        $order->cancellation_comment = $comment;
-        $order->save();
-    }
+    //     $order->markAsCancelled();
+    //     $order->cancellation_comment = $comment;
+    //     $order->save();
+    // }
     // Админ
     public function cancel(Request $request, Order $order)
     {
@@ -80,13 +80,12 @@ class OrderController extends Controller
     $telcell = new \App\Services\TelcellService();
     $response = $telcell->cancelOrder($order);
 
-
-    \Log::info('Telcell cancelBill response', [
+    \Log::info('Telcell cancelOrder response', [
         'order_id' => $order->id,
         'response' => $response
     ]);
 
-    if (is_array($response) && ($response['status'] ?? null) === 'OK') {
+    if (is_array($response) && isset($response['invoice'])) {
         $this->performCancel($order, $request->cancellation_comment ?? null);
 
         \Log::info('Order successfully cancelled', [
@@ -107,6 +106,14 @@ class OrderController extends Controller
 
     return back()->with('error', 'Не удалось отменить заказ: ' . $message);
 }
+
+protected function performCancel(Order $order, ?string $comment = null)
+{
+    $order->status = 0; // отменён
+    $order->cancellation_comment = $comment;
+    $order->save();
+}
+
 
 
 

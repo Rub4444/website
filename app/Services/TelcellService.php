@@ -22,7 +22,7 @@ class TelcellService
     /**
      * Создание счета
      */
-      public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
+    public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
     {
         // Находим заказ по ID
         $order = \App\Models\Order::findOrFail($orderId);
@@ -148,10 +148,10 @@ class TelcellService
         return null;
     }
 
-    $issuerId = base64_encode($order->id);
+    $issuerId = base64_encode((string)$order->id);
 
-    // Получаем текущий статус счёта
-    $statusResponse = $this->checkStatus($order->invoice_id, $issuerId, $order);
+    // Получаем текущий статус счета
+    $statusResponse = $this->checkStatus($order->invoice_id, $issuerId);
     $status = $statusResponse['status'] ?? null;
 
     $isPaid = in_array($status, ['PAID', 'PARTIALLY_PAID']);
@@ -166,7 +166,19 @@ class TelcellService
             : md5($this->key . $this->issuer . $issuerId),
     ];
 
+    Log::info('Telcell cancelOrder request', [
+        'order_id' => $order->id,
+        'params' => $params
+    ]);
+
     $response = Http::asForm()->post($this->url, $params);
+
+    Log::info('Telcell cancelOrder response', [
+        'order_id' => $order->id,
+        'status' => $status,
+        'body' => $response->body(),
+        'http' => $response->status(),
+    ]);
 
     // Если успешно, обновляем статус заказа
     if ($response->successful()) {
@@ -174,14 +186,8 @@ class TelcellService
         $order->save();
     }
 
-    Log::info('Telcell cancelOrder response', [
-        'order_id' => $order->id,
-        'status'   => $status,
-        'body'     => $response->body(),
-        'http'     => $response->status(),
-    ]);
-
     return $response->json();
 }
+
 
 }
