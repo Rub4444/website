@@ -75,11 +75,15 @@ class PaymentController extends Controller
         }
 
         // Обновление статуса
-        if ($status === 'PAID') {
+        if (strtoupper($status) === 'PAID')
+        {
             $order->markAsPaid();
-        } else {
+        }
+        else
+        {
             $order->markAsCancelled();
         }
+
 
         \Log::info('Telcell callback SUCCESS', [
             'orderId' => $order->id,
@@ -109,7 +113,12 @@ class PaymentController extends Controller
      */
     public function success(Order $order)
     {
-        if ($order->status !== 'paid') {
+        // if ($order->status !== 'paid') {
+        //     return redirect()->route('home')->with('warning', 'Платёж обрабатывается.');
+        // }
+
+        if (!$order->isStatus(Order::STATUS_PAID))
+        {
             return redirect()->route('home')->with('warning', 'Платёж обрабатывается.');
         }
 
