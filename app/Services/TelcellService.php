@@ -22,75 +22,63 @@ class TelcellService
     /**
      * Создание счета
      */
-    public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
-{
-    $order = \App\Models\Order::findOrFail($orderId);
+      public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
+    {
+        // Находим заказ по ID
+        $order = \App\Models\Order::findOrFail($orderId);
 
-    $issuer = $this->issuer;
-    $shopKey = $this->key;
-    $currency = '֏';
+        $issuer = $this->issuer; // Email магазина
+        $shopKey = $this->key;   // Секретный ключ магазина
+        $currency = '֏';
 
-    $sum = $order->getTotalForPayment();
+        // Берём сумму с учётом доставки
+        $sum = $order->getTotalForPayment();
 
-    $productEncoded  = base64_encode("IjevanMarket");
-    $issuerIdEncoded = base64_encode((string)$orderId);
+        // Base64 описание продукта и ID заказа
+        $productEncoded  = base64_encode("IjevanMarket");
+        $issuerIdEncoded = base64_encode((string)$orderId);
 
-    $checksumString = $shopKey .
-                      $issuer .
-                      $currency .
-                      number_format($sum, 2, '.', '') .
-                      $productEncoded .
-                      $issuerIdEncoded .
-                      $validDays;
+        // Контрольная сумма
+        $checksumString = $shopKey .
+                        $issuer .
+                        $currency .
+                        number_format($sum, 2, '.', '') .
+                        $productEncoded .
+                        $issuerIdEncoded .
+                        $validDays;
 
-    $securityCode = md5($checksumString);
+        $securityCode = md5($checksumString);
 
-    $postData = [
-        'action'        => 'PostInvoice',
-        'issuer'        => $issuer,
-        'currency'      => $currency,
-        'price'         => number_format($sum, 2, '.', ''),
-        'product'       => $productEncoded,
-        'issuer_id'     => $issuerIdEncoded,
-        'valid_days'    => $validDays,
-        'security_code' => $securityCode,
-        'lang'          => 'am',
-        'buyer'         => $buyer,
-        'successUrl'    => route('payment.return', ['order' => $orderId], true),
-        'failUrl'       => route('payment.return', ['order' => $orderId], true),
-        'callbackUrl'   => route('payment.callback', [], true),
-    ];
+        // POST-данные
+        $postData = [
+            'action'       => 'PostInvoice',
+            'issuer'       => $issuer,
+            'currency'     => $currency,
+            'price'        => number_format($sum, 2, '.', ''),
+            'product'      => $productEncoded,
+            'issuer_id'    => $issuerIdEncoded,
+            'valid_days'   => $validDays,
+            'security_code'=> $securityCode,
+            'lang'         => 'am',
+            'buyer'        => $buyer, // номер покупателя
+            'successUrl'   => route('payment.return', ['order' => $orderId], true),
+            'failUrl'      => route('payment.return', ['order' => $orderId], true),
+            'callbackUrl' => route('payment.callback', [], true),
+        ];
 
-    if ($info) {
-        $postData['info'] = base64_encode($info);
+        if ($info) {
+            $postData['info'] = base64_encode($info);
+        }
+
+        Log::info('Telcell POST Request:', $postData);
+
+        // Отправка запроса
+        $response = Http::asForm()->post('https://telcellmoney.am/invoices', $postData);
+
+        // Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
+
+        return $postData;
     }
-
-    Log::info('Telcell POST Request:', $postData);
-
-    // Отправляем запрос в Telcell
-    $response = Http::asForm()->post('https://telcellmoney.am/invoices', $postData);
-    $responseData = $response->json();
-
-    Log::info('Telcell createInvoice response', [
-        'order_id' => $order->id,
-        'response' => $responseData,
-        'status_code' => $response->status(),
-    ]);
-
-    // ✅ Сохраняем invoice_id если он есть
-    if (!empty($responseData['invoice'])) {
-        $order->invoice_id = $responseData['invoice'];
-        $order->save();
-    }
-
-    // (Опционально) Сохраняем статус
-    if (!empty($responseData['status'])) {
-        $order->invoice_status = $responseData['status'];
-        $order->save();
-    }
-
-    return $responseData;
-}
 
     public function createInvoiceHtml(string $buyer, float $sum, int $orderId): string
     {
