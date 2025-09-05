@@ -141,12 +141,15 @@ public function callback(Request $request)
     $orderId = base64_decode($issuerId);
     $order   = Order::find($orderId);
 
-    if (!$order) {
-        \Log::warning('Telcell callback order not found', ['orderId' => $orderId]);
-        return response('Order not found', 404);
-    }
+        if ($order) {
+        $order->status = Order::STATUS_PAID;
+        $order->invoice_status = $data['status'] ?? null;
+        $order->save();
 
-    \Log::info('Before updating status', ['orderId' => $order->id, 'currentStatus' => $order->status]);
+        \Log::info('Status updated successfully', ['orderId' => $order->id, 'status' => $order->status]);
+    } else {
+        \Log::warning('Order not found', ['orderId' => $orderId]);
+    }
 
     // Обновление статуса
     if (strtoupper($status) === 'PAID') {
