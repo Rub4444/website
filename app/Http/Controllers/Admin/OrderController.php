@@ -209,24 +209,26 @@ protected function performCancel(Order $order, ?string $comment = null)
     //     $message = is_array($response) ? ($response['message'] ?? 'Неизвестная ошибка') : 'Ошибка связи с Telcell';
     //     return back()->with('error', 'Не удалось отменить заказ: ' . $message);
     // }
-    public function handleReturn(Request $request)
-    {
-        $orderId = $request->query('order'); // получаем ?order=40
-        if (!$orderId) {
-            return redirect('/')->with('error', 'Не указан номер заказа.');
-        }
 
-        $order = Order::find($orderId);
-        if (!$order) {
-            return redirect('/')->with('error', 'Заказ не найден.');
-        }
 
-        // Если статус оплаты в базе уже обновился после callback-а
-        if ($order->status == 2) {
-            return view('payments.success', compact('order'));
-        } else {
-            return view('payments.fail', compact('order'));
-        }
-    }
+    // public function handleReturn(Request $request)
+    // {
+    //     $orderId = $request->query('order'); // получаем ?order=40
+    //     if (!$orderId) {
+    //         return redirect('/')->with('error', 'Не указан номер заказа.');
+    //     }
+
+    //     $order = Order::find($orderId);
+    //     if (!$order) {
+    //         return redirect('/')->with('error', 'Заказ не найден.');
+    //     }
+
+    //     // Если статус оплаты в базе уже обновился после callback-а
+    //     if ($order->status == 2) {
+    //         return view('payments.success', compact('order'));
+    //     } else {
+    //         return view('payments.fail', compact('order'));
+    //     }
+    // }
 
 }

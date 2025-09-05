@@ -52,8 +52,11 @@ class TelcellService
         'security_code' => $securityCode,
         'lang'          => 'am',
         'buyer'         => $buyer,
-        'successUrl'    => route('payment.return', ['order' => $orderId], true),
-        'failUrl'       => route('payment.return', ['order' => $orderId], true),
+        // 'successUrl'    => route('payment.return', ['order' => $orderId], true),
+        // 'failUrl'       => route('payment.return', ['order' => $orderId], true),
+        'successUrl' => route('payment.return', ['order' => $orderId, 'status' => 'success'], true),
+        'failUrl'    => route('payment.return', ['order' => $orderId, 'status' => 'fail'], true),
+
         'callbackUrl'   => route('payment.callback', [], true),
     ];
 

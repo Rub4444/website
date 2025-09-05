@@ -174,18 +174,37 @@ class PaymentController extends Controller
     /**
      * Возврат клиента после оплаты
      */
+    // public function handleReturn(Request $request)
+    // {
+    //     $orderId = $request->query('order');
+    //     $order = Order::find($orderId);
+
+    //     if (!$order)
+    //     {
+    //         abort(404, 'Order not found');
+    //     }
+
+    //     return view('payment.success', compact('order'));
+    // }
     public function handleReturn(Request $request)
     {
-        $orderId = $request->query('order');
-        $order = Order::find($orderId);
-
-        if (!$order) {
-            abort(404, 'Order not found');
+        $orderId = $request->query('order'); // получаем ?order=40
+        if (!$orderId) {
+            return redirect('/')->with('error', 'Не указан номер заказа.');
         }
 
-        return view('payment.success', compact('order'));
-    }
+        $order = Order::find($orderId);
+        if (!$order) {
+            return redirect('/')->with('error', 'Заказ не найден.');
+        }
 
+        // Если статус оплаты в базе уже обновился после callback-а
+        if ($order->status == 2) {
+            return view('payments.success', compact('order'));
+        } else {
+            return view('payments.fail', compact('order'));
+        }
+    }
     /**
      * Страница успешного платежа
      */
