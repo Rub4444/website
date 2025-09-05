@@ -78,7 +78,8 @@ class OrderController extends Controller
     ]);
 
     $telcell = new \App\Services\TelcellService();
-    $response = $telcell->cancelBill($order);
+    $response = $telcell->cancelOrder($order);
+
 
     \Log::info('Telcell cancelBill response', [
         'order_id' => $order->id,
