@@ -72,10 +72,18 @@ class TelcellService
 
         Log::info('Telcell POST Request:', $postData);
 
-        // Отправка запроса
+      try {
         $response = Http::asForm()->post('https://telcellmoney.am/invoices', $postData);
+    } catch (\Exception $e) {
+        Log::error('Telcell createInvoice failed', ['exception' => $e]);
+        return $postData; // возвращаем хотя бы данные для HTML формы
+    }
 
-        // Log::info('Telcell Response:', ['body' => $response->body(), 'status' => $response->status()]);
+    // Сохраняем invoice_id и статус в заказ
+    $order->invoice_id = $issuerIdEncoded;
+    $order->invoice_status = 'CREATED';
+    $order->save();
+
 
         return $postData;
     }
