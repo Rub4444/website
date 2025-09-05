@@ -140,8 +140,10 @@ public function callback(Request $request)
 
     $orderId = base64_decode($issuerId);
     $order   = Order::find($orderId);
+    \Log::info('000000000', ['orderId' => $order->id, 'order' => $order]);
 
-        if ($order) {
+    if ($order)
+    {
         // $order->status = Order::STATUS_PAID;
         $order->status = 2;
         $order->invoice_status = $data['status'] ?? null;
