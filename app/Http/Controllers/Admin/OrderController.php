@@ -68,14 +68,61 @@ class OrderController extends Controller
     }
 
     // Пользователь
-    public function cancelOrder(Request $request, Order $order)
+//     public function cancelOrder(Request $request, Order $order)
+// {
+//     $this->authorize('cancel', $order);
+
+//     \Log::info('Cancel order start', [
+//         'order_id' => $order->id,
+//         'status' => $order->status
+//     ]);
+
+//     $telcell = new \App\Services\TelcellService();
+//     $response = $telcell->cancelOrder($order);
+
+//     \Log::info('Telcell cancelOrder response', [
+//         'order_id' => $order->id,
+//         'response' => $response
+//     ]);
+
+//     if (is_array($response) && isset($response['invoice'])) {
+//         $this->performCancel($order, $request->cancellation_comment ?? null);
+
+//         \Log::info('Order successfully cancelled', [
+//             'order_id' => $order->id,
+//             'new_status' => $order->status
+//         ]);
+
+//         return back()->with('success', 'Заказ успешно отменён.');
+//     }
+
+//     $message = is_array($response) ? ($response['message'] ?? 'Неизвестная ошибка') : 'Ошибка связи с Telcell';
+
+//     \Log::error('Failed to cancel order', [
+//         'order_id' => $order->id,
+//         'response' => $response,
+//         'message' => $message
+//     ]);
+
+//     return back()->with('error', 'Не удалось отменить заказ: ' . $message);
+// }
+public function cancelOrder(Request $request, Order $order)
 {
     $this->authorize('cancel', $order);
 
     \Log::info('Cancel order start', [
         'order_id' => $order->id,
-        'status' => $order->status
+        'status' => $order->status,
+        'invoice_id' => $order->invoice_id ?? null
     ]);
+
+    // Проверяем наличие invoice_id
+    if (!$order->invoice_id) {
+        \Log::error('CancelOrder: invoice_id missing', [
+            'order_id' => $order->id
+        ]);
+        return back()->with('error', 'Невозможно отменить заказ: invoice_id отсутствует.');
+    }
 
     $telcell = new \App\Services\TelcellService();
     $response = $telcell->cancelOrder($order);
@@ -85,7 +132,7 @@ class OrderController extends Controller
         'response' => $response
     ]);
 
-    if (is_array($response) && isset($response['invoice'])) {
+    if (is_array($response) && ($response['status'] ?? null) === 'OK') {
         $this->performCancel($order, $request->cancellation_comment ?? null);
 
         \Log::info('Order successfully cancelled', [

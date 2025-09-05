@@ -121,6 +121,25 @@ class TelcellService
 
         return $checksum === ($data['checksum'] ?? null);
     }
+public function handleCallback(Request $request)
+{
+    $data = $request->all();
+    $telcell = new TelcellService();
+
+    if (!$telcell->verifyCallback($data)) {
+        return response('Invalid checksum', 400);
+    }
+
+    $orderId = base64_decode($data['issuer_id']);
+    $order = Order::find($orderId);
+    if (!$order) return response('Order not found', 404);
+
+    $order->invoice_status = $data['status'];
+    // $order->paid_at = now(); // сохраняем время платежа
+    $order->save();
+
+    return response('OK', 200);
+}
 
     /**
      * Проверка статуса счета
