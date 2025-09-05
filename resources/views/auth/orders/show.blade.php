@@ -6,34 +6,43 @@
     <div class="py-4">
         <div class="container">
             <div class="card shadow rounded-4">
-                <div class="card-body">
-                    <h2 class="mb-3 text-center" style="color:#2E8B57;">Պատվեր №{{ $order->id }}</h2>
-                    @admin
-                        @if($order->status == 1) {{-- 1 = в обработке --}}
-                            <div class="row">
-                                <div class="col-lg-6 mb-3">
+                <div class="card shadow-sm rounded-4 p-4">
+                    <h2 class="mb-4 text-center text-success fw-bold">
+                        Պատվեր №{{ $order->id }}
+                    </h2>
+
+                    @if($order->status == 1 || $order->status == 2)
+                        <div class="row mb-3">
+                            @admin
+                                <div class="col-lg-6 mx-auto">
                                     <form method="POST" action="{{ route('admin.orders.confirm', $order) }}">
                                         @csrf
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="bi bi-check-circle"></i> Հաստատել պատվերը
+                                        <button type="submit" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-check-circle"></i>
+                                            Հաստատել պատվերը
                                         </button>
                                     </form>
                                 </div>
+                            @endadmin
+
+                            <div class="col-lg-6 mx-auto">
+                                <form action="{{ route('admin.orders.cancel', $order) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="mb-3">
+                                        {{-- <label for="cancellation_comment" class="form-label fw-semibold">Մեկնաբանություն՝</label> --}}
+                                        <textarea name="cancellation_comment" id="cancellation_comment" class="form-control rounded-3" rows="3" placeholder="Ավելացրեք պատճառը..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2">
+                                        <i class="bi bi-x-circle"></i>
+                                        Չեղարկվել պատվերը
+                                    </button>
+                                </form>
                             </div>
-                            <form action="{{ route('admin.orders.cancel', $order) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <div class="mb-2">
-                                    <label for="cancellation_comment" class="form-label">Մեկնաբանություն՝</label>
-                                    <textarea name="cancellation_comment" id="cancellation_comment" class="form-control" rows="3" ></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-danger w-100">
-                                    <i class="bi bi-x-circle"></i> Չեղարկվել պատվերը
-                                </button>
-                            </form>
-                        @endif
-                    @endadmin
+                        </div>
+                    @endif
                 </div>
+
 
                 <div class="table-responsive">
                     <table class="table table-striped align-middle text-center">
