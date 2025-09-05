@@ -150,15 +150,15 @@ public function basketConfirm(Request $request, TelcellService $telcell)
     {
         $order = Order::findOrFail($orderId);
 
-        $buyer = $order->buyer; // номер телефона
+        $buyer = $order->buyer; // телефон покупателя
         $sum = $order->total;   // сумма заказа
 
         // Генерируем HTML форму Telcell
         $formHtml = app(TelcellService::class)->createInvoiceHtml($buyer, $sum, $orderId);
 
+        // Возвращаем view, которая сразу отправляет форму
         return response()->view('telcell.autopost', ['formHtml' => $formHtml]);
     }
-
 
 
     public function basketAdd(Request $request, Sku $skus)

@@ -137,12 +137,6 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
         Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
 
-        Route::middleware(['auth'])->group(function () {
-            Route::post('/order/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('order.cancel');
-            // Route::post('/order/{order}/refund', [OrderController::class, 'refundOrder'])->name('order.refund');
-        });
-
-
         // Route::get('/test-telcell-refund', function() {
         //     // $order = App\Models\Order::first();
         //     $orderId = 35;
