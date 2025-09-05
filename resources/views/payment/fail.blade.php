@@ -35,7 +35,7 @@
 
                 <!-- Кнопка повторной оплаты -->
                 <a href="{{ url('/payment/pay') }}" class="btn btn-danger btn-lg">
-                    @lang('order.try_again')
+                    @lang('index')
                 </a>
             </div>
         </div>
