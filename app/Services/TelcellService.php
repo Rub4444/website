@@ -67,16 +67,22 @@ class TelcellService
 
     \Log::info('Telcell createInvoice POST:', $postData);
 
-    // Отправка запроса к Telcell API для получения JSON
     $response = Http::asForm()->post($this->url, $postData);
     $responseData = $response->json();
 
     \Log::info('Telcell createInvoice RESPONSE:', [
         'order_id' => $order->id,
-        'response' => $responseData
+        'response' => $responseData,
+        'status_code' => $response->status(),
+        'body' => $response->body()
     ]);
 
-    // ✅ Сохраняем invoice_id и статус, если они есть
+    // Если JSON не пришёл, создаём пустой массив
+    if (!is_array($responseData)) {
+        $responseData = [];
+    }
+
+    // Сохраняем invoice_id и статус, если они есть
     if (!empty($responseData['invoice'])) {
         $order->invoice_id = $responseData['invoice'];
         $order->invoice_status = $responseData['status'] ?? null;
