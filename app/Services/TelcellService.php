@@ -29,6 +29,7 @@ class TelcellService
     $issuer = $this->issuer;
     $shopKey = $this->key;
     $currency = '֏';
+
     $sum = $order->getTotalForPayment();
 
     $productEncoded  = base64_encode("IjevanMarket");
@@ -64,63 +65,46 @@ class TelcellService
         $postData['info'] = base64_encode($info);
     }
 
-    \Log::info('Telcell createInvoice POST:', $postData);
+    Log::info('Telcell POST Request:', $postData);
 
-    $response = Http::asForm()->post($this->url, $postData);
-    $responseBody = $response->body();
+    // Отправляем запрос в Telcell
+    $response = Http::asForm()->post('https://telcellmoney.am/invoices', $postData);
     $responseData = $response->json();
 
-    \Log::info('Telcell createInvoice RESPONSE:', [
+    Log::info('Telcell createInvoice response', [
         'order_id' => $order->id,
         'response' => $responseData,
         'status_code' => $response->status(),
-        'body' => $responseBody
     ]);
 
-    // Если JSON не пришёл, создаём массив
-    if (!is_array($responseData)) {
-        $responseData = [];
-        // Попытка вытащить invoice_id из HTML
-        if (preg_match('/name="invoice" value="([^"]+)"/', $responseBody, $matches)) {
-            $responseData['invoice'] = $matches[1];
-            $responseData['status'] = 'CREATED';
-        }
-    }
-
+    // ✅ Сохраняем invoice_id если он есть
     if (!empty($responseData['invoice'])) {
         $order->invoice_id = $responseData['invoice'];
-        $order->invoice_status = $responseData['status'] ?? null;
+        $order->save();
+    }
+
+    // (Опционально) Сохраняем статус
+    if (!empty($responseData['status'])) {
+        $order->invoice_status = $responseData['status'];
         $order->save();
     }
 
     return $responseData;
 }
 
-
-
-    /**
-     * Автоматическая форма для оплаты
-     */
     public function createInvoiceHtml(string $buyer, float $sum, int $orderId): string
-{
-    $invoiceData = $this->createInvoice($buyer, $sum, $orderId);
+    {
+        $invoiceData = $this->createInvoice($buyer, $sum, $orderId);
 
-    // Берём invoice_id для редиректа
-    $invoiceId = $invoiceData['invoice'] ?? null;
+        $html = '<form id="telcellForm" action="https://telcellmoney.am/invoices" method="POST">';
+        foreach ($invoiceData as $key => $value) {
+            $html .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
+        }
+        $html .= '</form>';
+        $html .= '<script>document.getElementById("telcellForm").submit();</script>';
 
-    if (!$invoiceId) {
-        return "Ошибка создания счёта. Попробуйте позже.";
+        return $html;
     }
-
-    $html = '<form id="telcellForm" action="https://telcellmoney.am/invoices" method="POST">';
-    foreach ($invoiceData as $key => $value) {
-        $html .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
-    }
-    $html .= '</form>';
-    $html .= '<script>document.getElementById("telcellForm").submit();</script>';
-
-    return $html;
-}
 
 
     /**
