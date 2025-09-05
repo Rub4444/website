@@ -92,77 +92,84 @@ class PaymentController extends Controller
 
     //     return response('OK', 200);
     // }
-public function callback(Request $request)
-{
-    $data = $request->all();
 
-    \Log::info('Telcell callback received', $data);
+    // public function callback(Request $request)
+// {
+//     $data = $request->all();
 
-    $issuerId  = $data['issuer_id'] ?? null;
-    $invoiceId = $data['invoice'] ?? null;
-    $status    = $data['status'] ?? null;
+//     \Log::info('Telcell callback received', $data);
 
-    \Log::info('Parsed callback data', [
-        'issuerId' => $issuerId,
-        'invoiceId' => $invoiceId,
-        'status' => $status
-    ]);
+//     $issuerId  = $data['issuer_id'] ?? null;
+//     $invoiceId = $data['invoice'] ?? null;
+//     $status    = $data['status'] ?? null;
 
-    if (!$issuerId || !$invoiceId) {
-        \Log::warning('Telcell callback missing issuer_id or invoice', $data);
-        return response('Invalid callback', 400);
-    }
+//     \Log::info('Parsed callback data', [
+//         'issuerId' => $issuerId,
+//         'invoiceId' => $invoiceId,
+//         'status' => $status
+//     ]);
 
-    // Проверка checksum
-    $checksumString = config('services.telcell.shop_key')
-        . $invoiceId
-        . $issuerId
-        . ($data['payment_id'] ?? '')
-        . ($data['buyer'] ?? '')
-        . ($data['currency'] ?? '')
-        . ($data['sum'] ?? '')
-        . ($data['time'] ?? '')
-        . $status;
+//     if (!$issuerId || !$invoiceId) {
+//         \Log::warning('Telcell callback missing issuer_id or invoice', $data);
+//         return response('Invalid callback', 400);
+//     }
 
-    $calculatedChecksum = md5($checksumString);
-    \Log::info('Checksum verification', [
-        'calculated' => $calculatedChecksum,
-        'received' => $data['checksum'] ?? null
-    ]);
+//     // Проверка checksum
+//     $checksumString = config('services.telcell.shop_key')
+//         . $invoiceId
+//         . $issuerId
+//         . ($data['payment_id'] ?? '')
+//         . ($data['buyer'] ?? '')
+//         . ($data['currency'] ?? '')
+//         . ($data['sum'] ?? '')
+//         . ($data['time'] ?? '')
+//         . $status;
 
-    if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
-        \Log::error('Telcell checksum mismatch', [
-            'calculated' => $calculatedChecksum,
-            'received' => $data['checksum'] ?? null,
-        ]);
-        return response('Invalid checksum', 400);
-    }
+//     $calculatedChecksum = md5($checksumString);
+//     \Log::info('Checksum verification', [
+//         'calculated' => $calculatedChecksum,
+//         'received' => $data['checksum'] ?? null
+//     ]);
 
-    $orderId = base64_decode($issuerId);
-    $order   = Order::find($orderId);
-    \Log::info('000000000', ['orderId' => $order->id, 'order' => $order]);
+//     if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
+//         \Log::error('Telcell checksum mismatch', [
+//             'calculated' => $calculatedChecksum,
+//             'received' => $data['checksum'] ?? null,
+//         ]);
+//         return response('Invalid checksum', 400);
+//     }
 
-    if ($order)
+//     $orderId = base64_decode($issuerId);
+//     $order   = Order::find($orderId);
+//     \Log::info('000000000', ['orderId' => $order->id, 'order' => $order]);
+
+//     if ($order)
+//     {
+//         // $order->status = Order::STATUS_PAID;
+//         $order->status = 2;
+//         $order->invoice_status = $data['status'] ?? null;
+//         $order->save();
+
+//         \Log::info('Status updated successfully', ['orderId' => $order->id, 'status' => $order->status]);
+//     }
+
+//     // Обновление статуса
+//     if (strtoupper($status) === 'PAID') {
+//         $order->markAsPaid();
+//     } else {
+//         $order->markAsCancelled();
+//     }
+
+//     // \Log::info('After updating status', ['orderId' => $order->id, 'newStatus' => $order->status]);
+
+//     return response('OK', 200);
+// }
+    public function callback(Request $request)
     {
-        // $order->status = Order::STATUS_PAID;
-        $order->status = 2;
-        $order->invoice_status = $data['status'] ?? null;
-        $order->save();
-
-        \Log::info('Status updated successfully', ['orderId' => $order->id, 'status' => $order->status]);
+        \Log::info('111111111', $request->all());
+        return response('OK', 200);
     }
 
-    // Обновление статуса
-    if (strtoupper($status) === 'PAID') {
-        $order->markAsPaid();
-    } else {
-        $order->markAsCancelled();
-    }
-
-    // \Log::info('After updating status', ['orderId' => $order->id, 'newStatus' => $order->status]);
-
-    return response('OK', 200);
-}
 
     /**
      * Возврат клиента после оплаты
