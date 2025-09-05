@@ -10,7 +10,8 @@ class Order extends Model
     'delivery_street',
     'delivery_home',
     'invoice_id',
-    'invoice_status'];
+    'invoice_status',
+    'issuer_id'];
 
     // Определяем константы статусов
     public const STATUS_PENDING     = 1; // Заказ принят

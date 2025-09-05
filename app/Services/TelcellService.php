@@ -71,7 +71,7 @@ class TelcellService
 
     // Сохраняем invoice_id, issuer_id и статус заказа
     $order->invoice_id     = $issuerIdEncoded;
-    // $order->issuer_id      = $issuerIdEncoded; // ✅ новое поле
+    $order->issuer_id      = $issuerIdEncoded; // ✅ новое поле
     $order->invoice_status = 'CREATED';
     $order->save();
 
