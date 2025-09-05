@@ -24,58 +24,59 @@ class TelcellService
      * Создание счета и сохранение issuer_id в заказе
      */
     public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
-    {
-        $order = Order::findOrFail($orderId);
+{
+    $order = Order::findOrFail($orderId);
 
-        $currency = '֏';
-        $productEncoded  = base64_encode("IjevanMarket");
-        $issuerIdEncoded = base64_encode((string)$orderId);
+    $currency = '֏';
+    $productEncoded  = base64_encode("IjevanMarket");
+    $issuerIdEncoded = base64_encode((string)$orderId);
 
-        $checksumString = $this->key .
-                          $this->issuer .
-                          $currency .
-                          number_format($sum, 2, '.', '') .
-                          $productEncoded .
-                          $issuerIdEncoded .
-                          $validDays;
+    $checksumString = $this->key .
+                      $this->issuer .
+                      $currency .
+                      number_format($sum, 2, '.', '') .
+                      $productEncoded .
+                      $issuerIdEncoded .
+                      $validDays;
 
-        $securityCode = md5($checksumString);
+    $securityCode = md5($checksumString);
 
-        $postData = [
-            'action'        => 'PostInvoice',
-            'issuer'        => $this->issuer,
-            'currency'      => $currency,
-            'price'         => number_format($sum, 2, '.', ''),
-            'product'       => $productEncoded,
-            'issuer_id'     => $issuerIdEncoded,
-            'valid_days'    => $validDays,
-            'security_code' => $securityCode,
-            'lang'          => 'am',
-            'buyer'         => $buyer,
-            'successUrl'    => route('payment.return', ['order' => $orderId], true),
-            'failUrl'       => route('payment.return', ['order' => $orderId], true),
-            'callbackUrl'   => route('payment.callback', [], true),
-        ];
+    $postData = [
+        'action'        => 'PostInvoice',
+        'issuer'        => $this->issuer,
+        'currency'      => $currency,
+        'price'         => number_format($sum, 2, '.', ''),
+        'product'       => $productEncoded,
+        'issuer_id'     => $issuerIdEncoded,
+        'valid_days'    => $validDays,
+        'security_code' => $securityCode,
+        'lang'          => 'am',
+        'buyer'         => $buyer,
+        'successUrl'    => route('payment.return', ['order' => $orderId], true),
+        'failUrl'       => route('payment.return', ['order' => $orderId], true),
+        'callbackUrl'   => route('payment.callback', [], true),
+    ];
 
-        if ($info) {
-            $postData['info'] = base64_encode($info);
-        }
-
-        Log::info('Telcell POST Request:', $postData);
-
-        try {
-            Http::asForm()->post($this->url, $postData);
-        } catch (\Exception $e) {
-            Log::error('Telcell createInvoice failed', ['exception' => $e]);
-        }
-
-        // Сохраняем issuer_id и статус заказа
-        $order->invoice_id     = $issuerIdEncoded;
-        $order->invoice_status = 'CREATED';
-        $order->save();
-
-        return $postData;
+    if ($info) {
+        $postData['info'] = base64_encode($info);
     }
+
+    Log::info('Telcell POST Request:', $postData);
+
+    try {
+        Http::asForm()->post($this->url, $postData);
+    } catch (\Exception $e) {
+        Log::error('Telcell createInvoice failed', ['exception' => $e]);
+    }
+
+    // Сохраняем invoice_id, issuer_id и статус заказа
+    $order->invoice_id     = $issuerIdEncoded;
+    $order->issuer_id      = $issuerIdEncoded; // ✅ новое поле
+    $order->invoice_status = 'CREATED';
+    $order->save();
+
+    return $postData;
+}
 
     /**
      * Формирование HTML-формы для оплаты
