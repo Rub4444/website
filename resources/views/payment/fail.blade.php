@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Եթե ունես layout --}}
+@extends('layouts.master')
 @section('content')
 
 <h1>❌ Оплата не удалась</h1>
