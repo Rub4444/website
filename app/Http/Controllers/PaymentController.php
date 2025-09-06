@@ -111,20 +111,20 @@ class PaymentController extends Controller
 // }
 public function callback(Request $request)
 {
-    // Выбираем только нужные поля для логирования
-    $logData = $request->only([
-        'action',
-        'status',
-        'invoice',
-        'price',
-        'issuer',
-        'buyer'
-    ]);
+    \Log::info('Telcell callback', $request->all());
 
-    \Log::info('Telcell callback', $logData);
+    $invoiceId = $request->input('invoice');
+    $status = $request->input('status');
+
+    $order = Order::where('id', $invoiceId)->first();
+    if($order && $status === 'success') {
+        $order->status = 'paid'; // или 1, как у тебя
+        $order->save();
+    }
 
     return response('OK', 200);
 }
+
 
 
 //    public function callback(Request $request)
