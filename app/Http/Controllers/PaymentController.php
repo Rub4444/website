@@ -130,10 +130,10 @@ class PaymentController extends Controller
             'status' => $status
         ]);
 
-        if (!$issuerId || !$invoiceId) {
-            Log::warning('Telcell callback missing issuer_id or invoice', $data);
-            return response('Invalid callback', 400);
-        }
+        // if (!$issuerId || !$invoiceId) {
+        //     Log::warning('Telcell callback missing issuer_id or invoice', $data);
+        //     return response('Invalid callback', 400);
+        // }
 
         // Проверка checksum
         $checksumString = config('services.telcell.shop_key')
