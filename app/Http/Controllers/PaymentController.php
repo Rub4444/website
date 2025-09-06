@@ -109,21 +109,14 @@ class PaymentController extends Controller
 
 //     return response('OK', 200);
 // }
-    public function callback(Request $request)
-    {
-        // Логируем все данные для проверки
-        Log::info('Telcell Callback:', $request->all());
+public function callback(Request $request)
+{
+    // обработка данных
+    \Log::info('Telcell callback', $request->all());
 
-        // Пример: получение конкретных полей
-        $status = $request->input('status');
-        $invoice = $request->input('invoice');
-        $price = $request->input('price');
+    return response('OK', 200); // простой короткий ответ
+}
 
-        // Здесь можно добавить вашу логику обработки платежа
-
-        // Возвращаем Telcell успешный ответ
-        return response('OK', 200);
-    }
 //    public function callback(Request $request)
 //     {
 //         // Логируем весь запрос
