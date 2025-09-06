@@ -83,13 +83,9 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
 
             Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
             Route::post('/wishlist/toggle/{sku}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-            // //TellCell
-            // Route::get('/payment/pay', [PaymentController::class, 'pay']);
-            // Route::get('/payment/callback', [PaymentController::class, 'callback']);
-            // Route::post('/payment/cancel', [PaymentController::class, 'cancelPost']);
-            // Route::post('/payment/refund', [PaymentController::class, 'refundPost']);
-            // Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
             //TellCell
+            Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
+            Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
             Route::get('/payment/pay', [PaymentController::class, 'pay']);
             Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback'); // ✅ POST
             Route::post('/payment/cancel', [PaymentController::class, 'cancelPost']);
@@ -131,11 +127,6 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
             Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
         });
-
-        Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
-        Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
-        // Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
-        Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
 
         // Route::get('/test-telcell-refund', function() {
         //     // $order = App\Models\Order::first();
