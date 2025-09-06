@@ -123,12 +123,14 @@ class PaymentController extends Controller
         return response('Invalid callback', 400);
     }
 
-    $orderId = base64_decode($issuerId);
-    $order = Order::find($orderId);
+    $issuerId = $data['issuer_id'] ?? null;
+    $order = Order::where('issuer_id', $issuerId)->first();
+
     if (!$order) {
-        \Log::error('Order not found', ['orderId' => $orderId]);
+        \Log::error('Order not found by issuer_id', ['issuer_id' => $issuerId]);
         return response('Order not found', 404);
     }
+
 
     // Проверка checksum
     $checksumString = config('services.telcell.shop_key')
