@@ -111,27 +111,23 @@ class PaymentController extends Controller
 // }
     public function callback(Request $request)
 {
-    \Log::info('📩 Telcell CALLBACK: получен запрос', [
-        'method'  => $request->method(),
-        'headers' => $request->headers->all(),
-        'payload' => $request->all(),
-    ]);
-
     $data = $request->all();
 
-    $issuerId  = $data['issuer_id'] ?? null;
-    $invoiceId = $data['invoice'] ?? null;
-    $status    = $data['status'] ?? null;
+    \Log::info('Telcell callback', $data);
 
-    \Log::info('Parsed callback data', [
-        'issuerId' => $issuerId,
-        'invoiceId' => $invoiceId,
-        'status' => $status
-    ]);
+    $issuerId = $data['issuer_id'] ?? null;
+    $invoiceId = $data['invoice'] ?? null;
+    $status = $data['status'] ?? null;
 
     if (!$issuerId || !$invoiceId) {
-        \Log::warning('Telcell callback missing issuer_id or invoice', $data);
         return response('Invalid callback', 400);
+    }
+
+    $orderId = base64_decode($issuerId);
+    $order = Order::find($orderId);
+    if (!$order) {
+        \Log::error('Order not found', ['orderId' => $orderId]);
+        return response('Order not found', 404);
     }
 
     // Проверка checksum
@@ -139,51 +135,26 @@ class PaymentController extends Controller
         . $invoiceId
         . $issuerId
         . ($data['payment_id'] ?? '')
+        . ($data['buyer'] ?? '')
         . ($data['currency'] ?? '')
         . ($data['sum'] ?? '')
         . ($data['time'] ?? '')
         . $status;
 
     $calculatedChecksum = md5($checksumString);
-
-    \Log::info('Checksum verification', [
-        'calculated' => $calculatedChecksum,
-        'received' => $data['checksum'] ?? null
-    ]);
-
     if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
-        \Log::error('Telcell checksum mismatch', [
-            'calculated' => $calculatedChecksum,
-            'received' => $data['checksum'] ?? null,
-        ]);
+        \Log::error('Checksum mismatch', ['calculated' => $calculatedChecksum, 'received' => $data['checksum']]);
         return response('Invalid checksum', 400);
     }
 
-    // Декодирование issuer_id
-    $orderId = base64_decode($issuerId, true);
-    if (!$orderId || !is_numeric($orderId)) {
-        \Log::error("Invalid issuer_id", ['issuer_id' => $issuerId]);
-        return response('Bad issuer_id', 400);
-    }
-
-    $order = Order::find($orderId);
-    if (!$order) {
-        \Log::warning("Telcell callback: order not found", ['orderId' => $orderId]);
-        return response('Order not found', 404);
-    }
-
-    // Обновление статуса
+    // Обновляем статус
     if (strtoupper($status) === 'PAID') {
         $order->markAsPaid();
     } else {
         $order->markAsCancelled();
     }
 
-    \Log::info('Order status updated', [
-        'orderId' => $order->id,
-        'newStatus' => $order->status,
-        'invoiceStatus' => $status,
-    ]);
+    \Log::info('Order status updated', ['orderId' => $order->id, 'status' => $order->status]);
 
     return response('OK', 200);
 }
