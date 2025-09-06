@@ -113,17 +113,40 @@ public function callback(Request $request)
 {
     \Log::info('Telcell callback', $request->all());
 
-    $invoiceId = $request->input('invoice');
-    $status = $request->input('status');
+    // Секретный код для проверки
+    $correctSecurityCode = 'ваш_секретный_код_создания_счета';
 
-    $order = Order::where('id', $invoiceId)->first();
-    if($order && $status === 'success') {
-        $order->status = 'paid'; // или 1, как у тебя
-        $order->save();
+    // Проверяем security_code
+    if ($request->input('security_code') !== $correctSecurityCode) {
+        \Log::warning('Invalid security_code', $request->all());
+        return response('Invalid security_code', 403);
     }
 
+    // Приводим идентификаторы к единому виду
+    $invoiceId = $request->input('invoice'); // ODE= или что приходит от Telcell
+    $issuerId  = $request->input('issuer_id');
+
+    // Ищем заказ в базе по invoice_id или issuer_id
+    $order = Order::where('invoice_id', $invoiceId)
+                  ->orWhere('issuer_id', $issuerId)
+                  ->first();
+
+    if (!$order) {
+        \Log::warning('Order not found', $request->all());
+        return response('Order not found', 404);
+    }
+
+    // Обновляем статус заказа
+    if ($request->input('status') === 'success') {
+        $order->status = 'paid';
+        $order->save();
+        \Log::info('Order marked as paid', ['order_id' => $order->id]);
+    }
+
+    // Отправляем простой ответ Telcell
     return response('OK', 200);
 }
+
 
 
 
