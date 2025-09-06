@@ -170,14 +170,16 @@ class PaymentController extends Controller
 
         Log::info('Order found', ['orderId' => $order->id, 'currentStatus' => $order->status]);
 
+        $order->markAsPaid();
+        Log::info('Order marked as PAID', ['orderId' => $order->id]);
         // Обновляем статус заказа
-        if (strtoupper($status) === 'PAID') {
-            $order->markAsPaid();
-            Log::info('Order marked as PAID', ['orderId' => $order->id]);
-        } else {
-            $order->markAsCancelled();
-            Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
-        }
+        // if (strtoupper($status) === 'PAID') {
+        //     $order->markAsPaid();
+        //     Log::info('Order marked as PAID', ['orderId' => $order->id]);
+        // } else {
+        //     $order->markAsCancelled();
+        //     Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
+        // }
 
         // Возвращаем успешный ответ Telcell
         return response('OK', 200);
