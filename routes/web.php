@@ -89,7 +89,8 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             Route::get('/payment/pay', [PaymentController::class, 'pay']);
             // Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback'); // ✅ POST
 
-            Route::match(['get', 'post'], '/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+            // Route::match(['get', 'post'], '/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+            Route::post('/payment/callback', [PaymentController::class, 'callback'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
             Route::post('/payment/cancel', [PaymentController::class, 'cancelPost']);
             Route::post('/payment/refund', [PaymentController::class, 'refundPost']);

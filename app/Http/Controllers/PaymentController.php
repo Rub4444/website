@@ -109,81 +109,96 @@ class PaymentController extends Controller
 
 //     return response('OK', 200);
 // }
-   public function callback(Request $request)
+    public function callback(Request $request)
     {
-        // Логируем весь запрос
-        Log::info('📩 Telcell CALLBACK: получен запрос', [
-            'method'  => $request->method(),
-            'headers' => $request->headers->all(),
-            'payload' => $request->all(),
-        ]);
+        // Логируем все данные для проверки
+        Log::info('Telcell Callback:', $request->all());
 
-        $data = $request->all();
+        // Пример: получение конкретных полей
+        $status = $request->input('status');
+        $invoice = $request->input('invoice');
+        $price = $request->input('price');
 
-        $issuerId  = $data['issuer_id'] ?? null;
-        $invoiceId = $data['invoice'] ?? null;
-        $status    = $data['status'] ?? null;
+        // Здесь можно добавить вашу логику обработки платежа
 
-        Log::info('Parsed callback data', [
-            'issuerId' => $issuerId,
-            'invoiceId' => $invoiceId,
-            'status' => $status
-        ]);
-
-        // if (!$issuerId || !$invoiceId) {
-        //     Log::warning('Telcell callback missing issuer_id or invoice', $data);
-        //     return response('Invalid callback', 400);
-        // }
-
-        // Проверка checksum
-        $checksumString = config('services.telcell.shop_key')
-            . $invoiceId
-            . $issuerId
-            . ($data['payment_id'] ?? '')
-            . ($data['buyer'] ?? '')
-            . ($data['currency'] ?? '')
-            . ($data['sum'] ?? '')
-            . ($data['time'] ?? '')
-            . $status;
-
-        $calculatedChecksum = md5($checksumString);
-        Log::info('Checksum verification', [
-            'calculated' => $calculatedChecksum,
-            'received' => $data['checksum'] ?? null
-        ]);
-
-        if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
-            Log::error('Telcell checksum mismatch', [
-                'calculated' => $calculatedChecksum,
-                'received' => $data['checksum'] ?? null,
-            ]);
-            return response('Invalid checksum', 400);
-        }
-
-        // Находим заказ по issuer_id
-        $order = Order::where('issuer_id', $issuerId)->first();
-
-        if (!$order) {
-            Log::warning('Order not found for issuer_id', ['issuer_id' => $issuerId]);
-            return response('Order not found', 404);
-        }
-
-        Log::info('Order found', ['orderId' => $order->id, 'currentStatus' => $order->status]);
-
-        $order->markAsPaid();
-        Log::info('Order marked as PAID', ['orderId' => $order->id]);
-        // Обновляем статус заказа
-        // if (strtoupper($status) === 'PAID') {
-        //     $order->markAsPaid();
-        //     Log::info('Order marked as PAID', ['orderId' => $order->id]);
-        // } else {
-        //     $order->markAsCancelled();
-        //     Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
-        // }
-
-        // Возвращаем успешный ответ Telcell
+        // Возвращаем Telcell успешный ответ
         return response('OK', 200);
     }
+//    public function callback(Request $request)
+//     {
+//         // Логируем весь запрос
+//         Log::info('📩 Telcell CALLBACK: получен запрос', [
+//             'method'  => $request->method(),
+//             'headers' => $request->headers->all(),
+//             'payload' => $request->all(),
+//         ]);
+
+//         $data = $request->all();
+
+//         $issuerId  = $data['issuer_id'] ?? null;
+//         $invoiceId = $data['invoice'] ?? null;
+//         $status    = $data['status'] ?? null;
+
+//         Log::info('Parsed callback data', [
+//             'issuerId' => $issuerId,
+//             'invoiceId' => $invoiceId,
+//             'status' => $status
+//         ]);
+
+//         // if (!$issuerId || !$invoiceId) {
+//         //     Log::warning('Telcell callback missing issuer_id or invoice', $data);
+//         //     return response('Invalid callback', 400);
+//         // }
+
+//         // Проверка checksum
+//         $checksumString = config('services.telcell.shop_key')
+//             . $invoiceId
+//             . $issuerId
+//             . ($data['payment_id'] ?? '')
+//             . ($data['buyer'] ?? '')
+//             . ($data['currency'] ?? '')
+//             . ($data['sum'] ?? '')
+//             . ($data['time'] ?? '')
+//             . $status;
+
+//         $calculatedChecksum = md5($checksumString);
+//         Log::info('Checksum verification', [
+//             'calculated' => $calculatedChecksum,
+//             'received' => $data['checksum'] ?? null
+//         ]);
+
+//         if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
+//             Log::error('Telcell checksum mismatch', [
+//                 'calculated' => $calculatedChecksum,
+//                 'received' => $data['checksum'] ?? null,
+//             ]);
+//             return response('Invalid checksum', 400);
+//         }
+
+//         // Находим заказ по issuer_id
+//         $order = Order::where('issuer_id', $issuerId)->first();
+
+//         if (!$order) {
+//             Log::warning('Order not found for issuer_id', ['issuer_id' => $issuerId]);
+//             return response('Order not found', 404);
+//         }
+
+//         Log::info('Order found', ['orderId' => $order->id, 'currentStatus' => $order->status]);
+
+//         $order->markAsPaid();
+//         Log::info('Order marked as PAID', ['orderId' => $order->id]);
+//         // Обновляем статус заказа
+//         // if (strtoupper($status) === 'PAID') {
+//         //     $order->markAsPaid();
+//         //     Log::info('Order marked as PAID', ['orderId' => $order->id]);
+//         // } else {
+//         //     $order->markAsCancelled();
+//         //     Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
+//         // }
+
+//         // Возвращаем успешный ответ Telcell
+//         return response('OK', 200);
+//     }
 
     /**
      * Возврат клиента после оплаты
