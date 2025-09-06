@@ -95,6 +95,12 @@ class PaymentController extends Controller
 
     public function callback(Request $request)
 {
+    \Log::info('📩 Telcell CALLBACK: получен запрос', [
+    'method'  => $request->method(),
+    'headers' => $request->headers->all(),
+    'payload' => $request->all(),
+]);
+
     $data = $request->all();
 
     \Log::info('Telcell callback received', $data);
@@ -143,15 +149,15 @@ class PaymentController extends Controller
     $order   = Order::find($orderId);
     \Log::info('000000000', ['orderId' => $order->id, 'order' => $order]);
 
-    if ($order)
-    {
-        // $order->status = Order::STATUS_PAID;
-        $order->status = 2;
-        $order->invoice_status = $data['status'] ?? null;
-        $order->save();
+    // if ($order)
+    // {
+    //     // $order->status = Order::STATUS_PAID;
+    //     $order->status = 2;
+    //     $order->invoice_status = $data['status'] ?? null;
+    //     $order->save();
 
-        \Log::info('Status updated successfully', ['orderId' => $order->id, 'status' => $order->status]);
-    }
+    //     \Log::info('Status updated successfully', ['orderId' => $order->id, 'status' => $order->status]);
+    // }
 
     // Обновление статуса
     if (strtoupper($status) === 'PAID') {
