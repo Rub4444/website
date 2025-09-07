@@ -109,45 +109,75 @@ class PaymentController extends Controller
 
 //     return response('OK', 200);
 // }
+
 public function callback(Request $request)
 {
-    \Log::info('Telcell callback', $request->all());
+    // 1. Логируем входящие данные
+    \Log::info('Telcell callback received', $request->all());
 
-    // Секретный код для проверки
-    $correctSecurityCode = 'ваш_секретный_код_создания_счета';
+    // 2. Отвечаем Telcell максимально быстро
+    response('OK', 200)->send();
 
-    // Проверяем security_code
-    if ($request->input('security_code') !== $correctSecurityCode) {
-        \Log::warning('Invalid security_code', $request->all());
-        return response('Invalid security_code', 403);
-    }
+    // 3. Выполняем остальную логику после ответа
+    $this->processPayment($request);
 
-    // Приводим идентификаторы к единому виду
-    $invoiceId = $request->input('invoice'); // ODE= или что приходит от Telcell
-    $issuerId  = $request->input('issuer_id');
-
-    // Ищем заказ в базе по invoice_id или issuer_id
-    $order = Order::where('invoice_id', $invoiceId)
-                  ->orWhere('issuer_id', $issuerId)
-                  ->first();
-
-    if (!$order) {
-        \Log::warning('Order not found', $request->all());
-        return response('Order not found', 404);
-    }
-
-    // Обновляем статус заказа
-    if ($request->input('status') === 'success') {
-        $order->status = 'paid';
-        $order->save();
-        \Log::info('Order marked as paid', ['order_id' => $order->id]);
-    }
-
-    // Отправляем простой ответ Telcell
-    return response('OK', 200);
+    // 4. Завершаем выполнение, чтобы ничего лишнего не выполнялось
+    exit;
 }
 
+protected function processPayment(Request $request)
+{
+    try {
+        // Приводим ID к нормальному виду (base64 -> int)
+        $invoiceId = $request->input('invoice');
+        $issuerId  = $request->input('issuer_id');
 
+        if ($issuerId) {
+            $decodedIssuerId = base64_decode($issuerId);
+        } else {
+            $decodedIssuerId = null;
+        }
+
+        \Log::info('Processing payment', [
+            'invoice' => $invoiceId,
+            'issuer_id' => $issuerId,
+            'decoded_issuer_id' => $decodedIssuerId
+        ]);
+
+        // Ищем заказ по invoice_id или issuer_id
+        $order = Order::where('invoice_id', $invoiceId)
+            ->orWhere('issuer_id', $decodedIssuerId)
+            ->first();
+
+        if (!$order) {
+            \Log::warning('Order not found after callback', [
+                'invoice' => $invoiceId,
+                'issuer_id' => $decodedIssuerId
+            ]);
+            return;
+        }
+
+        // Проверяем статус из запроса
+        if ($request->input('status') === 'success') {
+            $order->status = 'paid'; // или твой статус "Оплачен"
+            $order->save();
+
+            \Log::info('Order marked as paid', [
+                'order_id' => $order->id,
+                'status' => $order->status
+            ]);
+        } else {
+            \Log::warning('Callback status is not success', [
+                'status' => $request->input('status')
+            ]);
+        }
+    } catch (\Throwable $e) {
+        \Log::error('Error in processing Telcell callback', [
+            'message' => $e->getMessage(),
+            'trace'   => $e->getTraceAsString(),
+        ]);
+    }
+}
 
 
 //    public function callback(Request $request)
