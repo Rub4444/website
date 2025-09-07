@@ -260,27 +260,31 @@ protected function processPayment(Request $request)
      * Возврат клиента после оплаты
      */
     public function handleReturn(Request $request)
-    {
-        $orderId = $request->query('order'); // получаем ?order=40
-        if (!$orderId) {
-            return redirect('/')->with('error', 'Не указан номер заказа.');
-        }
+{
+    $orderId = $request->query('order');
+    $status  = $request->query('status'); // получаем success/fail из URL
 
-        $order = Order::find($orderId);
-        if (!$order) {
-            return redirect('/')->with('error', 'Заказ не найден.');
-        }
-
-        // Если статус оплаты в базе уже обновился после callback-а
-        if ($order->status == 2)
-        {
-            return view('payment.success', compact('order'));
-        }
-        else
-        {
-            return view('payment.fail', compact('order'));
-        }
+    if (!$orderId) {
+        return redirect('/')->with('error', 'Не указан номер заказа.');
     }
+
+    $order = Order::find($orderId);
+    if (!$order) {
+        return redirect('/')->with('error', 'Заказ не найден.');
+    }
+
+    if ($status === 'success') {
+        // Можем дополнительно обновить статус в базе, если хотим
+        if ($order->status != 2) {
+            $order->status = 2;
+            $order->save();
+        }
+        return view('payment.success', compact('order'));
+    } else {
+        return view('payment.fail', compact('order'));
+    }
+}
+
     /**
      * Страница успешного платежа
      */
