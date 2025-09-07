@@ -273,16 +273,13 @@ protected function processPayment(Request $request)
         return redirect('/')->with('error', 'Заказ не найден.');
     }
 
-    if ($status === 'success') {
-        // Можем дополнительно обновить статус в базе, если хотим
-        if ($order->status != 2) {
-            $order->status = 2;
-            $order->save();
-        }
-        return view('payment.success', compact('order'));
-    } else {
-        return view('payment.fail', compact('order'));
+    // Можем дополнительно обновить статус в базе, если хотим
+    if ($order->status != 2)
+    {
+        $order->status = 2;
+        $order->save();
     }
+    return view('payment.success', compact('order'));
 }
 
     /**
