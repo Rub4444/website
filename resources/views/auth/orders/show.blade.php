@@ -11,7 +11,7 @@
             <div class="card-body p-4">
 
                 {{-- Заголовок --}}
-                <h2 class="text-center text-primary fw-bold mb-4">
+                <h2 class="text-center fw-bold mb-4" style="color:#2E8B57;">
                     Պատվեր №{{ $order->id }}
                 </h2>
 
@@ -75,11 +75,6 @@
                         <p><strong>Պատվերի տեսակը՝</strong>
                             {{ $order->delivery_type === 'delivery' ? 'Առաքում' : 'Վերցնել խանութից' }}
                         </p>
-                        @if($order->delivery_type === 'delivery')
-                            <p><strong>Ընդհանուր գումարը՝</strong> {{ number_format($order->sum + 500, 0, '.', ' ') }} {{ $order->currency ? $order->currency->symbol : 'Դ' }}</p>
-                        @else
-                            <p><strong>Ընդհանուր գումարը՝</strong> {{ $order->sum }} {{ $order->currency ? $order->currency->symbol : 'Դ' }}</p>
-                        @endif
                         @if($order->cancellation_comment)
                             <p><strong>Չեղարկման մեկնաբանություն՝</strong> {{ $order->cancellation_comment }}</p>
                         @endif
