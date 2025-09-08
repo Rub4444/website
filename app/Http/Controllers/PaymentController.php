@@ -159,8 +159,9 @@ protected function processPayment(Request $request)
 
         // Проверяем статус из запроса
         if ($request->input('status') === 'success') {
-            $order->status = 'paid'; // или твой статус "Оплачен"
-            $order->save();
+            // $order->status = 'paid'; // или твой статус "Оплачен"
+            // $order->save();
+            $order->markAsPaid();
 
             \Log::info('Order marked as paid', [
                 'order_id' => $order->id,
