@@ -22,7 +22,7 @@ class OrderCancelled extends Mailable
 
     public function build()
     {
-        return $this->subject('Ваш заказ был отменен')
+        return $this->subject('Ձեր պատվերը չեղարկվել է')
                     ->view('mail.order_cancelled')
                     ->with([
                         'order' => $this->order,
