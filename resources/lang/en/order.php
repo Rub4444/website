@@ -3,7 +3,7 @@ return [
     'status' => 'Status',
     'pending'   => 'Order received',
     'paid'      => 'Paid',
-    'shipped'   => 'Shipped / On the way',
+    'shipped'   => 'Order confirmed',
     'delivered' => 'Delivered',
     'cancelled' => 'Cancelled',
     'unknown'   => 'Unknown',
