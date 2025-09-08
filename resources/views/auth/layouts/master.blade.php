@@ -259,6 +259,20 @@
                     </div>
                 </div>
             </div>
+            <!-- Блок способов оплаты -->
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <h6 class="text-white mb-3 fw-bold">
+                        @lang('main.payment_methods')
+                    </h6>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-3">
+                        <img src="{{ asset('img/payment/tellcell.svg') }}" alt="Telcell" class="img-fluid" style="max-height: 40px;">
+                        <!-- если будут другие лого -->
+                        <!-- <img src="{{ asset('img/payment/visa.svg') }}" alt="Visa" class="img-fluid" style="max-height: 40px;">
+                        <img src="{{ asset('img/payment/mastercard.svg') }}" alt="MasterCard" class="img-fluid" style="max-height: 40px;"> -->
+                    </div>
+                </div>
+            </div>
             <hr class="text-white">
             <div class="text-center">
                 <p class="mb-0">&copy; 2025 <a href="">Իջևան Մարկետ</a>. Բոլոր իրավունքները պաշտպանված են</p>

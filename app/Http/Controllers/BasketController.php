@@ -53,74 +53,74 @@ class BasketController extends Controller
 
     //     return redirect()->route('index');
     // }
-public function basketConfirm(Request $request, TelcellService $telcell)
-{
-    $basket = new Basket();
-
-    if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
+    public function basketConfirm(Request $request, TelcellService $telcell)
     {
-        $basket->clearCoupon();
-        session()->flash('warning', __('basket.coupon_is_not_available'));
-        return redirect()->route('basket');
+        $basket = new Basket();
+
+        if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
+        {
+            $basket->clearCoupon();
+            session()->flash('warning', __('basket.coupon_is_not_available'));
+            return redirect()->route('basket');
+        }
+
+        $email = Auth::check() ? Auth::user()->email : $request->email;
+
+        $order = $basket->saveOrder(
+            $request->name,
+            $request->phone,
+            $email,
+            $request->delivery_type,
+            $request->delivery_city,
+            $request->delivery_street,
+            $request->delivery_home
+        );
+
+        if ($order === true)
+        {
+            $order = \App\Models\Order::latest()->first();
+        }
+        // \Log::info('ORDER ID:', ['order_id' => $order->id]);
+
+
+        if (!$order) {
+            session()->flash('warning', __('basket.product_is_not_available'));
+            return redirect()->route('basket');
+        }
+
+        session()->flash('success', __('basket.your_order_confirmed'));
+
+
+        // Создаем счёт через Telcell
+        $buyer = $request->phone ?: $email;
+        $description = "Оплата заказа #{$order->id}";
+        // $issuerId = (string)$order->id;
+
+        $result = $telcell->createInvoice(
+            $buyer,         // string
+            $order->sum,    // float
+            $order->id,     // int — ID заказа
+            1,              // valid_days
+            $description    // строка описания (опционально)
+        );
+        $invoiceHtml = $telcell->createInvoiceHtml(
+            $buyer,
+            $order->sum,
+            $order->id
+        );
+
+        // if (isset($result['invoice']))
+        // {
+        //     // Редирект на страницу оплаты Telcell
+        //     $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
+        //     return redirect()->away($paymentUrl);
+        // }
+
+        // session()->flash('warning', 'Ошибка при создании платежа Telcell.');
+        return response($invoiceHtml);
+
+        // return redirect()->route('index');
     }
-
-    $email = Auth::check() ? Auth::user()->email : $request->email;
-
-    $order = $basket->saveOrder(
-        $request->name,
-        $request->phone,
-        $email,
-        $request->delivery_type,
-        $request->delivery_city,
-        $request->delivery_street,
-        $request->delivery_home
-    );
-
-    if ($order === true)
-    {
-        $order = \App\Models\Order::latest()->first();
-    }
-    // \Log::info('ORDER ID:', ['order_id' => $order->id]);
-
-
-    if (!$order) {
-        session()->flash('warning', __('basket.product_is_not_available'));
-        return redirect()->route('basket');
-    }
-
-    session()->flash('success', __('basket.your_order_confirmed'));
-
-
-    // Создаем счёт через Telcell
-    $buyer = $request->phone ?: $email;
-    $description = "Оплата заказа #{$order->id}";
-    // $issuerId = (string)$order->id;
-
-    $result = $telcell->createInvoice(
-        $buyer,         // string
-        $order->sum,    // float
-        $order->id,     // int — ID заказа
-        1,              // valid_days
-        $description    // строка описания (опционально)
-    );
-    $invoiceHtml = $telcell->createInvoiceHtml(
-        $buyer,
-        $order->sum,
-        $order->id
-    );
-
-    // if (isset($result['invoice']))
-    // {
-    //     // Редирект на страницу оплаты Telcell
-    //     $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
-    //     return redirect()->away($paymentUrl);
-    // }
-
-    // session()->flash('warning', 'Ошибка при создании платежа Telcell.');
-    return response($invoiceHtml);
-
-    // return redirect()->route('index');
-}
 
     public function basketClear()
     {
