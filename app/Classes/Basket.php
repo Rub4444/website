@@ -9,7 +9,6 @@ use App\Mail\OrderCreated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-use App\Services\sConversion;
 
 class Basket
 {
@@ -17,151 +16,156 @@ class Basket
 
     public function __construct($createOrder = false)
     {
-        $order = session('order');
+        $orderId = session('order_id');
 
-        if (is_null($order) && $createOrder) {
-            $data = [];
+        if (is_null($orderId) && $createOrder) {
+            $data = ['currency_id' => 1];
             if (Auth::check()) {
                 $data['user_id'] = Auth::id();
             }
-            $data['currency_id'] = 1;
-            $this->order = new Order($data);
-            session(['order' => $this->order]);
-        }
-        else
-        {
+            $order = new Order($data);
+            $order->save(); // сохраняем, чтобы был ID
+            session(['order_id' => $order->id]);
             $this->order = $order;
+        } else {
+            $this->order = Order::find($orderId);
+            if (!$this->order && $createOrder) {
+                $this->order = new Order(['currency_id' => 1]);
+                if (Auth::check()) {
+                    $this->order->user_id = Auth::id();
+                }
+                $this->order->save();
+                session(['order_id' => $this->order->id]);
+            }
         }
     }
 
-
-
-    public function getOrder()
+    public function getOrder(): ?Order
     {
         return $this->order;
     }
 
-    public function countAvailable($updateCount = false)
+    public function addSku(Sku $sku, $quantity = null)
     {
-        $skus = collect([]);
-        foreach ($this->order->skus as $orderSku)
-        {
-            $sku = Sku::find($orderSku->id);
-            if ($orderSku->countInOrder > $sku->count)
-            {
+        $unit = $sku->product->unit ?? 'pcs';
+        $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1);
+
+        $orderSkus = collect($this->order->skus);
+
+        if ($orderSkus->contains($sku)) {
+            $pivot = $orderSkus->where('id', $sku->id)->first();
+            if ($unit === 'pcs' && ($pivot->pivot->count + $quantity > $sku->count)) {
                 return false;
             }
-            if($updateCount)
-            {
-                $sku->count -= $orderSku->countInOrder;
-                $skus->push($sku);
+            $pivot->pivot->count += $quantity;
+        } else {
+            if ($unit === 'pcs' && $quantity > $sku->count) {
+                return false;
+            }
+            $this->order->skus()->attach($sku->id, [
+                'count' => $quantity,
+                'price' => $sku->price,
+            ]);
+        }
+
+        return true;
+    }
+
+    public function removeSku(Sku $sku, $quantity = null)
+    {
+        $unit = $sku->product->unit ?? 'pcs';
+        $quantity = $quantity ?? ($unit === 'kg' ? 0.1 : 1);
+
+        $orderSkus = collect($this->order->skus);
+        if ($orderSkus->contains($sku)) {
+            $pivot = $orderSkus->where('id', $sku->id)->first();
+            $newCount = $pivot->pivot->count - $quantity;
+            if ($newCount <= 0) {
+                $this->order->skus()->detach($sku->id);
+            } else {
+                $this->order->skus()->updateExistingPivot($sku->id, ['count' => $newCount]);
             }
         }
-        if($updateCount)
-        {
-            $skus->map->save();
+    }
+
+    public function countAvailable($updateCount = false): bool
+    {
+        foreach ($this->order->skus as $orderSku) {
+            $sku = Sku::find($orderSku->id);
+            if ($orderSku->pivot->count > $sku->count) {
+                return false;
+            }
+            if ($updateCount) {
+                $sku->count -= $orderSku->pivot->count;
+                $sku->save();
+            }
         }
         return true;
     }
 
-    public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
+    public function saveOrder($name, $phone, $email, $deliveryType, $deliveryCity = null, $deliveryStreet = null, $deliveryHome = null)
     {
         if (!$this->countAvailable(true)) {
             return false;
         }
 
-        // $order = $this->order;
-        // ✅ Пересоздаём модель из базы (если order уже есть)
-            $order = $this->order->exists
-                ? \App\Models\Order::find($this->order->id)
-                : $this->order; // если это новый заказ
+        $order = $this->order->exists
+            ? Order::find($this->order->id)
+            : $this->order;
 
-        // 1️⃣ Сохраняем заказ
         $order->name = $name;
         $order->phone = $phone;
         $order->email = $email;
         $order->delivery_type = $deliveryType;
-        $order->delivery_city = $delivery_city;
-        $order->delivery_street = $delivery_street;
-        $order->delivery_home = $delivery_home;
+        $order->delivery_city = $deliveryCity;
+        $order->delivery_street = $deliveryStreet;
+        $order->delivery_home = $deliveryHome;
         $order->status = 1;
         $order->sum = $order->getFullSum();
-        $order->save(); // <- теперь заказ точно сохраняется в базе
+        $order->save();
 
-        // 2️⃣ Привязываем товары через pivot
-        foreach ($order->skus as $sku) {
-            $order->skus()->attach($sku, [
-                'count' => $sku->countInOrder,
+        // Очистка старых связей
+        $order->skus()->detach();
+
+        // Сохраняем товары через pivot
+        foreach ($this->order->skus as $sku) {
+            $order->skus()->attach($sku->id, [
+                'count' => $sku->pivot->count ?? $sku->countInOrder,
                 'price' => $sku->price,
             ]);
         }
 
-        // 3️⃣ Отправка уведомлений
+        // Отправка уведомлений
         Mail::to($email)->send(new OrderCreated($name, $order));
         Mail::to("isahakyan06@gmail.com")->send(new OrderCreated($name, $order));
 
-        // 4️⃣ Очищаем сессию
-        session()->forget('order');
+        // Сохраняем только ID заказа в сессии
+        session(['order_id' => $order->id]);
 
         return true;
     }
 
-
-public function removeSku(Sku $sku, $quantity = null)
-{
-    // Проверяем единицу измерения у продукта
-    $unit = $sku->product->unit;
-
-    $quantity = $quantity ?? ($unit === 'kg' ? 0.1 : 1);
-
-    if ($this->order->skus->contains($sku)) {
-        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-
-        $pivotRow->countInOrder -= $quantity;
-        if ($pivotRow->countInOrder <= 0) {
-            $this->order->skus = $this->order->skus->filter(fn($s) => $s->id !== $sku->id);
-        }
-    }
-}
-
-
-
-    public function addSku(Sku $sku, $quantity = null)
-{
-    $unit = $sku->product->unit; // берём unit у продукта
-    $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1шт
-
-    if ($this->order->skus->contains($sku)) {
-        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-        // Проверяем, чтобы не превышать доступный count для шт
-        if ($unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count) {
-            return false;
-        }
-        $pivotRow->countInOrder += $quantity;
-    } else {
-        if ($unit === 'pcs' && $quantity > $sku->count) {
-            return false;
-        }
-        $sku->countInOrder = $quantity;
-        $sku->unit = $unit; // сохраняем единицу для корзины
-        $this->order->skus->push($sku);
-    }
-}
-
-
-
     public function setCoupon(Coupon $coupon)
     {
         $this->order->coupon()->associate($coupon);
+        $this->order->save();
     }
 
     public function clearCoupon()
     {
         $this->order->coupon()->dissociate();
+        $this->order->save();
     }
-    public function setUserId($userId)
-{
-    $this->order->user_id = $userId;
-}
 
+    public function setUserId($userId)
+    {
+        $this->order->user_id = $userId;
+        $this->order->save();
+    }
+
+    public function clearBasket()
+    {
+        session()->forget('order_id');
+        $this->order = null;
+    }
 }
