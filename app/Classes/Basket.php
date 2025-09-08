@@ -17,38 +17,20 @@ class Basket
 
     public function __construct($createOrder = false)
     {
-        // $order = session('order');
+        $order = session('order');
 
-        // if (is_null($order) && $createOrder) {
-        //     $data = [];
-        //     if (Auth::check()) {
-        //         $data['user_id'] = Auth::id();
-        //     }
-        //     $data['currency_id'] = 1;
-        //     $this->order = new Order($data);
-        //     session(['order' => $this->order]);
-        // }
-        // else
-        // {
-        //     $this->order = $order;
-        // }
-        $orderId = session('order_id');
-
-        if (is_null($orderId) && $createOrder)
-        {
+        if (is_null($order) && $createOrder) {
             $data = [];
             if (Auth::check()) {
                 $data['user_id'] = Auth::id();
             }
             $data['currency_id'] = 1;
-            $order = new Order($data);
-            $order->save(); // обязательно сохраняем, чтобы был ID
-            session(['order_id' => $order->id]);
-            $this->order = $order;
+            $this->order = new Order($data);
+            session(['order' => $this->order]);
         }
         else
         {
-            $this->order = Order::find($orderId); // подгружаем из базы
+            $this->order = $order;
         }
 
     }
@@ -90,11 +72,8 @@ class Basket
             return false;
         }
 
-        // $order = $this->order;
-        // ✅ Пересоздаём модель из базы (если order уже есть)
-        $order = $this->order->exists
-            ? \App\Models\Order::find($this->order->id)
-            : $this->order; // если это новый заказ
+        $order = $this->order;
+
 
         // 1️⃣ Сохраняем заказ
         $order->name = $name;
