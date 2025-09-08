@@ -20,30 +20,8 @@
     <p>Ցավոք, ձեր պատվերը չեղարկվել է հետևյալ պատճառով․</p>
     <p><strong>{{ $cancellationComment }}</strong></p>
 
-    <p>Պատվերի մեջ ընդգրկված ապրանքների ցուցակը․</p>
-    <table>
-        <thead>
-            <tr>
-                <th>Ապրանք</th>
-                <th>Քանակ</th>
-                <th>Գին (միավորի համար)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($order->skus as $sku)
-            <tr>
-                <td>{{ $sku->product->__('name') }}</td>
-                <td>{{ $sku->pivot->count }}</td>
-                <td>{{ number_format($sku->price, 2) }} {{ $order->currency->code ?? 'AMD' }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    {{-- <p>Ապրանքները վերադարձվել են ձեր զամբյուղ։ Կարող եք ցանկացած ժամանակ ձևակերպել նոր պատվեր։</p> --}}
-
     <div class="footer">
-        Շնորհակալություն, որ ընտրում եք մեր խանութը!
+        Շնորհակալություն, որ ընտրել եք մեզ!
     </div>
 </body>
 </html>

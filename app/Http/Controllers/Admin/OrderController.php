@@ -38,7 +38,7 @@ class OrderController extends Controller
             Mail::to($email)->send(new OrderConfirmed($name, $order));
         }
 
-        return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է` առաքիչը ճանապարհին է։');
+        return redirect()->route('home')->with('success', 'Պատվերը հաստատվել է');
     }
 
     public function cancel(Request $request, Order $order)
