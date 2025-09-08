@@ -15,15 +15,6 @@
                     Պատվեր №{{ $order->id }}
                 </h2>
 
-                {{-- Статус заказа --}}
-                <p class="text-center mb-4">
-                    <strong>Կարգավիճակ՝</strong>
-                    <span class="badge
-                        {{ $order->status == 1 ? 'bg-warning' : ($order->status == 2 ? 'bg-success' : 'bg-danger') }} fs-6">
-                        {{ $order->getStatusName() }}
-                    </span>
-                </p>
-
                 {{-- Таблица товаров --}}
                 <div class="table-responsive mb-4">
                     <table class="table table-hover table-striped align-middle text-center">
@@ -70,6 +61,14 @@
                     <div class="col-md-6 mb-2">
                         <p><strong>Հաճախորդ՝</strong> {{ $order->name }}</p>
                         <p><strong>Հեռախոսահամար՝</strong> {{ $order->phone }}</p>
+                        {{-- Статус заказа --}}
+                        <p class="text-center mb-4">
+                            <strong>Կարգավիճակ՝</strong>
+                            <span class="badge
+                                {{ $order->status == 1 ? 'bg-warning' : ($order->status == 2 ? 'bg-success' : 'bg-danger') }} fs-6">
+                                {{ $order->getStatusName() }}
+                            </span>
+                        </p>
                     </div>
                     <div class="col-md-6 mb-2">
                         <p><strong>Պատվերի տեսակը՝</strong>
