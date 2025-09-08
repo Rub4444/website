@@ -38,13 +38,12 @@
                                     </form>
                                 </div>
                             @endadmin
-                            @if($order->status == 2)
+                            @if($order->status == 2 && (!auth()->check() || !auth()->user()->is_admin))
                                 <div class="col-lg-6 mx-auto">
                                     <form action="{{ route('admin.orders.cancel', $order) }}" method="POST">
                                         @csrf
                                         @method('PUT')
                                         <div class="mb-3">
-                                            {{-- <label for="cancellation_comment" class="form-label fw-semibold">Մեկնաբանություն՝</label> --}}
                                             <textarea name="cancellation_comment" id="cancellation_comment" class="form-control rounded-3" rows="3" placeholder="Ավելացրեք պատճառը..."></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2">
