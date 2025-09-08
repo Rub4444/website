@@ -83,18 +83,10 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
 
             Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
             Route::post('/wishlist/toggle/{sku}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-            //TellCell
-            Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
-            Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
-            Route::get('/payment/pay', [PaymentController::class, 'pay']);
-            Route::post('/payment/callback', [PaymentController::class, 'callback'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->name('payment.callback');
-            Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
 
             Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
             Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
             Route::get('/profile/view', [ProfileController::class, 'index'])->name('profile.index');
-
-
         });
 
         Route::post('/email/verification-notification', function (Request $request)
@@ -125,6 +117,13 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
             Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
         });
+
+        //TellCell
+        Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
+        Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
+        Route::get('/payment/pay', [PaymentController::class, 'pay']);
+        Route::post('/payment/callback', [PaymentController::class, 'callback'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->name('payment.callback');
+        Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
 
         // Route::get('/test-telcell-refund', function() {
         //     // $order = App\Models\Order::first();
