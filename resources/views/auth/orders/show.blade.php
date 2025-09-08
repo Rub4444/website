@@ -62,7 +62,7 @@
                         <p><strong>Հաճախորդ՝</strong> {{ $order->name }}</p>
                         <p><strong>Հեռախոսահամար՝</strong> {{ $order->phone }}</p>
                         {{-- Статус заказа --}}
-                        <p class="text-center mb-4">
+                        <p>
                             <strong>Կարգավիճակ՝</strong>
                             <span class="badge
                                 {{ $order->status == 1 ? 'bg-warning' : ($order->status == 2 ? 'bg-success' : 'bg-danger') }} fs-6">
