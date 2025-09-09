@@ -5,7 +5,7 @@
     @if($skus->count())
         <!-- Заголовок поиска -->
         <div class="mb-4">
-            <p class="text-muted">{{ __('main.search_result') }} <<{{ $query }}>> {{ $skus->count() }}</p>
+            <p class="text-muted">@lang('main.search_result') <<{{ $query }}>> ({{ $skus->count() }})</p>
         </div>
         <!-- Сетка карточек -->
         <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
