@@ -33,7 +33,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return view('auth.categories.categories.show', compact('category'));
+        return view('auth.categories.show', compact('category'));
     }
 
     /**
@@ -58,7 +58,7 @@ public function store(CategoryRequest $request)
 
     Category::create($params);
 
-    return redirect()->route('auth.categories.index')
+    return redirect()->route('categories.index')
         ->with('success', 'Категория создана успешно!');
 }
 
@@ -87,7 +87,7 @@ public function store(CategoryRequest $request)
 
     $category->update($params);
 
-    return redirect()->route('auth.categories.index')
+    return redirect()->route('categories.index')
         ->with('success', 'Категория обновлена успешно!');
 }
 
@@ -108,7 +108,7 @@ public function store(CategoryRequest $request)
 
     $category->delete();
 
-    return redirect()->route('auth.categories.index')
+    return redirect()->route('categories.index')
         ->with('success', 'Категория удалена успешно!');
 }
 
