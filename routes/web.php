@@ -49,8 +49,6 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         ->middleware('auth')
         ->name('logout');
 
-    Route::get('/search', [SkuController::class, 'search'])->name('products.search');
-
     Route::middleware(['set_locale'])->group(function()
     {
         Route::middleware(['auth'])->group(function ()
@@ -118,6 +116,9 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             Route::post('/basket/place', [BasketController::class, 'basketConfirm'])->name('basket-confirm');
             Route::post('coupon', [BasketController::class, 'setCoupon'])->name('set-coupon');
         });
+
+        Route::get('/search', [SkuController::class, 'search'])->name('products.search');
+
 
         //TellCell
         Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
