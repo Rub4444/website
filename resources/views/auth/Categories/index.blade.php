@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Կատեգորիաներ</h2>
-        <a href="{{ route('admin.categories.create') }}" class="btn btn-success">
+        <a href="{{ route('categories.create') }}" class="btn btn-success">
             <i class="fas fa-plus me-1 text-white"></i> Ավելացնել կատեգորիա
         </a>
     </div>
@@ -29,13 +29,13 @@
                             <td>{{ $category->name }}</td>
                             <td class="text-end">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.categories.show', $category) }}" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" title="Դիտել">
+                                    <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" title="Դիտել">
                                         <i class="fas fa-eye text-white"></i>
                                     </a>
-                                    <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-outline-warning btn-sm" data-bs-toggle="tooltip" title="Խմբագրել">
+                                    <a href="{{ route('categories.edit', $category) }}" class="btn btn-outline-warning btn-sm" data-bs-toggle="tooltip" title="Խմբագրել">
                                         <i class="fas fa-edit text-white"></i>
                                     </a>
-                                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Վստա՞հ եք, որ ցանկանում եք հեռացնել։')">
+                                    <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Վստա՞հ եք, որ ցանկանում եք հեռացնել։')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="Ջնջել">

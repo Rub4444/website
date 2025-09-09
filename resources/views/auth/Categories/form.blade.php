@@ -17,9 +17,9 @@
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data"
                         @isset($category)
-                            action="{{ route('admin.categories.update', $category) }}"
+                            action="{{ route('categories.update', $category) }}"
                         @else
-                            action="{{ route('admin.categories.store') }}"
+                            action="{{ route('categories.store') }}"
                         @endisset
                     >
                         @csrf
