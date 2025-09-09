@@ -60,7 +60,8 @@ class OrderController extends Controller
 
         // Отправка email
         $email = $order->user->email ?? $order->email;
-        if ($email) {
+        if ($email)
+        {
             Mail::to($email)->send(new OrderCancelled($order, $request->cancellation_comment));
         }
 

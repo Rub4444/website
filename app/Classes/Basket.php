@@ -96,7 +96,7 @@ class Basket
         }
 
         // 3️⃣ Отправка уведомлений
-        Mail::to($email)->send(new OrderCreated($name, $order));
+        // Mail::to($email)->send(new OrderCreated($name, $order));
         Mail::to("isahakyan06@gmail.com")->send(new OrderCreated($name, $order));
 
         // 4️⃣ Очищаем сессию

@@ -266,12 +266,12 @@ protected function processPayment(Request $request)
     $status  = $request->query('status'); // получаем success/fail из URL
 
     if (!$orderId) {
-        return redirect('/')->with('error', 'Не указан номер заказа.');
+        return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
     }
 
     $order = Order::find($orderId);
     if (!$order) {
-        return redirect('/')->with('error', 'Заказ не найден.');
+        return redirect('/')->with('error', 'Պատվերը չի գտնվել');
     }
 
     // Можем дополнительно обновить статус в базе, если хотим
@@ -294,7 +294,7 @@ protected function processPayment(Request $request)
 
         if (!$order->isStatus(Order::STATUS_PAID))
         {
-            return redirect()->route('home')->with('warning', 'Платёж обрабатывается.');
+            return redirect()->route('home')->with('warning', 'Վճարումը ընթացքի մեջ է');
         }
 
         return view('orders.success', compact('order'));
