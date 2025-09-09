@@ -2,12 +2,11 @@
 
 @section('content')
 <div class="container py-4">
-    <!-- Заголовок поиска -->
-    <div class="text-center mb-4">
-        <p class="text-muted">{{ $skus->count() }} {{ __('basket.product') }}</p>
-    </div>
-
     @if($skus->count())
+        <!-- Заголовок поиска -->
+        <div class="mb-4">
+            <p class="text-muted">{{ __('main.search_result') }} <<{{ $query }}>> {{ $skus->count() }}</p>
+        </div>
         <!-- Сетка карточек -->
         <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
             @foreach($skus as $sku)
@@ -33,9 +32,6 @@
                 </svg>
                 <h4 class="fw-bold mb-2" style="color: #856404;">@lang('main.no_products_found')</h4>
                 <p class="text-muted">@lang('main.sorry_but_we_cant_find')</p>
-                <a href="{{ route('shop') }}" class="btn btn-primary mt-2 rounded-pill">
-                    ⬅ {{ __('main.back_to_shop') }}
-                </a>
             </div>
         </div>
     @endif

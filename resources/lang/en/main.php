@@ -118,4 +118,5 @@ return [
     'new_skus' => 'New products',
     'it_may_be_interest' => 'It might be interesting',
     'payment_methods' => 'We accept payment',
+    'search_result' => 'Search results for the query'
 ];
