@@ -47,57 +47,69 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoryRequest $request)
-    {
+public function store(CategoryRequest $request)
+{
+    $params = $request->all();
 
-        $params = $request->all();
-        unset($params['image']);
-        if($request->has('image'))
-        {
-            $path = $request->file('image')->store('categories', 'public');
-            $params['image'] = $path;
-        }
-
-        Category::create($params);
-        return redirect()->route('auth.Categories.index');
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('categories', 'public');
+        $params['image'] = $path;
     }
+
+    Category::create($params);
+
+    return redirect()->route('auth.Categories.index')
+        ->with('success', 'Категория создана успешно!');
+}
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(CategoryRequest $request, Category $category)
-    {
-        // Проверяем, если старое изображение существует, удаляем его
-        if ($category->image)
-        {
-            $filePath = public_path('storage/' . $category->image); // Путь к файлу
-            if (file_exists($filePath))
-            {
-                unlink($filePath); // Удаляем файл
+{
+    $params = $request->all();
+
+    // Если загружено новое изображение
+    if ($request->hasFile('image')) {
+        // Удаляем старое изображение, если есть
+        if ($category->image) {
+            $filePath = public_path('storage/' . $category->image);
+            if (file_exists($filePath)) {
+                unlink($filePath);
             }
         }
 
-        // Проверяем, если файл загружен, сохраняем его
-        $params = $request->all();
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('categories', 'public'); // Сохраняем новый файл
-            $params['image'] = $path; // Обновляем путь к изображению
-        }
-
-        // Обновляем данные категории
-        $category->update($params);
-        $AllCategories = Category::paginate(30);
-        // Перенаправляем обратно в список категорий
-        return redirect()->route('auth.Categories.index', compact('AllCategories'));
+        // Сохраняем новое
+        $path = $request->file('image')->store('categories', 'public');
+        $params['image'] = $path;
     }
+
+    $category->update($params);
+
+    return redirect()->route('auth.Categories.index')
+        ->with('success', 'Категория обновлена успешно!');
+}
+
 
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Category $category)
-    {
-        $category->delete();
-        return redirect()->route('auth.Categories.index');
+{
+    // Удаляем изображение из хранилища
+    if ($category->image) {
+        $filePath = public_path('storage/' . $category->image);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
     }
+
+    $category->delete();
+
+    return redirect()->route('auth.Categories.index')
+        ->with('success', 'Категория удалена успешно!');
+}
+
 }
