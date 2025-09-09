@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         $AllCategories = Category::paginate(30);
-        return view('auth.Categories.index', compact('AllCategories'));
+        return view('categories.index', compact('AllCategories'));
     }
 
 
@@ -25,7 +25,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('auth.Categories.form');
+        return view('categories.form');
     }
 
     /**
@@ -33,7 +33,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return view('auth.Categories.show', compact('category'));
+        return view('categories.show', compact('category'));
     }
 
     /**
@@ -41,7 +41,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('auth.Categories.form', compact('category'));
+        return view('categories.form', compact('category'));
     }
 
     /**
@@ -58,7 +58,7 @@ public function store(CategoryRequest $request)
 
     Category::create($params);
 
-    return redirect()->route('auth.Categories.index')
+    return redirect()->route('categories.index')
         ->with('success', 'Категория создана успешно!');
 }
 
@@ -87,7 +87,7 @@ public function store(CategoryRequest $request)
 
     $category->update($params);
 
-    return redirect()->route('auth.Categories.index')
+    return redirect()->route('categories.index')
         ->with('success', 'Категория обновлена успешно!');
 }
 
@@ -108,7 +108,7 @@ public function store(CategoryRequest $request)
 
     $category->delete();
 
-    return redirect()->route('auth.Categories.index')
+    return redirect()->route('categories.index')
         ->with('success', 'Категория удалена успешно!');
 }
 
