@@ -57,7 +57,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary mt-3">
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary mt-3">
                         <i class="bi bi-arrow-left"></i> Վերադառնալ
                     </a>
                 </div>
