@@ -25,7 +25,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('auth.categories.form');
+        return view('auth.Categories.form');
     }
 
     /**
@@ -33,7 +33,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return view('auth.categories.show', compact('category'));
+        return view('auth.Categories.show', compact('category'));
     }
 
     /**
@@ -41,7 +41,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('auth.categories.form', compact('category'));
+        return view('auth.Categories.form', compact('category'));
     }
 
     /**
