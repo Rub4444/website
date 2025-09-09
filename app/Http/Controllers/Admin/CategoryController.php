@@ -29,6 +29,22 @@ class CategoryController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(Category $category)
+    {
+        return view('auth.Categories.show', compact('category'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Category $category)
+    {
+        return view('auth.Categories.form', compact('category'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(CategoryRequest $request)
@@ -44,22 +60,6 @@ class CategoryController extends Controller
 
         Category::create($params);
         return redirect()->route('auth.Categories.index');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        return view('auth.Categories.show', compact('category'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
-    {
-        return view('auth.Categories.form', compact('category'));
     }
 
     /**
@@ -86,9 +86,9 @@ class CategoryController extends Controller
 
         // Обновляем данные категории
         $category->update($params);
-
+        $AllCategories = Category::paginate(30);
         // Перенаправляем обратно в список категорий
-        return redirect()->route('auth.Categories.index');
+        return redirect()->route('auth.Categories.index', compact('AllCategories'));
     }
 
 
