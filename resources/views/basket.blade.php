@@ -62,7 +62,7 @@
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-2">+</button>
                                 </form>
                             </div>
-                            <span>{{ $sku->product->unit === 'kg' ? @lang('order.kg') : @lang('order.piece') }}</span>
+                            <span>{{ $sku->product->unit === 'kg' ? __('order.kg') : __('order.piece') }}</span>
                         </td>
 
                         <!-- Цена -->
