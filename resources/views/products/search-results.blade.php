@@ -4,10 +4,7 @@
 <div class="container py-4">
     <!-- Заголовок поиска -->
     <div class="text-center mb-4">
-        <h1 class="fw-bold text-dark">
-            🔍 {{ __('main.search_results_for') }} "<span class="text-primary">{{ $query }}</span>"
-        </h1>
-        <p class="text-muted">{{ $skus->count() }} {{ __('main.products_found') }}</p>
+        <p class="text-muted">{{ $skus->count() }} {{ __('basket.product') }}</p>
     </div>
 
     @if($skus->count())
