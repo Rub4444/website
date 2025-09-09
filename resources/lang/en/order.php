@@ -13,5 +13,7 @@ return [
     'title' => 'Payment Failed',
     'reason' => 'Reason',
     'try_again' => 'Try Again',
-
+    'kg' => 'Kg',
+    'piece' => 'Piece',
 ];
+
