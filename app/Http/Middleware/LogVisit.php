@@ -18,6 +18,11 @@ class LogVisit
             return $next($request);
         }
 
+        // 🚫 Исключаем твой IP
+        if ($ip === '62.89.31.41') {
+            return $next($request);
+        }
+
         // 🚫 Исключаем ботов
         $botPatterns = [
             'bot', 'crawl', 'slurp', 'spider', 'bingpreview', 'yandex',
@@ -27,6 +32,11 @@ class LogVisit
             if (stripos($userAgent, $pattern) !== false) {
                 return $next($request);
             }
+        }
+
+         // 🚫 Исключаем админ-пути
+        if (str_starts_with($path, 'admin')) {
+            return $next($request);
         }
 
         // Определяем устройство
