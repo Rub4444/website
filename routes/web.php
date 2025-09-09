@@ -4,7 +4,6 @@ use App\Http\Controllers\BasketController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ResetController;
 use App\Http\Controllers\Admin\SkuController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -46,7 +45,9 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
 
     Route::get('/currency/{currencyCode}', [MainController::class, 'changeCurrency'])->name('currency');
 
-    Route::get('/logout', [LoginController::class, 'logout'])->name('get-logout')->middleware('auth');
+    Route::post('/logout', [LoginController::class, 'logout'])
+        ->middleware('auth')
+        ->name('logout');
 
     Route::get('/search', [SkuController::class, 'search'])->name('products.search');
 
@@ -122,7 +123,10 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
         Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
         Route::get('/payment/pay', [PaymentController::class, 'pay']);
-        Route::post('/payment/callback', [PaymentController::class, 'callback'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->name('payment.callback');
+        Route::post('/payment/callback', [PaymentController::class, 'callback'])
+        ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+        ->middleware('throttle:30,1') // 30 запросов в минуту
+        ->name('payment.callback');
         Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
 
         // Route::get('/test-telcell-refund', function() {
@@ -194,9 +198,6 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         //     $controller = app(\App\Http\Controllers\PaymentController::class);
         //     return $controller->callback($request);
         // });
-
-
-        Route::get('/reset', [ResetController::class, 'reset'])->name('reset');
 
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
