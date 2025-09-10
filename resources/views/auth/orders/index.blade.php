@@ -19,6 +19,18 @@
                     <div class="account__wrapper">
                         <div class="account__content">
                             <div class="account__table--area">
+                                <div class="mb-3">
+                                    @if($showAll)
+                                        <a href="{{ route('home') }}" class="btn btn-secondary">
+                                            @lang('order.show_recent_orders')
+                                        </a>
+                                    @else
+                                        <a href="{{ route('home', ['show_all' => 1]) }}" class="btn btn-primary">
+                                            @lang('order.show_all_orders')
+                                        </a>
+                                    @endif
+                                </div>
+
                                 <table class="account__table">
                                     <thead class="account__table--header">
                                         <tr class="account__table--header__child">

@@ -10,9 +10,10 @@
     <p class="text-gray-600 mb-6">
         Մենք արդեն աշխատում ենք լուծման վրա։ Խնդրում ենք փորձել ավելի ուշ:
     </p>
-    <a href="{{ url('/') }}"
-       class="px-6 py-3 text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700">
-        Վերադառնալ Գլխավոր էջ
-    </a>
+    <p>
+        <a href="{{ url('/') }}">
+            Վերադառնալ Գլխավոր էջ
+        </a>
+    </p>
 </div>
 @endsection

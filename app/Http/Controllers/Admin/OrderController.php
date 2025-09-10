@@ -11,13 +11,31 @@ use App\Classes\Basket;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::where('status', '!=', 0)
-                        ->orderBy('created_at', 'desc') // <-- добавлено
-                        ->paginate(10);
-        return view('auth.orders.index', compact('orders'));
+        $showAll = $request->query('show_all', false); // параметр переключателя
+
+        if ($showAll)
+        {
+            $orders = Order::where('status', '!=', 0)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+        }
+        else
+        {
+            $threeDaysAgo = now()->subDays(3);
+            $orders = Order::where('status', '!=', 0)
+                ->where('created_at', '>=', $threeDaysAgo)
+                ->orderBy('created_at', 'desc')
+                ->paginate(10)
+                ->withQueryString();
+        }
+
+
+        return view('auth.orders.index', compact('orders', 'showAll'));
     }
+
 
     public function show(Order $order)
     {

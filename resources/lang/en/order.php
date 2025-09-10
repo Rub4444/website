@@ -15,5 +15,7 @@ return [
     'try_again' => 'Try Again',
     'kg' => 'Kg',
     'piece' => 'Piece',
+    'show_recent_orders' => 'Show recent orders',
+    'show_all_orders' => 'Show all orders',
 ];
 
