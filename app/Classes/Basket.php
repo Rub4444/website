@@ -27,6 +27,8 @@ class Basket
             $data['currency_id'] = 1;
             $this->order = new Order($data);
             session(['order' => $this->order]);
+            // 👇 Добавляем пакет один раз при создании новой корзины
+            $this->addPackageSku();
         }
         else
         {
@@ -159,9 +161,23 @@ public function removeSku(Sku $sku, $quantity = null)
     {
         $this->order->coupon()->dissociate();
     }
+
     public function setUserId($userId)
-{
-    $this->order->user_id = $userId;
-}
+    {
+        $this->order->user_id = $userId;
+    }
+
+    protected function addPackageSku()
+    {
+        // ID пакета лучше вынести в .env или config
+        $packageSkuId = config('app.package_sku_id');
+
+        $sku = Sku::find($packageSkuId);
+
+        if ($sku)
+        {
+            $this->addSku($sku, 1); // добавляем 1 пакет
+        }
+    }
 
 }
