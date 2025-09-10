@@ -137,9 +137,11 @@ class SkuController extends Controller
                 $q->where('name', 'like', '%' . $query . '%');
             })
             ->orWhere('name', 'like', '%' . $query . '%')
-            ->paginate(20); // 👈 пагинация на 20 элементов
+            ->paginate(20)
+            ->appends(['query' => $query]); // 👈 сохраняем параметр в ссылках пагинации
 
         return view('products.search-results', compact('skus', 'query'));
     }
+
 
 }
