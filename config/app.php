@@ -125,7 +125,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'package_sku_id' => env('PACKAGE_SKU_ID', 123),
+    'package_sku_id' => env('PACKAGE_SKU_ID', 1370),
 
     App\Providers\AppServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
