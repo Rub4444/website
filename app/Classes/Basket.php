@@ -80,6 +80,8 @@ class Basket
 
         $order = $this->order;
 
+        unset($order->skus);
+
         $order->name = $name;
         $order->phone = $phone;
         $order->email = $email;
@@ -103,8 +105,8 @@ class Basket
 
         Mail::to($email)->send(new OrderCreated($name, $order));
 
-        // session(['order_id' => $order->id]);
-        session()->forget('order');
+        session(['order_id' => $order->id]);
+        // session()->forget('order');
         return true;
     }
 
