@@ -167,40 +167,6 @@ public function getTotalForPayment(): int
         session()->forget('order');
         return true;
     }
-    // public function saveOrder($name, $phone, $email, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
-    // {
-    //     $this->name = $name;
-    //     $this->phone = $phone;
-    //     $this->email = $email;
-    //     $this->delivery_type = $deliveryType;
-    //     $this->delivery_city = $delivery_city;
-    //     $this->delivery_street = $delivery_street;
-    //     $this->delivery_home = $delivery_home;
-    //     $this->status = 1;
-
-    //     $this->sum = $this->getFullSum();
-
-    //     if ($this->delivery_type === 'delivery')
-    //     {
-    //         if($this->sum < 10000)
-    //         {
-    //             $this->sum += 500;
-    //         }
-    //     }
-
-    //     // $skus = $this->skus;
-    //     // $this->save();
-
-    //     // foreach ($skus as $skuInOrder) {
-    //     //     $this->skus()->attach($skuInOrder, [
-    //     //         'count' => $skuInOrder->countInOrder,
-    //     //         'price' => $skuInOrder->price,
-    //     //     ]);
-    //     // }
-
-    //     session()->forget('order');
-    //     return true;
-    // }
 
     public function hasCoupon()
     {

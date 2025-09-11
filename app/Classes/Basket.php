@@ -69,15 +69,10 @@ class Basket
 
     public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
-        if (!$this->countAvailable(true))
-        {
-            return false;
-        }
+        if (!$this->countAvailable(true)) return false;
 
         $order = $this->order;
 
-
-        // 1️⃣ Сохраняем заказ
         $order->name = $name;
         $order->phone = $phone;
         $order->email = $email;
@@ -87,26 +82,22 @@ class Basket
         $order->delivery_home = $delivery_home;
         $order->status = 1;
         $order->sum = $order->getFullSum();
-        $order->save(); // <- теперь заказ точно сохраняется в базе
+        $order->save(); // Сохраняем сам заказ
 
-        // 2️⃣ Привязываем товары через pivot
-        foreach ($order->skus as $sku) {
-            $order->skus()->attach($sku, [
+        // Привязываем товары через pivot
+        foreach ($this->order->skus as $sku) {
+            $order->skus()->attach($sku->id, [
                 'count' => $sku->countInOrder,
                 'price' => $sku->price,
             ]);
         }
 
-        // 3️⃣ Отправка уведомлений
-        // Mail::to($email)->send(new OrderCreated($name, $order));
-        Mail::to("isahakyan06@gmail.com")->send(new OrderCreated($name, $order));
+        Mail::to($email)->send(new OrderCreated($name, $order));
 
-        // 4️⃣ Очищаем сессию
-        // session()->forget('order');
-        session(['order_id' => $order->id]); // сохраняем только ID
-
+        session(['order_id' => $order->id]);
         return true;
     }
+
 
 
 public function removeSku(Sku $sku, $quantity = null)
