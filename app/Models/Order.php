@@ -156,7 +156,9 @@ public function getTotalForPayment(): int
         $this->status = 1;
         $this->status = self::STATUS_PENDING;
 
+        $skus = $this->skus;
         $this->save();
+
         foreach ($skus as $sku)
         {
             $order->skus()->attach($sku->id, [
@@ -170,9 +172,6 @@ public function getTotalForPayment(): int
         {
             $this->sum += 500;
         }
-        // $skus = $this->skus;
-        $this->save();
-
 
         session()->forget('order');
         return true;
