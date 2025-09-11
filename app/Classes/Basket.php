@@ -92,7 +92,8 @@ class Basket
         $order->save(); // Сохраняем сам заказ
 
         // Привязываем товары через pivot
-        foreach ($this->order->skus as $sku)
+        // foreach ($this->order->skus as $sku)
+        foreach ($order->skus as $sku)
         {
             $order->skus()->attach($sku->id, [
                 'count' => $sku->countInOrder,
