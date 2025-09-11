@@ -103,8 +103,13 @@ class BasketController extends Controller
     }
 
     // Добавление товара в корзину
-    public function basketAdd(Request $request, Sku $sku)
+    public function basketAdd(Request $request, Sku $sku = null)
     {
+        if (!$sku) {
+            session()->flash('warning', __('basket.product_not_found'));
+            return redirect()->route('basket');
+        }
+
         $quantity = $request->input('quantity', $sku->unit === 'kg' ? 0.5 : 1);
         $basket = new Basket(true);
         $basket->addSku($sku, $quantity);
@@ -113,13 +118,18 @@ class BasketController extends Controller
     }
 
     // Удаление товара из корзины
-    public function basketRemove(Request $request, Sku $sku)
+    public function basketRemove(Request $request, Sku $sku = null)
     {
+        if (!$sku) {
+            session()->flash('warning', __('basket.product_not_found'));
+            return redirect()->route('basket');
+        }
+
         $quantity = $request->input('quantity', $sku->unit === 'kg' ? 0.1 : 1);
         $basket = new Basket();
         $basket->removeSku($sku, $quantity);
 
-        session()->flash('warning', '"' . $sku->product->__('name') . '"' . __('basket.deleted_from_cart'));
+        session()->flash('warning','"' . ($sku->product->__('name') ?? 'Unknown') . '"' . __('basket.deleted_from_cart'));
         return redirect()->route('basket');
     }
 
