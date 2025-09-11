@@ -155,14 +155,18 @@ public function getTotalForPayment(): int
         $this->delivery_home = $delivery_home;
         $this->status = 1;
         $this->status = self::STATUS_PENDING;
+
+        $this->save();
+
         $this->sum = max(0, $this->getFullSum());    // Защита от отрицательной суммы из-за купонов
 
         if ($this->delivery_type === 'delivery' && $this->sum < 10000)
         {
             $this->sum += 500;
         }
-        $skus = $this->skus;
+        // $skus = $this->skus;
         $this->save();
+
 
         session()->forget('order');
         return true;
