@@ -7,29 +7,31 @@ use App\Models\Sku;
 use App\Models\Coupon;
 use App\Http\Requests\AddCouponRequest;
 use Illuminate\Http\Request;
-use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use App\Classes\Basket;
 use App\Models\Category;
 use App\Services\TelcellService;
 
-
 class BasketController extends Controller
 {
+    // Просмотр корзины
     public function basket()
     {
-        $order = (new Basket())->getOrder();
+        $basket = new Basket();
         $categories = Category::all();
-        return view('basket', compact('order', 'categories'));
+        $order = $basket->getOrder();
+        $skus = $basket->getSkus();
+
+        return view('basket', compact('order', 'skus', 'categories'));
     }
 
+    // Подтверждение заказа
     public function basketConfirm(Request $request, TelcellService $telcell)
     {
         $basket = new Basket();
 
-        if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
-        {
+        // Проверка купона
+        if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse()) {
             $basket->clearCoupon();
             session()->flash('warning', __('basket.coupon_is_not_available'));
             return redirect()->route('basket');
@@ -47,13 +49,6 @@ class BasketController extends Controller
             $request->delivery_home
         );
 
-        if ($order === true)
-        {
-            $order = \App\Models\Order::latest()->first();
-        }
-        // \Log::info('ORDER ID:', ['order_id' => $order->id]);
-
-
         if (!$order) {
             session()->flash('warning', __('basket.product_is_not_available'));
             return redirect()->route('basket');
@@ -61,138 +56,112 @@ class BasketController extends Controller
 
         session()->flash('success', __('basket.your_order_confirmed'));
 
-
         // Создаем счёт через Telcell
         $buyer = $request->phone ?: $email;
         $description = "Оплата заказа #{$order->id}";
-        // $issuerId = (string)$order->id;
+        $invoiceHtml = $telcell->createInvoiceHtml($buyer, $order->sum, $order->id);
 
-        $result = $telcell->createInvoice(
-            $buyer,         // string
-            $order->sum,    // float
-            $order->id,     // int — ID заказа
-            1,              // valid_days
-            $description    // строка описания (опционально)
-        );
-        $invoiceHtml = $telcell->createInvoiceHtml(
-            $buyer,
-            $order->sum,
-            $order->id
-        );
-
-        // if (isset($result['invoice']))
-        // {
-        //     // Редирект на страницу оплаты Telcell
-        //     $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
-        //     return redirect()->away($paymentUrl);
-        // }
-
-        // session()->flash('warning', 'Ошибка при создании платежа Telcell.');
         return response($invoiceHtml);
-
-        // return redirect()->route('index');
     }
 
+    // Очистка корзины
     public function basketClear()
     {
         $basket = new Basket();
-        // Можно создать метод clear() в Basket, который сбросит session('order')
-        session()->forget('order');
+        $basket->clearBasket();
 
         session()->flash('success', __('basket.basket_cleared'));
         return redirect()->route('basket');
     }
 
-
+    // Страница оформления заказа
     public function basketPlace()
     {
         $basket = new Basket();
-        $order = $basket->getOrder();
-        if(!$basket->countAvailable())
-        {
+        if (!$basket->countAvailable()) {
             session()->flash('warning', __('basket.product_is_not_available'));
             return redirect()->route('basket');
         }
+
+        $order = $basket->getOrder();
+        $skus = $basket->getSkus();
         $categories = Category::all();
-        return view('order', compact('order', 'categories'));
+
+        return view('order', compact('order', 'skus', 'categories'));
     }
 
+    // Платеж через Telcell
     public function payWithTelcell($orderId)
     {
         $order = Order::findOrFail($orderId);
+        $buyer = $order->buyer ?? $order->phone;
+        $sum = $order->sum;
 
-        $buyer = $order->buyer; // телефон покупателя
-        $sum = $order->total;   // сумма заказа
-
-        // Генерируем HTML форму Telcell
         $formHtml = app(TelcellService::class)->createInvoiceHtml($buyer, $sum, $orderId);
 
-        // Возвращаем view, которая сразу отправляет форму
         return response()->view('telcell.autopost', ['formHtml' => $formHtml]);
     }
 
+    // Добавление товара в корзину
+    public function basketAdd(Request $request, Sku $sku)
+    {
+        $quantity = $request->input('quantity', $sku->unit === 'kg' ? 0.5 : 1);
+        $basket = new Basket(true);
+        $basket->addSku($sku, $quantity);
 
-    public function basketAdd(Request $request, Sku $skus)
-{
-    $quantity = $request->input('quantity', $skus->unit === 'kg' ? 0.5 : 1);
+        return redirect()->route('basket');
+    }
 
-    $result = (new Basket(true))->addSku($skus, $quantity);
+    // Удаление товара из корзины
+    public function basketRemove(Request $request, Sku $sku)
+    {
+        $quantity = $request->input('quantity', $sku->unit === 'kg' ? 0.1 : 1);
+        $basket = new Basket();
+        $basket->removeSku($sku, $quantity);
 
-    // if($result)
-    // {
-    //     session()->flash(
-    //         'success',
-    //         __('basket.Product') . ' "' . $skus->product->__('name') . '" ' . __('basket.added_to_cart')
-    //     );
-    // }
-    // else
-    // {
-    //     session()->flash('warning', __('basket.Product') . '"' . $skus->product->__('name') . '" '. __('basket.not_added_to_cart'));
-    // }
+        session()->flash('warning', '"' . $sku->product->__('name') . '"' . __('basket.deleted_from_cart'));
+        return redirect()->route('basket');
+    }
 
-    return redirect()->route('basket');
-}
-
-
-    public function basketRemove(Request $request, Sku $skus)
-{
-    $quantity = $request->input('quantity', $skus->unit === 'kg' ? 0.1 : 1);
-
-    (new Basket())->removeSku($skus, $quantity);
-
-    session()->flash('warning','"' . $skus->product->__('name') . '"' . __('basket.deleted_from_cart'));
-    return redirect()->route('basket');
-}
-
+    // Применение купона
     public function setCoupon(AddCouponRequest $request)
     {
         $coupon = Coupon::where('code', $request->coupon)->first();
-        if($coupon->availableForUse())
-        {
-            (new Basket())->setCoupon($coupon);
+        $basket = new Basket();
+
+        if ($coupon && $coupon->availableForUse()) {
+            $basket->setCoupon($coupon);
             session()->flash('success', __('basket.coupon_added_to_the_order'));
+        } else {
+            session()->flash('warning', __('basket.coupon_cannot_be_used'));
         }
-        else
-        {
-             session()->flash('warning', __('basket.coupon_cannot_be_used'));
-        }
+
         return redirect()->route('basket');
     }
+
+    // Обновление количества товара через AJAX
     public function update(Request $request, Sku $sku)
-{
-    $request->validate([
-        'quantity' => 'required|numeric|min:0',
-    ]);
+    {
+        $request->validate([
+            'quantity' => 'required|numeric|min:0',
+        ]);
 
-    $quantity = $request->input('quantity');
+        $quantity = $request->input('quantity');
+        $basket = new Basket();
 
-    if ($quantity == 0) {
-        $this->basket->remove($sku);
-    } else {
-        $this->basket->update($sku, $quantity);
+        if ($quantity == 0) {
+            $basket->removeSku($sku);
+        } else {
+            // Устанавливаем точное количество
+            $current = $basket->getSkus()->firstWhere('id', $sku->id);
+            if ($current) {
+                $current->countInOrder = $quantity;
+                session(['basket_skus' => $basket->getSkus()]);
+            } else {
+                $basket->addSku($sku, $quantity);
+            }
+        }
+
+        return response()->json(['success' => true]);
     }
-
-    return response()->json(['success' => true]);
-}
-
 }
