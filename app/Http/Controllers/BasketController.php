@@ -54,7 +54,8 @@ class BasketController extends Controller
         // \Log::info('ORDER ID:', ['order_id' => $order->id]);
 
 
-        if (!$order) {
+        if (!$order)
+        {
             session()->flash('warning', __('basket.product_is_not_available'));
             return redirect()->route('basket');
         }

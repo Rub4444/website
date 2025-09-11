@@ -19,14 +19,21 @@ class Basket
     {
         $order = session('order');
 
-        if (is_null($order) && $createOrder) {
+        if (is_null($order) && $createOrder)
+        {
             $data = [];
-            if (Auth::check()) {
+
+            if (Auth::check())
+            {
                 $data['user_id'] = Auth::id();
             }
+
             $data['currency_id'] = 1;
+
             $this->order = new Order($data);
+
             session(['order' => $this->order]);
+
             // 👇 Добавляем пакет один раз при создании новой корзины
             $this->addPackageSku();
         }
@@ -85,7 +92,8 @@ class Basket
         $order->save(); // Сохраняем сам заказ
 
         // Привязываем товары через pivot
-        foreach ($this->order->skus as $sku) {
+        foreach ($this->order->skus as $sku)
+        {
             $order->skus()->attach($sku->id, [
                 'count' => $sku->countInOrder,
                 'price' => $sku->price,
@@ -124,17 +132,25 @@ public function removeSku(Sku $sku, $quantity = null)
     $unit = $sku->product->unit; // берём unit у продукта
     $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1шт
 
-    if ($this->order->skus->contains($sku)) {
+    if ($this->order->skus->contains($sku))
+    {
         $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+
         // Проверяем, чтобы не превышать доступный count для шт
-        if ($unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count) {
+        if ($unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count)
+        {
             return false;
         }
+
         $pivotRow->countInOrder += $quantity;
-    } else {
-        if ($unit === 'pcs' && $quantity > $sku->count) {
+    }
+    else
+    {
+        if ($unit === 'pcs' && $quantity > $sku->count)
+        {
             return false;
         }
+
         $sku->countInOrder = $quantity;
         $sku->unit = $unit; // сохраняем единицу для корзины
         $this->order->skus->push($sku);

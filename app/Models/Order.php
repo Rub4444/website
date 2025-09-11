@@ -158,7 +158,8 @@ public function getTotalForPayment(): int
         // Защита от отрицательной суммы из-за купонов
         $this->sum = max(0, $this->getFullSum());
 
-        if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
+        if ($this->delivery_type === 'delivery' && $this->sum < 10000)
+        {
             $this->sum += 500;
         }
 
