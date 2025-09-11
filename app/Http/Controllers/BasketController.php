@@ -60,9 +60,6 @@ class BasketController extends Controller
             return redirect()->route('basket');
         }
 
-        session()->flash('success', __('basket.your_order_confirmed'));
-
-
         // Создаем счёт через Telcell
         $buyer = $request->phone ?: $email;
         $description = "Оплата заказа #{$order->id}";
@@ -80,6 +77,8 @@ class BasketController extends Controller
             $order->sum,
             $order->id
         );
+
+        session()->flash('success', __('basket.your_order_confirmed'));
 
         // if (isset($result['invoice']))
         // {

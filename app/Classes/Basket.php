@@ -77,37 +77,38 @@ class Basket
     public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
         if (!$this->countAvailable(true)) return false;
+        $this->order->saveOrder($name, $phone, $email, $deliveryType, $delivery_city, $delivery_street, $delivery_home);
 
-        $order = $this->order;
+        // $order = $this->order;
 
         //Skus Insert INto
         // unset($order->skus);
 
-        $order->name = $name;
-        $order->phone = $phone;
-        $order->email = $email;
-        $order->delivery_type = $deliveryType;
-        $order->delivery_city = $delivery_city;
-        $order->delivery_street = $delivery_street;
-        $order->delivery_home = $delivery_home;
-        $order->status = 1;
-        $order->sum = $order->getFullSum();
-        $order->save(); // Сохраняем сам заказ
+        // $order->name = $name;
+        // $order->phone = $phone;
+        // $order->email = $email;
+        // $order->delivery_type = $deliveryType;
+        // $order->delivery_city = $delivery_city;
+        // $order->delivery_street = $delivery_street;
+        // $order->delivery_home = $delivery_home;
+        // $order->status = 1;
+        // $order->sum = $order->getFullSum();
+        // $order->save(); // Сохраняем сам заказ
 
         // Привязываем товары через pivot
         // foreach ($this->order->skus as $sku)
-        foreach ($order->skus as $sku)
-        {
-            $order->skus()->attach($sku->id, [
-                'count' => $sku->countInOrder,
-                'price' => $sku->price,
-            ]);
-        }
+        // foreach ($order->skus as $sku)
+        // {
+        //     $order->skus()->attach($sku->id, [
+        //         'count' => $sku->countInOrder,
+        //         'price' => $sku->price,
+        //     ]);
+        // }
 
         Mail::to($email)->send(new OrderCreated($name, $order));
 
         // session(['order_id' => $order->id]);
-        session()->forget('order');
+        // session()->forget('order');
         return true;
     }
 
