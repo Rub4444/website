@@ -5,116 +5,79 @@ namespace App\Classes;
 use App\Models\Order;
 use App\Models\Sku;
 use App\Models\Coupon;
+use App\Mail\OrderCreated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\OrderCreated;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Session;
+use App\Services\sConversion;
 
 class Basket
 {
-    protected Order $order;
-    protected Collection $basketSkus;
+    protected $order;
 
     public function __construct($createOrder = false)
     {
-        $orderId = session('order_id');
-        $skus = session('basket_skus', collect());
+        $order = session('order');
 
-        $this->basketSkus = $skus;
-
-        if ($orderId) {
-            $this->order = Order::find($orderId) ?? new Order();
-        } elseif ($createOrder) {
-            $data = ['currency_id' => 1];
-            if (Auth::check()) $data['user_id'] = Auth::id();
+        if (is_null($order) && $createOrder) {
+            $data = [];
+            if (Auth::check()) {
+                $data['user_id'] = Auth::id();
+            }
+            $data['currency_id'] = 1;
             $this->order = new Order($data);
-        } else {
-            $this->order = new Order();
+            session(['order' => $this->order]);
+            // 👇 Добавляем пакет один раз при создании новой корзины
+            $this->addPackageSku();
         }
+        else
+        {
+            $this->order = $order;
+        }
+
     }
 
-    public function getOrder(): Order
+
+
+    public function getOrder()
     {
         return $this->order;
     }
 
-    public function getSkus(): Collection
+    public function countAvailable($updateCount = false)
     {
-        return $this->basketSkus;
-    }
-
-    public function addSku(Sku $sku, float|int $quantity = null): bool
-    {
-        $unit = $sku->product->unit;
-        $quantity ??= ($unit === 'kg' ? 0.5 : 1);
-
-        $existing = $this->basketSkus->firstWhere('id', $sku->id);
-
-        if ($existing) {
-            if ($unit === 'pcs' && $existing->countInOrder + $quantity > $sku->count) {
+        $skus = collect([]);
+        foreach ($this->order->skus as $orderSku)
+        {
+            $sku = Sku::find($orderSku->id);
+            if ($orderSku->countInOrder > $sku->count)
+            {
                 return false;
             }
-            $existing->countInOrder += $quantity;
-        } else {
-            if ($unit === 'pcs' && $quantity > $sku->count) return false;
-
-            $sku->countInOrder = $quantity;
-            $sku->unit = $unit;
-            $this->basketSkus->push($sku);
-        }
-
-        session(['basket_skus' => $this->basketSkus]);
-        return true;
-    }
-
-    public function removeSku(Sku $sku, float|int $quantity = null)
-    {
-        $unit = $sku->product->unit;
-        $quantity ??= ($unit === 'kg' ? 0.1 : 1);
-
-        $existing = $this->basketSkus->firstWhere('id', $sku->id);
-
-        if ($existing) {
-            $existing->countInOrder -= $quantity;
-            if ($existing->countInOrder <= 0) {
-                $this->basketSkus = $this->basketSkus->filter(fn($s) => $s->id !== $sku->id);
+            if($updateCount)
+            {
+                $sku->count -= $orderSku->countInOrder;
+                $skus->push($sku);
             }
-            session(['basket_skus' => $this->basketSkus]);
         }
-    }
-
-    public function clearBasket()
-    {
-        $this->basketSkus = collect();
-        session()->forget('basket_skus');
-    }
-
-    public function countAvailable(bool $updateCount = false): bool
-    {
-        foreach ($this->basketSkus as $sku) {
-            $dbSku = Sku::find($sku->id);
-            if ($sku->countInOrder > $dbSku->count) return false;
-
-            if ($updateCount) {
-                $dbSku->count -= $sku->countInOrder;
-                $dbSku->save();
-            }
+        if($updateCount)
+        {
+            $skus->map->save();
         }
         return true;
     }
 
-    public function saveOrder(
-        string $name,
-        string $phone,
-        string $email,
-        string $deliveryType,
-        ?string $delivery_city = null,
-        ?string $delivery_street = null,
-        ?string $delivery_home = null
-    ): Order|false {
-        if (!$this->countAvailable(true)) return false;
+    public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
+    {
+        if (!$this->countAvailable(true))
+        {
+            return false;
+        }
 
         $order = $this->order;
+
+
+        // 1️⃣ Сохраняем заказ
         $order->name = $name;
         $order->phone = $phone;
         $order->email = $email;
@@ -122,52 +85,99 @@ class Basket
         $order->delivery_city = $delivery_city;
         $order->delivery_street = $delivery_street;
         $order->delivery_home = $delivery_home;
-        $order->status = Order::STATUS_PENDING;
+        $order->status = 1;
+        $order->sum = $order->getFullSum();
+        $order->save(); // <- теперь заказ точно сохраняется в базе
 
-        $order->sum = max(0, $this->getFullSum());
-        if ($deliveryType === 'delivery' && $order->sum < 10000) {
-            $order->sum += 500;
-        }
-
-        $order->save();
-
-        // Pivot attach
-        foreach ($this->basketSkus as $sku) {
-            $order->skus()->attach($sku->id, [
+        // 2️⃣ Привязываем товары через pivot
+        foreach ($order->skus as $sku) {
+            $order->skus()->attach($sku, [
                 'count' => $sku->countInOrder,
                 'price' => $sku->price,
             ]);
         }
 
-        Mail::to($email)->send(new OrderCreated($name, $order));
+        // 3️⃣ Отправка уведомлений
+        // Mail::to($email)->send(new OrderCreated($name, $order));
+        Mail::to("isahakyan06@gmail.com")->send(new OrderCreated($name, $order));
 
-        $this->clearBasket();
-        session(['order_id' => $order->id]);
+        // 4️⃣ Очищаем сессию
+        // session()->forget('order');
+        session(['order_id' => $order->id]); // сохраняем только ID
 
-        return $order;
+        return true;
     }
 
-    public function getFullSum(): float
-    {
-        $sum = 0;
-        foreach ($this->basketSkus as $sku) {
-            $sum += $sku->price * $sku->countInOrder;
+
+public function removeSku(Sku $sku, $quantity = null)
+{
+    // Проверяем единицу измерения у продукта
+    $unit = $sku->product->unit;
+
+    $quantity = $quantity ?? ($unit === 'kg' ? 0.1 : 1);
+
+    if ($this->order->skus->contains($sku)) {
+        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+
+        $pivotRow->countInOrder -= $quantity;
+        if ($pivotRow->countInOrder <= 0) {
+            $this->order->skus = $this->order->skus->filter(fn($s) => $s->id !== $sku->id);
         }
-        if ($this->order->hasCoupon()) {
-            $sum = $this->order->coupon->applyCost($sum, $this->order->currency);
-        }
-        return $sum;
     }
+}
+
+
+
+    public function addSku(Sku $sku, $quantity = null)
+{
+    $unit = $sku->product->unit; // берём unit у продукта
+    $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1шт
+
+    if ($this->order->skus->contains($sku)) {
+        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+        // Проверяем, чтобы не превышать доступный count для шт
+        if ($unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count) {
+            return false;
+        }
+        $pivotRow->countInOrder += $quantity;
+    } else {
+        if ($unit === 'pcs' && $quantity > $sku->count) {
+            return false;
+        }
+        $sku->countInOrder = $quantity;
+        $sku->unit = $unit; // сохраняем единицу для корзины
+        $this->order->skus->push($sku);
+    }
+}
+
+
 
     public function setCoupon(Coupon $coupon)
     {
         $this->order->coupon()->associate($coupon);
-        $this->order->save();
     }
 
     public function clearCoupon()
     {
         $this->order->coupon()->dissociate();
-        $this->order->save();
     }
+
+    public function setUserId($userId)
+    {
+        $this->order->user_id = $userId;
+    }
+
+    protected function addPackageSku()
+    {
+        // ID пакета лучше вынести в .env или config
+        $packageSkuId = config('app.package_sku_id');
+
+        $sku = Sku::find($packageSkuId);
+
+        if ($sku)
+        {
+            $this->addSku($sku, 1); // добавляем 1 пакет
+        }
+    }
+
 }
