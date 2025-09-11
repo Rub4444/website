@@ -6,20 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'name', 'phone', 'email', 'status', 'cancellation_comment', 'currency_id', 'sum', 'coupon_id', 'delivery_type', 'delivery_city',
-    'delivery_street',
-    'delivery_home',
-    'invoice_id',
-    'invoice_status',
-    'issuer_id'];
+    protected $fillable = [
+        'user_id', 'name', 'phone', 'email', 'status', 'cancellation_comment',
+        'currency_id', 'sum', 'coupon_id', 'delivery_type', 'delivery_city',
+        'delivery_street', 'delivery_home', 'invoice_id', 'invoice_status', 'issuer_id'
+    ];
 
-    // Определяем константы статусов
-    public const STATUS_PENDING     = 1; // Заказ принят
-    public const STATUS_PAID        = 2; // Заказ оплачен
-    public const STATUS_CANCELLED   = 3; // Отменён
-    public const STATUS_DELIVERED   = 4; // Доставлен
-    public const STATUS_SHIPPED     = 5; // Отправлен / В пути
-    // public const STATUS_REFUNDED    = 6; // Vazvrat
+    // Статусы заказа
+    public const STATUS_PENDING   = 1;
+    public const STATUS_PAID      = 2;
+    public const STATUS_CANCELLED = 3;
+    public const STATUS_DELIVERED = 4;
+    public const STATUS_SHIPPED   = 5;
+
+    // Связи
+    public function skus()
+    {
+        return $this->belongsToMany(Sku::class, 'order_sku')
+                    ->withPivot('count', 'price')
+                    ->withTimestamps();
+    }
+
+    public function currency() { return $this->belongsTo(Currency::class); }
+    public function user() { return $this->belongsTo(User::class); }
+    public function coupon() { return $this->belongsTo(Coupon::class); }
+
+    // Проверка и изменение статуса
     public function setStatus(int $status): void
     {
         $this->status = $status;
@@ -31,74 +43,16 @@ class Order extends Model
         return $this->status === $status;
     }
 
-    /**
-     * Получить человекочитаемое название статуса
-     */
     public function getStatusName(): string
-{
-    $status = (int) $this->status;
-
-    return match($status) {       // <- здесь $status, а не $this->status
-        self::STATUS_PENDING => __('order.pending'),
-        self::STATUS_PAID => __('order.paid'),
-        self::STATUS_SHIPPED => __('order.shipped'),
-        self::STATUS_DELIVERED => __('order.delivered'),
-        self::STATUS_CANCELLED => __('order.cancelled'),
-        default => __('order.unknown'),
-    };
-}
-
-
-
-     // --- Методы для управления статусами ---
-    // public function markAsRefunded()
-    // {
-    //     $this->status = self::STATUS_REFUNDED;
-    //     $this->save();
-    // }
-    public function markAsPending(): void
     {
-        $this->update(['status' => self::STATUS_PENDING]);
-    }
-    public function markAsCancelled(): void
-    {
-        $this->update(['status' => self::STATUS_CANCELLED]);
-    }
-
-    public function markAsPaid(): void
-    {
-        $this->update(['status' => self::STATUS_PAID]);
-    }
-
-    public function markAsShipped(): void
-    {
-        $this->update(['status' => self::STATUS_SHIPPED]);
-    }
-
-    public function markAsDelivered(): void
-    {
-        $this->update(['status' => self::STATUS_DELIVERED]);
-    }
-
-    public function skus()
-    {
-        return $this->belongsToMany(Sku::class, 'order_sku')
-                    ->withPivot('count', 'price')
-                    ->withTimestamps();
-    }
-
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class);
-    }
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function coupon()
-    {
-        return $this->belongsTo(Coupon::class);
+        return match((int)$this->status) {
+            self::STATUS_PENDING   => __('order.pending'),
+            self::STATUS_PAID      => __('order.paid'),
+            self::STATUS_SHIPPED   => __('order.shipped'),
+            self::STATUS_DELIVERED => __('order.delivered'),
+            self::STATUS_CANCELLED => __('order.cancelled'),
+            default => __('order.unknown'),
+        };
     }
 
     public function scopeActive($query)
@@ -106,80 +60,64 @@ class Order extends Model
         return $query->where('status', self::STATUS_PENDING);
     }
 
-
-    public function calculateFullSum()
+    // Сумма заказа без купона
+    public function calculateFullSum(): float
     {
         $sum = 0;
-        foreach ($this->skus()->withTrashed()->get() as $sku)
-        {
+        foreach ($this->skus()->withTrashed()->get() as $sku) {
             $sum += $sku->getPriceForCount();
         }
         return $sum;
     }
 
-    public function getFullSum($withCoupon = true)
+    // Сумма с купоном
+    public function getFullSum(bool $withCoupon = true): float
     {
         $sum = 0;
-        foreach($this->skus as $sku)
-        {
-            $sum += $sku->price * $sku->countInOrder;
+        foreach ($this->skus as $sku) {
+            $sum += $sku->pivot->price * $sku->pivot->count;
         }
 
-        if($withCoupon && $this->hasCoupon())
-        {
+        if ($withCoupon && $this->coupon) {
             $sum = $this->coupon->applyCost($sum, $this->currency);
         }
+
         return $sum;
     }
-    // В модели Order
-public function getTotalForPayment(): int
-{
-    $total = $this->sum;
 
-    // Если доставка и сумма < 10000, добавляем 500
-    if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
-        $total += 500;
+    // Общая сумма для оплаты с учётом доставки
+    public function getTotalForPayment(): float
+    {
+        $total = $this->sum;
+        if ($this->delivery_type === 'delivery' && $total < 10000) {
+            $total += 500;
+        }
+        return $total;
     }
 
-    return $total;
-}
-
-    public function saveOrder($name, $phone, $email, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
+    // Сохраняем заказ и привязываем товары через pivot
+    public function saveOrder(array $data, array $skus = []): bool
     {
-        $this->name = $name;
-        $this->phone = $phone;
-        $this->email = $email;
-        $this->delivery_type = $deliveryType;
-        $this->delivery_city = $delivery_city;
-        $this->delivery_street = $delivery_street;
-        $this->delivery_home = $delivery_home;
-        $this->status = 1;
+        $this->fill($data);
         $this->status = self::STATUS_PENDING;
-
-        $skus = $this->skus;
         $this->save();
 
-        foreach ($skus as $sku)
-        {
-            $order->skus()->attach($sku->id, [
-                'count' => $sku->countInOrder,
-                'price' => $sku->price,
-            ]);
+        if (!empty($skus)) {
+            foreach ($skus as $sku) {
+                $this->skus()->attach($sku['id'], [
+                    'count' => $sku['countInOrder'],
+                    'price' => $sku['price'],
+                ]);
+            }
         }
-        $this->sum = max(0, $this->getFullSum());    // Защита от отрицательной суммы из-за купонов
 
-        if ($this->delivery_type === 'delivery' && $this->sum < 10000)
-        {
+        // Пересчёт суммы
+        $this->sum = $this->getFullSum();
+        if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
             $this->sum += 500;
         }
+        $this->save();
 
-        session()->forget('order');
         return true;
     }
-
-    public function hasCoupon()
-    {
-        return $this->coupon;
-    }
-
 }
