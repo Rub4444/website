@@ -103,7 +103,8 @@ class Basket
 
         Mail::to($email)->send(new OrderCreated($name, $order));
 
-        session(['order_id' => $order->id]);
+        // session(['order_id' => $order->id]);
+        session()->forget('order');
         return true;
     }
 
