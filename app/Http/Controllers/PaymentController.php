@@ -260,28 +260,28 @@ protected function processPayment(Request $request)
     /**
      * Возврат клиента после оплаты
      */
-    public function handleReturn(Request $request)
-{
-    $orderId = $request->query('order');
-    $status  = $request->query('status'); // получаем success/fail из URL
+//     public function handleReturn(Request $request)
+// {
+//     $orderId = $request->query('order');
+//     $status  = $request->query('status'); // получаем success/fail из URL
 
-    if (!$orderId) {
-        return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
-    }
+//     if (!$orderId) {
+//         return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
+//     }
 
-    $order = Order::find($orderId);
-    if (!$order) {
-        return redirect('/')->with('error', 'Պատվերը չի գտնվել');
-    }
+//     $order = Order::find($orderId);
+//     if (!$order) {
+//         return redirect('/')->with('error', 'Պատվերը չի գտնվել');
+//     }
 
-    // Можем дополнительно обновить статус в базе, если хотим
-    if ($order->status != 2)
-    {
-        $order->status = 2;
-        $order->save();
-    }
-    return view('payment.success', compact('order'));
-}
+//     // Можем дополнительно обновить статус в базе, если хотим
+//     if ($order->status != 2)
+//     {
+//         $order->status = 2;
+//         $order->save();
+//     }
+//     return view('payment.success', compact('order'));
+// }
 
     /**
      * Страница успешного платежа
