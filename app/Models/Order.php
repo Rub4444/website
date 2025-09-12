@@ -159,13 +159,13 @@ public function getTotalForPayment(): int
         $skus = $this->skus;
         $this->save();
 
-        foreach ($skus as $sku)
-        {
-            $order->skus()->attach($sku->id, [
-                'count' => $sku->countInOrder,
-                'price' => $sku->price,
-            ]);
-        }
+        // foreach ($skus as $sku)
+        // {
+        //     $order->skus()->attach($sku->id, [
+        //         'count' => $sku->countInOrder,
+        //         'price' => $sku->price,
+        //     ]);
+        // }
         $this->sum = max(0, $this->getFullSum());    // Защита от отрицательной суммы из-за купонов
 
         if ($this->delivery_type === 'delivery' && $this->sum < 10000)
