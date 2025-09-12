@@ -113,7 +113,7 @@ class PaymentController extends Controller
 public function callback(Request $request)
 {
     // 1. Логируем входящие данные
-    \Log::info('Telcell callback received', $request->all());
+    // \Log::info('Telcell callback received', $request->all());
 
     // 2. Отвечаем Telcell максимально быстро
     response('OK', 200)->send();
@@ -124,27 +124,15 @@ public function callback(Request $request)
     // 4. Завершаем выполнение, чтобы ничего лишнего не выполнялось
     exit;
 }
-
 protected function processPayment(Request $request)
 {
     try {
-        // Приводим ID к нормальному виду (base64 -> int)
         $invoiceId = $request->input('invoice');
         $issuerId  = $request->input('issuer_id');
+        $status    = strtoupper($request->input('status', ''));
 
-        if ($issuerId) {
-            $decodedIssuerId = base64_decode($issuerId);
-        } else {
-            $decodedIssuerId = null;
-        }
+        $decodedIssuerId = $issuerId ? base64_decode($issuerId) : null;
 
-        \Log::info('Processing payment', [
-            'invoice' => $invoiceId,
-            'issuer_id' => $issuerId,
-            'decoded_issuer_id' => $decodedIssuerId
-        ]);
-
-        // Ищем заказ по invoice_id или issuer_id
         $order = Order::where('invoice_id', $invoiceId)
             ->orWhere('issuer_id', $decodedIssuerId)
             ->first();
@@ -157,20 +145,14 @@ protected function processPayment(Request $request)
             return;
         }
 
-        // Проверяем статус из запроса
-        if ($request->input('status') === 'success') {
-            // $order->status = 'paid'; // или твой статус "Оплачен"
-            // $order->save();
+        if ($status === 'PAID') {
             $order->markAsPaid();
-
-            \Log::info('Order marked as paid', [
-                'order_id' => $order->id,
-                'status' => $order->status
-            ]);
+            \Log::info('Order marked as PAID', ['order_id' => $order->id]);
+        } elseif ($status === 'REJECTED') {
+            $order->markAsCancelled();
+            \Log::info('Order marked as REJECTED', ['order_id' => $order->id]);
         } else {
-            \Log::warning('Callback status is not success', [
-                'status' => $request->input('status')
-            ]);
+            \Log::warning('Unknown payment status', ['status' => $status, 'order_id' => $order->id]);
         }
     } catch (\Throwable $e) {
         \Log::error('Error in processing Telcell callback', [
@@ -181,81 +163,6 @@ protected function processPayment(Request $request)
 }
 
 
-//    public function callback(Request $request)
-//     {
-//         // Логируем весь запрос
-//         Log::info('📩 Telcell CALLBACK: получен запрос', [
-//             'method'  => $request->method(),
-//             'headers' => $request->headers->all(),
-//             'payload' => $request->all(),
-//         ]);
-
-//         $data = $request->all();
-
-//         $issuerId  = $data['issuer_id'] ?? null;
-//         $invoiceId = $data['invoice'] ?? null;
-//         $status    = $data['status'] ?? null;
-
-//         Log::info('Parsed callback data', [
-//             'issuerId' => $issuerId,
-//             'invoiceId' => $invoiceId,
-//             'status' => $status
-//         ]);
-
-//         // if (!$issuerId || !$invoiceId) {
-//         //     Log::warning('Telcell callback missing issuer_id or invoice', $data);
-//         //     return response('Invalid callback', 400);
-//         // }
-
-//         // Проверка checksum
-//         $checksumString = config('services.telcell.shop_key')
-//             . $invoiceId
-//             . $issuerId
-//             . ($data['payment_id'] ?? '')
-//             . ($data['buyer'] ?? '')
-//             . ($data['currency'] ?? '')
-//             . ($data['sum'] ?? '')
-//             . ($data['time'] ?? '')
-//             . $status;
-
-//         $calculatedChecksum = md5($checksumString);
-//         Log::info('Checksum verification', [
-//             'calculated' => $calculatedChecksum,
-//             'received' => $data['checksum'] ?? null
-//         ]);
-
-//         if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
-//             Log::error('Telcell checksum mismatch', [
-//                 'calculated' => $calculatedChecksum,
-//                 'received' => $data['checksum'] ?? null,
-//             ]);
-//             return response('Invalid checksum', 400);
-//         }
-
-//         // Находим заказ по issuer_id
-//         $order = Order::where('issuer_id', $issuerId)->first();
-
-//         if (!$order) {
-//             Log::warning('Order not found for issuer_id', ['issuer_id' => $issuerId]);
-//             return response('Order not found', 404);
-//         }
-
-//         Log::info('Order found', ['orderId' => $order->id, 'currentStatus' => $order->status]);
-
-//         $order->markAsPaid();
-//         Log::info('Order marked as PAID', ['orderId' => $order->id]);
-//         // Обновляем статус заказа
-//         // if (strtoupper($status) === 'PAID') {
-//         //     $order->markAsPaid();
-//         //     Log::info('Order marked as PAID', ['orderId' => $order->id]);
-//         // } else {
-//         //     $order->markAsCancelled();
-//         //     Log::info('Order marked as CANCELLED', ['orderId' => $order->id]);
-//         // }
-
-//         // Возвращаем успешный ответ Telcell
-//         return response('OK', 200);
-//     }
 
     /**
      * Возврат клиента после оплаты

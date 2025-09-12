@@ -64,7 +64,7 @@ class TelcellService
         $postData['info'] = base64_encode($info);
     }
 
-    Log::info('Telcell POST Request:', $postData);
+    // Log::info('Telcell POST Request:', $postData);
 
     try {
         Http::asForm()->post($this->url, $postData);
