@@ -34,63 +34,61 @@ class PaymentController extends Controller
      * Callback от Telcell
      */
 
-public function callback(Request $request)
-{
-    $data = $request->all();
+    public function callback(Request $request)
+    {
+        $data = $request->all();
 
-    // Логируем входящие данные
-    \Log::info('Telcell callback received', $data);
+        // Логируем всё входящее
+        \Log::info('Telcell callback received', $data);
 
-    // Проверяем обязательные поля
-    $invoiceId = $data['invoice'] ?? null;
-    $issuerId  = $data['issuer_id'] ?? null;
-    $status    = strtoupper($data['status'] ?? '');
+        $invoiceId = $data['invoice'] ?? null;
+        $issuerId  = $data['issuer_id'] ?? null;
+        $status    = strtoupper($data['status'] ?? '');
 
-    if (!$invoiceId || !$issuerId) {
-        \Log::warning('Missing invoice_id or issuer_id in callback', $data);
-        return response('Invalid callback', 400);
+        if (!$invoiceId || !$issuerId) {
+            \Log::warning('Missing invoice_id or issuer_id in callback', $data);
+            return response('Invalid callback', 400);
+        }
+
+        // Проверка checksum
+        $checksumString = config('services.telcell.shop_key')
+            . $invoiceId
+            . $issuerId
+            . ($data['payment_id'] ?? '')
+            . ($data['currency'] ?? '')
+            . ($data['sum'] ?? '')
+            . ($data['time'] ?? '')
+            . $status;
+
+        $calculatedChecksum = md5($checksumString);
+
+        if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
+            \Log::error('Checksum mismatch', ['calculated' => $calculatedChecksum, 'received' => $data['checksum'] ?? null]);
+            return response('Invalid checksum', 400);
+        }
+
+        $orderId = base64_decode($issuerId);
+        $order = Order::find($orderId);
+
+        if (!$order) {
+            \Log::warning('Order not found', ['order_id' => $orderId]);
+            return response('Order not found', 404);
+        }
+
+        // Обновляем статус и логируем
+        if ($status === 'PAID') {
+            $order->markAsPaid();
+            \Log::info('Order marked as PAID', ['order_id' => $order->id]);
+        } elseif ($status === 'REJECTED') {
+            $order->markAsCancelled();
+            \Log::info('Order marked as REJECTED', ['order_id' => $order->id]);
+        } else {
+            \Log::warning('Unknown payment status', ['status' => $status, 'order_id' => $order->id]);
+        }
+
+        return response('OK', 200);
     }
 
-    // Проверка checksum
-    $checksumString = config('services.telcell.shop_key')
-        . $invoiceId
-        . $issuerId
-        . ($data['payment_id'] ?? '')
-        . ($data['currency'] ?? '')
-        . ($data['sum'] ?? '')
-        . ($data['time'] ?? '')
-        . $status;
-
-    $calculatedChecksum = md5($checksumString);
-
-    if ($calculatedChecksum !== ($data['checksum'] ?? '')) {
-        \Log::error('Checksum mismatch', ['calculated' => $calculatedChecksum, 'received' => $data['checksum'] ?? null]);
-        return response('Invalid checksum', 400);
-    }
-
-    // Находим заказ по invoice_id или issuer_id
-    $orderId = base64_decode($issuerId);
-    $order = Order::find($orderId);
-
-    if (!$order) {
-        \Log::warning('Order not found', ['order_id' => $orderId]);
-        return response('Order not found', 404);
-    }
-
-    // Обновляем статус заказа
-    if ($status === 'PAID') {
-        $order->markAsPaid();
-        \Log::info('Order marked as PAID', ['order_id' => $order->id]);
-    }
-    elseif ($status === 'REJECTED') {
-        $order->markAsCancelled();
-        \Log::info('Order marked as REJECTED', ['order_id' => $order->id]);
-    } else {
-        \Log::warning('Unknown payment status', ['status' => $status, 'order_id' => $order->id]);
-    }
-
-    return response('OK', 200);
-}
 
     // public function callback(Request $request)
     // {
@@ -174,7 +172,6 @@ public function callback(Request $request)
             return redirect('/')->with('error', 'Պատվերը չի գտնվել');
         }
 
-        // Смотрим статус заказа в базе
         if ($order->isStatus(Order::STATUS_PAID)) {
             return view('payment.success', compact('order'));
         } elseif ($order->isStatus(Order::STATUS_CANCELLED)) {
@@ -183,6 +180,7 @@ public function callback(Request $request)
             return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
         }
     }
+
 
 
     /**
