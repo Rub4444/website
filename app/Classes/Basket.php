@@ -112,7 +112,7 @@ class Basket
     //     // session()->forget('order');
     //     return true;
     // }
-public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
+public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null, $note = null)
 {
     if (!$this->countAvailable(true)) return false;
 
