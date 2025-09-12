@@ -155,22 +155,23 @@ public function getTotalForPayment(): int
     )
     {
         // 1. Заполняем поля заказа
-        // $this->name = $name;
-        // $this->phone = $phone;
-        // $this->email = $email;
-        // $this->delivery_type = $deliveryType;
-        // $this->delivery_city = $delivery_city;
-        // $this->delivery_street = $delivery_street;
-        // $this->delivery_home = $delivery_home;
-        // $this->status = self::STATUS_PENDING;
+        $this->name = $name;
+        $this->phone = $phone;
+        $this->email = $email;
+        $this->delivery_type = $deliveryType;
+        $this->delivery_city = $delivery_city;
+        $this->delivery_street = $delivery_street;
+        $this->delivery_home = $delivery_home;
+        $this->status = self::STATUS_PENDING;
 
         // 2. Считаем сумму перед сохранением
-        // $this->sum = max(0, $this->getFullSum()); // защита от отрицательной суммы
-        // if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
-        //     $this->sum += 500;
-        // }
+        $this->sum = max(0, $this->getFullSum()); // защита от отрицательной суммы
+        if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
+            $this->sum += 500;
+        }
 
         // 3. Сохраняем заказ в БД (получаем order_id)
+        $skus = $this->skus;
         $this->save();
 
         // 4. Привязываем товары через pivot
