@@ -154,10 +154,6 @@ public function getTotalForPayment(): int
         $delivery_home = null
     )
     {
-                dd($this);
-
-        $this->save();
-
         // 1. Заполняем поля заказа
         $this->name = $name;
         $this->phone = $phone;
@@ -178,7 +174,7 @@ public function getTotalForPayment(): int
         // 3. Сохраняем заказ в БД (получаем order_id)
         // dd($this);
         $this->save();
-        dd($this);
+        // dd($this);
 
         // 4. Привязываем товары через pivot
         foreach ($this->skus as $sku) {
