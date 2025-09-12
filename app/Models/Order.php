@@ -173,8 +173,8 @@ public function getTotalForPayment(): int
 
         // 3. Сохраняем заказ в БД (получаем order_id)
         $skus = $this->skus;
-        dd($this);
         $this->save();
+        dd($this);
 
         // 4. Привязываем товары через pivot
         foreach ($this->skus as $sku) {
