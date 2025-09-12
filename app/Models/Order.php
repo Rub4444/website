@@ -154,8 +154,9 @@ public function getTotalForPayment(): int
         $delivery_home = null
     )
     {
+                dd($this);
+
         $this->save();
-        dd($this);
 
         // 1. Заполняем поля заказа
         $this->name = $name;
