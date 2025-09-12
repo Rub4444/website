@@ -144,8 +144,17 @@ public function getTotalForPayment(): int
     return $total;
 }
 
-    public function saveOrder($name, $phone, $email, $deliveryType = 'pickup', $delivery_city = null, $delivery_street = null, $delivery_home = null)
+    public function saveOrder(
+        $name,
+        $phone,
+        $email,
+        $deliveryType = 'pickup',
+        $delivery_city = null,
+        $delivery_street = null,
+        $delivery_home = null
+    )
     {
+        // 1. Заполняем поля заказа
         $this->name = $name;
         $this->phone = $phone;
         $this->email = $email;
@@ -153,29 +162,31 @@ public function getTotalForPayment(): int
         $this->delivery_city = $delivery_city;
         $this->delivery_street = $delivery_street;
         $this->delivery_home = $delivery_home;
-        $this->status = 1;
         $this->status = self::STATUS_PENDING;
 
-        $skus = $this->skus;
-        $this->save();
-
-        // foreach ($skus as $sku)
-        // {
-        //     $order->skus()->attach($sku->id, [
-        //         'count' => $sku->countInOrder,
-        //         'price' => $sku->price,
-        //     ]);
-        // }
-        $this->sum = max(0, $this->getFullSum());    // Защита от отрицательной суммы из-за купонов
-
-        if ($this->delivery_type === 'delivery' && $this->sum < 10000)
-        {
+        // 2. Считаем сумму перед сохранением
+        $this->sum = max(0, $this->getFullSum()); // защита от отрицательной суммы
+        if ($this->delivery_type === 'delivery' && $this->sum < 10000) {
             $this->sum += 500;
         }
 
+        // 3. Сохраняем заказ в БД (получаем order_id)
+        $this->save();
+
+        // 4. Привязываем товары через pivot
+        foreach ($this->skus as $sku) {
+            $this->skus()->attach($sku->id, [
+                'count' => $sku->countInOrder,
+                'price' => $sku->price,
+            ]);
+        }
+
+        // 5. Очищаем сессию
         session()->forget('order');
+
         return true;
     }
+
 
     public function hasCoupon()
     {
