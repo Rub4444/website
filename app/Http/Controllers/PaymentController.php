@@ -163,43 +163,27 @@ public function callback(Request $request)
     public function handleReturn(Request $request)
     {
         $orderId = $request->query('order');
-        $status  = $request->query('status'); // получаем success/fail из URL
 
-        // Логируем входящие данные для отладки
-        Log::info('handleReturn called', [
-            'order_id' => $orderId,
-            'status' => $status,
-            'all_request' => $request->all()
-        ]);
-
-        if (!$orderId)
-        {
+        if (!$orderId) {
             return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
         }
 
         $order = Order::find($orderId);
-        if (!$order)
-        {
+
+        if (!$order) {
             return redirect('/')->with('error', 'Պատվերը չի գտնվել');
         }
-        // if($status === 'PAID')
-        // {
-        //     $order->markAsPaid();
-        //     return view('payment.success', compact('order'));
-        // }
-        // elseif($status === 'REJECTED')
-        // {
-        //     $order->markAsCancelled();
-        //     return view('payment.fail', compact('order'));
-        // }
-        // else
-        // {
-        //     // На случай, если status пришёл пустой или другой
-        //     return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
-        // }
-        return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
 
+        // Смотрим статус заказа в базе
+        if ($order->isStatus(Order::STATUS_PAID)) {
+            return view('payment.success', compact('order'));
+        } elseif ($order->isStatus(Order::STATUS_CANCELLED)) {
+            return view('payment.fail', compact('order'));
+        } else {
+            return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
+        }
     }
+
 
     /**
      * Страница успешного платежа
