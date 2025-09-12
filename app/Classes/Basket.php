@@ -35,7 +35,7 @@ class Basket
             session(['order' => $this->order]);
 
             // 👇 Добавляем пакет один раз при создании новой корзины
-            $this->addPackageSku();
+            // $this->addPackageSku();
         }
         else
         {
