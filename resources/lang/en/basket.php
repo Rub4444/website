@@ -50,5 +50,6 @@ return [
     'deleted_from_cart' => 'deleted from the cart',
     'coupon_added_to_the_order' => 'The coupon was added to the order',
     'coupon_cannot_be_used' => 'The coupon cannot be used',
+    'order_note' => 'Order note',
 ];
 

@@ -50,4 +50,6 @@ return [
     'deleted_from_cart' => 'ջնջված է զամբյուղից',
     'coupon_added_to_the_order' => 'Կուպոնը կցվել է պատվերին',
     'coupon_cannot_be_used' => 'Կուպոնը չի կարող օգտագործվել',
+    'order_note' => 'Պատվերի նշում',
+
 ];
