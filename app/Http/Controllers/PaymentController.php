@@ -202,6 +202,11 @@ protected function processPayment(Request $request)
             $order->markAsCancelled();
             return view('payment.fail', compact('order'));
         }
+        else
+        {
+            // На случай, если status пришёл пустой или другой
+            return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
+        }
 
     }
 
