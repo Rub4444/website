@@ -174,12 +174,12 @@ public function getTotalForPayment(): int
         $this->save();
 
         // 4. Привязываем товары через pivot
-        foreach ($this->skus as $sku) {
-            $this->skus()->attach($sku->id, [
-                'count' => $sku->countInOrder,
-                'price' => $sku->price,
-            ]);
-        }
+        // foreach ($this->skus as $sku) {
+        //     $this->skus()->attach($sku->id, [
+        //         'count' => $sku->countInOrder,
+        //         'price' => $sku->price,
+        //     ]);
+        // }
 
         // 5. Очищаем сессию
         session()->forget('order');

@@ -77,6 +77,7 @@ class Basket
     public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
     {
         if (!$this->countAvailable(true)) return false;
+
         $this->order->saveOrder($name, $phone, $email, $deliveryType, $delivery_city, $delivery_street, $delivery_home);
 
         // $order = $this->order;

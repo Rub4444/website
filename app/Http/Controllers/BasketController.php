@@ -47,10 +47,10 @@ class BasketController extends Controller
             $request->delivery_home
         );
 
-        // if ($order === true)
-        // {
-        //     $order = \App\Models\Order::latest()->first();
-        // }
+        if ($order === true)
+        {
+            $order = \App\Models\Order::latest()->first();
+        }
         // \Log::info('ORDER ID:', ['order_id' => $order->id]);
 
 
