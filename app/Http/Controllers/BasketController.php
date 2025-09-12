@@ -44,8 +44,13 @@ class BasketController extends Controller
             $request->delivery_type,
             $request->delivery_city,
             $request->delivery_street,
-            $request->delivery_home
+            $request->delivery_home,
+            $request->input('order_note')
         );
+
+        // // Сохраняем заметку
+        // $order->note = $request->input('order_note', null);
+        // $order->save();
 
         if ($order === true)
         {

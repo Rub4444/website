@@ -37,6 +37,12 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-lg-12 mb-12">
+                                        <div class="checkout__input--list">
+                                            <label for="order_note">@lang('basket.order_note')</label>
+                                            <textarea name="order_note" id="order_note" class="checkout__input--field border-radius-5" placeholder="@lang('basket.note_placeholder')">{{ old('order_note') }}</textarea>
+                                        </div>
+                                    </div>
                                     <div id="address_fields" style="display: none;">
                                         <div class="col-lg-12 mb-12">
                                             <div class="checkout__input--list ">

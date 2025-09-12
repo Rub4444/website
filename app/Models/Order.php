@@ -11,7 +11,8 @@ class Order extends Model
     'delivery_home',
     'invoice_id',
     'invoice_status',
-    'issuer_id'];
+    'issuer_id',
+    'note'];
 
     // Определяем константы статусов
     public const STATUS_PENDING     = 1; // Заказ принят
@@ -151,7 +152,8 @@ public function getTotalForPayment(): int
         $deliveryType = 'pickup',
         $delivery_city = null,
         $delivery_street = null,
-        $delivery_home = null
+        $delivery_home = null,
+        $note = null
     )
     {
         // 1. Заполняем поля заказа
@@ -162,6 +164,7 @@ public function getTotalForPayment(): int
         $this->delivery_city = $delivery_city;
         $this->delivery_street = $delivery_street;
         $this->delivery_home = $delivery_home;
+        $this->note = $note;
         // $this->status = self::STATUS_PENDING;
         $this->status = 1;
 
