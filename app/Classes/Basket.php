@@ -44,8 +44,6 @@ class Basket
 
     }
 
-
-
     public function getOrder()
     {
         return $this->order;
@@ -74,136 +72,93 @@ class Basket
         return true;
     }
 
-    // public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null)
-    // {
-    //     if (!$this->countAvailable(true)) return false;
-
-    //     $this->order->saveOrder($name, $phone, $email, $deliveryType, $delivery_city, $delivery_street, $delivery_home);
-
-    //     // $order = $this->order;
-
-    //     //Skus Insert INto
-    //     // unset($order->skus);
-
-    //     // $order->name = $name;
-    //     // $order->phone = $phone;
-    //     // $order->email = $email;
-    //     // $order->delivery_type = $deliveryType;
-    //     // $order->delivery_city = $delivery_city;
-    //     // $order->delivery_street = $delivery_street;
-    //     // $order->delivery_home = $delivery_home;
-    //     // $order->status = 1;
-    //     // $order->sum = $order->getFullSum();
-    //     // $order->save(); // Сохраняем сам заказ
-
-    //     // Привязываем товары через pivot
-    //     // foreach ($this->order->skus as $sku)
-    //     // foreach ($order->skus as $sku)
-    //     // {
-    //     //     $order->skus()->attach($sku->id, [
-    //     //         'count' => $sku->countInOrder,
-    //     //         'price' => $sku->price,
-    //     //     ]);
-    //     // }
-
-    //     Mail::to($email)->send(new OrderCreated($name, $order));
-
-    //     // session(['order_id' => $order->id]);
-    //     // session()->forget('order');
-    //     return true;
-    // }
-public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null, $note = null)
-{
-    if (!$this->countAvailable(true)) return false;
-
-    // Сохраняем заказ и получаем объект Order
-    $order = $this->order; // текущий Order в Basket
-    $skus = $order->skus;  // временно сохраняем товары
-
-    $order->name = $name;
-    $order->phone = $phone;
-    $order->email = $email;
-    $order->delivery_type = $deliveryType;
-    $order->delivery_city = $delivery_city;
-    $order->delivery_street = $delivery_street;
-    $order->delivery_home = $delivery_home;
-    $order->status = 1;
-    $order->note = $note;
-    $order->sum = max(0, $order->getFullSum());
-    if ($order->delivery_type === 'delivery' && $order->sum < 10000) {
-        $order->sum += 500;
-    }
-
-    $order->save(); // сохраняем заказ (теперь есть $order->id)
-
-    // Привязываем товары через pivot
-    foreach ($skus as $sku) {
-        $order->skus()->attach($sku->id, [
-            'count' => $sku->countInOrder,
-            'price' => $sku->price,
-        ]);
-    }
-
-    // Отправка письма
-    Mail::to($email)->send(new OrderCreated($name, $order));
-
-    session()->forget('order');
-
-    return $order; // возвращаем сам объект заказа
-}
-
-
-
-public function removeSku(Sku $sku, $quantity = null)
-{
-    // Проверяем единицу измерения у продукта
-    $unit = $sku->product->unit;
-
-    $quantity = $quantity ?? ($unit === 'kg' ? 0.1 : 1);
-
-    if ($this->order->skus->contains($sku)) {
-        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
-
-        $pivotRow->countInOrder -= $quantity;
-        if ($pivotRow->countInOrder <= 0) {
-            $this->order->skus = $this->order->skus->filter(fn($s) => $s->id !== $sku->id);
-        }
-    }
-}
-
-
-
-    public function addSku(Sku $sku, $quantity = null)
-{
-    $unit = $sku->product->unit; // берём unit у продукта
-    $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1шт
-
-    if ($this->order->skus->contains($sku))
+    public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null, $note = null)
     {
-        $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+        if (!$this->countAvailable(true)) return false;
 
-        // Проверяем, чтобы не превышать доступный count для шт
-        if ($unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count)
-        {
-            return false;
+        // Сохраняем заказ и получаем объект Order
+        $order = $this->order; // текущий Order в Basket
+        $skus = $order->skus;  // временно сохраняем товары
+
+        $order->name = $name;
+        $order->phone = $phone;
+        $order->email = $email;
+        $order->delivery_type = $deliveryType;
+        $order->delivery_city = $delivery_city;
+        $order->delivery_street = $delivery_street;
+        $order->delivery_home = $delivery_home;
+        $order->status = 1;
+        $order->note = $note;
+        $order->sum = max(0, $order->getFullSum());
+        if ($order->delivery_type === 'delivery' && $order->sum < 10000) {
+            $order->sum += 500;
         }
 
-        $pivotRow->countInOrder += $quantity;
+        $order->save(); // сохраняем заказ (теперь есть $order->id)
+
+        // Привязываем товары через pivot
+        foreach ($skus as $sku) {
+            $order->skus()->attach($sku->id, [
+                'count' => $sku->countInOrder,
+                'price' => $sku->price,
+            ]);
+        }
+
+        session()->forget('order');
+
+        return $order; // возвращаем сам объект заказа
     }
-    else
+
+
+
+    public function removeSku(Sku $sku, $quantity = null)
     {
-        if ($unit === 'pcs' && $quantity > $sku->count)
-        {
-            return false;
+        // Проверяем единицу измерения у продукта
+        $unit = $sku->product->unit;
+
+        $quantity = $quantity ?? ($unit === 'kg' ? 0.1 : 1);
+
+        if ($this->order->skus->contains($sku)) {
+            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+
+            $pivotRow->countInOrder -= $quantity;
+            if ($pivotRow->countInOrder <= 0) {
+                $this->order->skus = $this->order->skus->filter(fn($s) => $s->id !== $sku->id);
+            }
         }
-
-        $sku->countInOrder = $quantity;
-        $sku->unit = $unit; // сохраняем единицу для корзины
-        $this->order->skus->push($sku);
     }
-}
 
 
+
+        public function addSku(Sku $sku, $quantity = null)
+    {
+        $unit = $sku->product->unit; // берём unit у продукта
+        $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1шт
+
+        if ($this->order->skus->contains($sku))
+        {
+            $pivotRow = $this->order->skus->where('id', $sku->id)->first();
+
+            // Проверяем, чтобы не превышать доступный count для шт
+            if ($unit === 'pcs' && $pivotRow->countInOrder + $quantity > $sku->count)
+            {
+                return false;
+            }
+
+            $pivotRow->countInOrder += $quantity;
+        }
+        else
+        {
+            if ($unit === 'pcs' && $quantity > $sku->count)
+            {
+                return false;
+            }
+
+            $sku->countInOrder = $quantity;
+            $sku->unit = $unit; // сохраняем единицу для корзины
+            $this->order->skus->push($sku);
+        }
+    }
 
     public function setCoupon(Coupon $coupon)
     {

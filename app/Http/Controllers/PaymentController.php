@@ -137,7 +137,8 @@ protected function processPayment(Request $request)
             ->orWhere('issuer_id', $decodedIssuerId)
             ->first();
 
-        if (!$order) {
+        if (!$order)
+        {
             \Log::warning('Order not found after callback', [
                 'invoice' => $invoiceId,
                 'issuer_id' => $decodedIssuerId
@@ -145,16 +146,26 @@ protected function processPayment(Request $request)
             return;
         }
 
-        if ($status === 'PAID') {
+        if ($status === 'PAID')
+        {
             $order->markAsPaid();
-            \Log::info('Order marked as PAID', ['order_id' => $order->id]);
-        } elseif ($status === 'REJECTED') {
+            // Отправка письма
+            Mail::to($email)->send(new OrderCreated($name, $order));
+            // \Log::info('Order marked as PAID', ['order_id' => $order->id]);
+        }
+        elseif ($status === 'REJECTED')
+        {
             $order->markAsCancelled();
-            \Log::info('Order marked as REJECTED', ['order_id' => $order->id]);
-        } else {
+            // \Log::info('Order marked as REJECTED', ['order_id' => $order->id]);
+        }
+        else
+        {
             \Log::warning('Unknown payment status', ['status' => $status, 'order_id' => $order->id]);
         }
-    } catch (\Throwable $e) {
+
+    }
+    catch (\Throwable $e)
+    {
         \Log::error('Error in processing Telcell callback', [
             'message' => $e->getMessage(),
             'trace'   => $e->getTraceAsString(),

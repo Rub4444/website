@@ -30,16 +30,16 @@
                                     </div>
                                     <div class="col-lg-12 mb-12">
                                         <div class="checkout__input--list">
+                                            <textarea name="order_note" id="order_note" class="checkout__input--field border-radius-5" placeholder="@lang('basket.order_note')">{{ old('order_note') }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-12">
+                                        <div class="checkout__input--list">
                                             <label for="delivery_type">@lang('basket.choose_delivery_type')</label>
                                             <select name="delivery_type" id="delivery_type" class="checkout__input--field border-radius-5">
                                                 <option value="pickup">@lang('basket.pickup')</option>
                                                 <option value="delivery">@lang('basket.delivery')</option>
                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 mb-12">
-                                        <div class="checkout__input--list">
-                                            <textarea name="order_note" id="order_note" class="checkout__input--field border-radius-5" placeholder="@lang('basket.order_note')">{{ old('order_note') }}</textarea>
                                         </div>
                                     </div>
                                     <div id="address_fields" style="display: none;">
