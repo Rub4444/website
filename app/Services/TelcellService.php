@@ -125,7 +125,8 @@ class TelcellService
     {
         $data = $request->all();
 
-        if (!$this->verifyCallback($data)) {
+        if (!$this->verifyCallback($data))
+        {
             return response('Invalid checksum', 400);
         }
 
