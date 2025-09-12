@@ -172,7 +172,7 @@ public function getTotalForPayment(): int
         }
 
         // 3. Сохраняем заказ в БД (получаем order_id)
-        $skus = $this->skus;
+        // $skus = $this->skus;
         $this->save();
         dd($this);
 
