@@ -19,13 +19,13 @@
                                     <div class="col-lg-12 mb-12">
                                         <div class="checkout__input--list ">
                                             <label>
-                                                <input required value="{{ old('name', auth()->user()->name ?? '') }}" placeholder="Name" type="text" name="name" id="name" class="checkout__input--field border-radius-5">
+                                                <input required value="{{ old('name', auth()->user()->name ?? '') }}" placeholder="@lang('basket.name')" type="text" name="name" id="name" class="checkout__input--field border-radius-5">
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-12">
                                         <div class="checkout__input--list ">
-                                            <input required value="{{ old('phone', auth()->user()->phone ?? '') }}" placeholder="Phone Number" type="text" name="phone" id="phone" class="checkout__input--field border-radius-5">
+                                            <input required value="{{ old('phone', auth()->user()->phone ?? '') }}" placeholder="@lang('basket.phone_number')" type="text" name="phone" id="phone" class="checkout__input--field border-radius-5">
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-12">
@@ -57,7 +57,7 @@
                                     @guest
                                         <div class="col-lg-12 mb-12">
                                             <div class="checkout__input--list ">
-                                                <input placeholder="Email" type="text" name="email" id="email" class="checkout__input--field border-radius-5">
+                                                <input placeholder="@lang('basket.email')" type="text" name="email" id="email" class="checkout__input--field border-radius-5">
                                             </div>
                                         </div>
                                     @endguest
