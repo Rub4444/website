@@ -128,6 +128,7 @@ public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city =
     $order->delivery_street = $delivery_street;
     $order->delivery_home = $delivery_home;
     $order->status = 1;
+    $order->note = $note;
     $order->sum = max(0, $order->getFullSum());
     if ($order->delivery_type === 'delivery' && $order->sum < 10000) {
         $order->sum += 500;
