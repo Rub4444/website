@@ -192,12 +192,12 @@ protected function processPayment(Request $request)
         {
             return redirect('/')->with('error', 'Պատվերը չի գտնվել');
         }
-        if($status === 'success')
+        if($status === 'PAID')
         {
             $order->markAsPaid();
             return view('payment.success', compact('order'));
         }
-        elseif($status === 'fail')
+        elseif($status === 'REJECTED')
         {
             $order->markAsCancelled();
             return view('payment.fail', compact('order'));
