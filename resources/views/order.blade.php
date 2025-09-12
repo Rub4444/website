@@ -9,7 +9,10 @@
                     <form action="{{route('basket-confirm')}}" method="POST">
                         <div class="checkout__content--step section__shipping--address">
                             <div class="section__header mb-25 text-center">
-                                <h2 class="section__header--title h3">@lang('basket.confirm') - {{$order->getFullSum()}} {{$currencySymbol}}</h2>
+                                {{-- <h2 class="section__header--title h3">@lang('basket.confirm') - {{$order->getFullSum()}} {{$currencySymbol}}</h2> --}}
+                                <h2 class="section__header--title h3">
+                                    @lang('basket.confirm') - <span id="fullSum">{{$order->getFullSum()}}</span> {{$currencySymbol}}
+                                </h2>
                             </div>
                             <div class="section__shipping--address__content">
                                 <div class="row">
@@ -73,32 +76,37 @@
 </div>
 @endsection
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const select = document.getElementById('delivery_type');
-        const addressFields = document.getElementById('address_fields');
-        const deliveryCity = document.getElementById('delivery_city');
+document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('delivery_type');
+    const addressFields = document.getElementById('address_fields');
+    const deliveryCity = document.getElementById('delivery_city');
+    const fullSumEl = document.getElementById('fullSum');
+    const baseSum = {{$order->getFullSum()}};
+    const deliveryFee = 500;
 
-        function toggleAddressFields()
-        {
-            if (select.value === 'delivery') {
-                addressFields.style.display = 'block';
-                deliveryCity.value = 'Ijevan';
-                deliveryCity.setAttribute('readonly', 'readonly');
-                deliveryCity.style.backgroundColor = '#e9ecef';
+    function toggleAddressFields() {
+        if (select.value === 'delivery') {
+            addressFields.style.display = 'block';
+            deliveryCity.value = 'Ijevan';
+            deliveryCity.setAttribute('readonly', 'readonly');
+            deliveryCity.style.backgroundColor = '#e9ecef';
+            document.getElementById('delivery_street').setAttribute('required', 'required');
+            document.getElementById('delivery_home').setAttribute('required', 'required');
 
-                document.getElementById('delivery_street').setAttribute('required', 'required');
-                document.getElementById('delivery_home').setAttribute('required', 'required');
-            } else {
-                addressFields.style.display = 'none';
-                deliveryCity.value = '';
-                deliveryCity.removeAttribute('readonly');
-                deliveryCity.style.backgroundColor = '';
-                document.getElementById('delivery_street').removeAttribute('required');
-                document.getElementById('delivery_home').removeAttribute('required');
-            }
+            fullSumEl.textContent = baseSum + deliveryFee; // добавляем 500 драм
+        } else {
+            addressFields.style.display = 'none';
+            deliveryCity.value = '';
+            deliveryCity.removeAttribute('readonly');
+            deliveryCity.style.backgroundColor = '';
+            document.getElementById('delivery_street').removeAttribute('required');
+            document.getElementById('delivery_home').removeAttribute('required');
+
+            fullSumEl.textContent = baseSum; // базовая сумма
         }
+    }
 
-        select.addEventListener('change', toggleAddressFields);
-        toggleAddressFields(); // init on load
-    });
+    select.addEventListener('change', toggleAddressFields);
+    toggleAddressFields(); // init on load
+});
 </script>
