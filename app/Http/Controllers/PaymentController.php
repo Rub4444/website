@@ -183,7 +183,15 @@ protected function processPayment(Request $request)
         $orderId = $request->query('order');
         $status  = $request->query('status'); // получаем success/fail из URL
 
-        if (!$orderId) {
+        // Логируем входящие данные для отладки
+        Log::info('handleReturn called', [
+            'order_id' => $orderId,
+            'status' => $status,
+            'all_request' => $request->all()
+        ]);
+
+        if (!$orderId)
+        {
             return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
         }
 
