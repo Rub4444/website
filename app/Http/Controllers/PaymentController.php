@@ -39,7 +39,7 @@ class PaymentController extends Controller
         $data = $request->all();
 
         // Логируем всё входящее
-        \Log::info('Telcell callback received', $data);
+        \Log::info('1111Telcell callback received', $data);
 
         $invoiceId = $data['invoice'] ?? null;
         $issuerId  = $data['issuer_id'] ?? null;
