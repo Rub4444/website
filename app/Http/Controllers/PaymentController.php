@@ -185,7 +185,7 @@ class PaymentController extends Controller
     // }
 public function handleReturn(Request $request)
     {
-        $orderId = $request->get('order_id'); // получаем ID заказа из callback
+        $orderId = $request->input('order'); // будет искать в GET и POST
 
         if (!$orderId) {
             return response()->json(['error' => 'Order ID не передан'], 400);
