@@ -199,7 +199,7 @@ public function handleReturn(Request $request)
 
         try {
             // Проверяем статус инвойса через Telcell
-            $status = $this->telcellService->checkInvoiceStatus($orderId);
+            $status = $this->telcell->checkInvoiceStatus($orderId);
 
             if ($status === 'PAID') {
                 $order->status = 'оплачен';
