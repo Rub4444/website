@@ -92,6 +92,7 @@ class BasketController extends Controller
         //     $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
         //     return redirect()->away($paymentUrl);
         // }
+        Log::info("BasketController->basketConfirm after order confirmed");
 
         // session()->flash('warning', 'Ошибка при создании платежа Telcell.');
         return response($invoiceHtml);

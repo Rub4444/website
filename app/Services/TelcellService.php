@@ -86,6 +86,8 @@ class TelcellService
      */
     public function createInvoiceHtml(string $buyer, float $sum, int $orderId): string
     {
+        Log::info("TellCellServiceHTML");
+
         $invoiceData = $this->createInvoice($buyer, $sum, $orderId);
 
         $html = '<form id="telcellForm" action="https://telcellmoney.am/invoices" method="POST">';
@@ -103,6 +105,8 @@ class TelcellService
      */
     public function verifyCallback(array $data): bool
     {
+        Log::info("verifyCallback");
+
         $checksum = md5(
             $this->key .
             $data['invoice'] .
@@ -123,6 +127,8 @@ class TelcellService
      */
     public function handleCallback(Request $request)
     {
+        Log::info("handleCallback");
+
         $data = $request->all();
 
         if (!$this->verifyCallback($data))

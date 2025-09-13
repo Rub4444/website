@@ -23,7 +23,7 @@ class PaymentController extends Controller
     {
         $buyer = $order->phone ?: $order->email;
         $sum   = $order->sum;
-
+        Log::alert("createPayment");
         // Генерируем HTML форму Telcell
         $formHtml = $this->telcell->createInvoiceHtml($buyer, $sum, $order->id);
 
@@ -161,6 +161,8 @@ class PaymentController extends Controller
      */
     public function handleReturn(Request $request)
     {
+        Log::alert("handleReturn");
+
         $orderId = $request->query('order');
 
         if (!$orderId) {
