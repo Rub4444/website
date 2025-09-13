@@ -148,43 +148,44 @@ class TelcellService
     }
 
     public function checkInvoiceStatus(int $orderId): string
-    {
-        $order = Order::findOrFail($orderId);
+{
+    $order = Order::findOrFail($orderId);
 
-        $invoiceId = $order->invoice_id; // или $order->issuer_id
+    $invoiceId = $order->invoice_id;
 
-        $checksumString = $this->key . $this->issuer . $invoiceId . $order->issuer_id;
-        $checksum = md5($checksumString);
+    $checksum = md5($this->key . $this->issuer . $invoiceId . $order->issuer_id);
 
-        $payload = [
-            'action'    => 'CheckInvoiceStatus',
-            'issuer'    => $this->issuer,
-            'invoice'   => $invoiceId,
-            'issuer_id' => $order->issuer_id,
-            'checksum'  => $checksum,
-        ];
+    $payload = [
+        'check_bill' => 1, // тип запроса
+        'issuer'     => $this->issuer,
+        'invoice'    => $invoiceId,
+        'issuer_id'  => $order->issuer_id,
+        'checksum'   => $checksum,
+    ];
 
-        try {
-            $response = Http::asForm()->post($this->url, $payload);
-            if (!$response->successful()) {
-                throw new Exception('Ошибка при обращении к Telcell: ' . $response->body());
-            }
+    try {
+        $response = Http::asForm()->post($this->url, $payload);
+        Log::info('Telcell response: ' . $response->body());
 
-            $data = $response->json();
-
-            if (!isset($data['status'])) {
-                throw new Exception('Не удалось получить статус инвойса');
-            }
-
-            // Обновляем статус заказа в базе
-            $order->invoice_status = strtoupper($data['status']);
-            $order->save();
-
-            return strtoupper($data['status']); // PAID, REJECTED, NEW и т.д.
-
-        } catch (Exception $e) {
-            Log::error('Telcell checkInvoiceStatus failed', ['exception' => $e]);
-            return 'ERROR';
+        if (!$response->successful()) {
+            throw new Exception('Ошибка при обращении к Telcell: ' . $response->body());
         }
+
+        $data = $response->json();
+
+        if (!isset($data['status'])) {
+            throw new Exception('Не удалось получить статус инвойса');
+        }
+
+        $order->invoice_status = strtoupper($data['status']);
+        $order->save();
+
+        return strtoupper($data['status']);
+
+    } catch (Exception $e) {
+        Log::error('Telcell checkInvoiceStatus failed', ['exception' => $e]);
+        return 'ERROR';
     }
+}
+
 }
