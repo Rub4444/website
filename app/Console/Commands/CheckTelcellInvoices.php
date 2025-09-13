@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Order;
 use App\Services\TelcellService;
-
+use Exception;
 class CheckTelcellInvoices extends Command
 {
     protected $signature = 'telcell:check-invoices';
