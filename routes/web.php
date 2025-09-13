@@ -124,10 +124,12 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
         Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
         Route::get('/payment/pay', [PaymentController::class, 'pay']);
-        Route::post('/payment/callback', [PaymentController::class, 'callback'])
-        ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
-        ->middleware('throttle:30,1') // 30 запросов в минуту
-        ->name('payment.callback');
+        // Route::post('/payment/callback', [PaymentController::class, 'callback'])
+        // ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+        // ->middleware('throttle:30,1') // 30 запросов в минуту
+        // ->name('payment.callback');
+        Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+
         Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
 
         // Route::get('/test-telcell-refund', function() {
