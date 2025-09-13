@@ -69,7 +69,7 @@ class BasketController extends Controller
         $buyer = $request->phone ?: $email;
         $description = "Оплата заказа #{$order->id}";
         // $issuerId = (string)$order->id;
-
+        Log::info("BasketController->basketConfirm");
         $result = $telcell->createInvoice(
             $buyer,         // string
             $order->sum,    // float
@@ -82,6 +82,7 @@ class BasketController extends Controller
             $order->sum,
             $order->id
         );
+        Log::info("BasketController->basketConfirm after createInvoice");
 
         session()->flash('success', __('basket.your_order_confirmed'));
 

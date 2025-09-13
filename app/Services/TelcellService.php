@@ -52,12 +52,12 @@ class TelcellService
         'security_code' => $securityCode,
         'lang'          => 'am',
         'buyer'         => $buyer,
+        'callbackUrl'   => route('payment.callback', [], true),
         // 'successUrl'    => route('payment.return', ['order' => $orderId], true),
         // 'failUrl'       => route('payment.return', ['order' => $orderId], true),
         'successUrl' => route('payment.return', ['order' => $orderId, 'status' => 'success'], true),
         'failUrl'    => route('payment.return', ['order' => $orderId, 'status' => 'fail'], true),
 
-        'callbackUrl'   => route('payment.callback', [], true),
     ];
 
     if ($info) {
@@ -77,7 +77,7 @@ class TelcellService
     $order->issuer_id      = $issuerIdEncoded; // ✅ новое поле
     $order->invoice_status = 'CREATED';
     $order->save();
-
+    Log::info("TellCellService", $order);
     return $postData;
 }
 
