@@ -52,11 +52,11 @@ class TelcellService
         'security_code' => $securityCode,
         'lang'          => 'am',
         'buyer'         => $buyer,
-        'callbackUrl'   => route('payment.callback', [], true),
         // 'successUrl'    => route('payment.return', ['order' => $orderId], true),
         // 'failUrl'       => route('payment.return', ['order' => $orderId], true),
         'successUrl' => route('payment.return', ['order' => $orderId, 'status' => 'success'], true),
         'failUrl'    => route('payment.return', ['order' => $orderId, 'status' => 'fail'], true),
+        'callbackUrl'   => route('payment.callback', [], true),
 
     ];
 
@@ -146,44 +146,4 @@ class TelcellService
 
         return response('OK', 200);
     }
-
-    public function checkInvoiceStatus(int $orderId): string
-    {
-        $order = Order::findOrFail($orderId);
-        $invoiceId = $order->invoice_id;
-        $issuerId = $order->issuer_id;
-
-        $checksum = md5($this->key . $this->issuer . $invoiceId . $issuerId);
-
-        $payload = [
-            'action'    => 'CheckInvoiceStatus',
-            'issuer'    => $this->issuer,
-            'invoice'   => $invoiceId,
-            'issuer_id' => $issuerId,
-            'checksum'  => $checksum,
-        ];
-
-        try {
-            $response = Http::asForm()->post($this->url, $payload);
-            Log::info('Telcell response: ' . $response->body());
-
-            if (!$response->successful()) {
-                throw new Exception('Ошибка при обращении к Telcell: ' . $response->body());
-            }
-
-            $data = $response->json();
-
-            $status = $data['status'] ?? 'ERROR';
-            $order->invoice_status = strtoupper($status);
-            $order->save();
-
-            return strtoupper($status);
-
-        } catch (Exception $e) {
-            Log::error('Telcell checkInvoiceStatus failed', ['exception' => $e]);
-            return 'ERROR';
-        }
-    }
-
-
 }

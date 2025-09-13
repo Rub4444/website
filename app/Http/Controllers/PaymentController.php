@@ -163,8 +163,9 @@ class PaymentController extends Controller
     public function handleReturn(Request $request)
     {
         Log::alert("handleReturn");
-
-        $order = Order::find($request->order);
+        $orderId = $request->input('order');
+        $status  = $request->input('status');
+        $order = Order::find($orderId);
 
         if (!$order) {
             return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
