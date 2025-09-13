@@ -176,11 +176,16 @@ class PaymentController extends Controller
             return redirect('/')->with('error', 'Պատվերը չի գտնվել');
         }
 
-        if ($order->isStatus(Order::STATUS_PAID)) {
+        if ($order->status === 'PAID')
+        {
             return view('payment.success', compact('order'));
-        } elseif ($order->isStatus(Order::STATUS_CANCELLED)) {
+        }
+        elseif ($order->status === 'REJECTED')
+        {
             return view('payment.fail', compact('order'));
-        } else {
+        }
+        else
+        {
             return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
         }
     }
