@@ -36,6 +36,7 @@ class PaymentController extends Controller
 
     public function callback(Request $request)
     {
+        \Log::info('1111Telcell callback received', $request->all());
         $data = $request->all();
 
         // Логируем всё входящее
