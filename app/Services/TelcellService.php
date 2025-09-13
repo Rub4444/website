@@ -6,7 +6,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-
+use Exception;
 class TelcellService
 {
     protected string $issuer;
