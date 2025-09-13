@@ -169,9 +169,6 @@ class PaymentController extends Controller
         if (!$order) {
             return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
         }
-
-        $order = Order::find($order);
-
         if (!$order) {
             return redirect('/')->with('error', 'Պատվերը չի գտնվել');
         }
