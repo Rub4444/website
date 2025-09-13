@@ -146,30 +146,32 @@ class TelcellService
 
         return response('OK', 200);
     }
-     public function checkInvoiceStatus(int $orderId): string
-    {
-        $url = "https://telcell.am/api"; // реальный URL API Telcell
 
-        $payload = [
-            'action' => 'CheckInvoiceStatus',
-            'issuer' => $this->shopId,
-            'issuer_id' => base64_encode($orderId), // если у Telcell нужен order_id
-            'security_code' => $this->shopKey,
-        ];
+    public function checkInvoiceStatus(int $orderId): string
+{
+    $url = "https://telcell.am/api"; // реальный URL API Telcell
 
-        $response = Http::post($url, $payload);
+    $payload = [
+        'action'    => 'CheckInvoiceStatus',
+        'issuer'    => $this->issuer,       // <-- исправлено
+        'issuer_id' => base64_encode($orderId),
+        'security_code' => $this->key,      // <-- исправлено
+    ];
 
-        if (!$response->successful()) {
-            throw new Exception('Ошибка при обращении к Telcell: ' . $response->body());
-        }
+    $response = Http::post($url, $payload);
 
-        $data = $response->json();
-
-        if (!isset($data['status'])) {
-            throw new Exception('Не удалось получить статус инвойса');
-        }
-
-        // Возможные статусы: PAID, REJECTED, PENDING
-        return strtoupper($data['status']);
+    if (!$response->successful()) {
+        throw new \Exception('Ошибка при обращении к Telcell: ' . $response->body());
     }
+
+    $data = $response->json();
+
+    if (!isset($data['status'])) {
+        throw new \Exception('Не удалось получить статус инвойса');
+    }
+
+    // Возможные статусы: PAID, REJECTED, PENDING
+    return strtoupper($data['status']);
+}
+
 }
