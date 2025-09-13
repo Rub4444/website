@@ -159,66 +159,31 @@ class PaymentController extends Controller
     /**
      * Возврат клиента после оплаты
      */
-    // public function handleReturn(Request $request)
-    // {
-    //     Log::alert("handleReturn");
-
-    //     $orderId = $request->query('order');
-
-    //     if (!$orderId) {
-    //         return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
-    //     }
-
-    //     $order = Order::find($orderId);
-
-    //     if (!$order) {
-    //         return redirect('/')->with('error', 'Պատվերը չի գտնվել');
-    //     }
-
-    //     if ($order->isStatus(Order::STATUS_PAID)) {
-    //         return view('payment.success', compact('order'));
-    //     } elseif ($order->isStatus(Order::STATUS_CANCELLED)) {
-    //         return view('payment.fail', compact('order'));
-    //     } else {
-    //         return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
-    //     }
-    // }
-public function handleReturn(Request $request)
+    public function handleReturn(Request $request)
     {
-        $orderId = $request->input('order'); // будет искать в GET и POST
+        Log::alert("handleReturn");
+
+        $orderId = $request->query('order');
 
         if (!$orderId) {
-            return response()->json(['error' => 'Order ID не передан'], 400);
+            return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
         }
 
         $order = Order::find($orderId);
 
         if (!$order) {
-            return response()->json(['error' => 'Заказ не найден'], 404);
+            return redirect('/')->with('error', 'Պատվերը չի գտնվել');
         }
 
-        try {
-            // Проверяем статус инвойса через Telcell
-            $status = $this->telcell->checkInvoiceStatus($orderId);
-
-            if ($status === 'PAID') {
-                $order->status = 'оплачен';
-                $order->save();
-
-                // Можно отправлять email или выполнять другие действия
-                return response()->json(['message' => 'Оплата успешно подтверждена']);
-            } elseif ($status === 'REJECTED') {
-                $order->status = 'отменен';
-                $order->save();
-                return response()->json(['message' => 'Оплата отклонена']);
-            } else {
-                // PENDING или другой статус
-                return response()->json(['message' => 'Статус оплаты: ' . $status]);
-            }
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Ошибка при проверке статуса: ' . $e->getMessage()], 500);
+        if ($order->isStatus(Order::STATUS_PAID)) {
+            return view('payment.success', compact('order'));
+        } elseif ($order->isStatus(Order::STATUS_CANCELLED)) {
+            return view('payment.fail', compact('order'));
+        } else {
+            return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
         }
     }
+
 
 
     /**

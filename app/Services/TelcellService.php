@@ -148,30 +148,43 @@ class TelcellService
     }
 
     public function checkInvoiceStatus(int $orderId): string
-{
-    $url = "https://telcell.am/api"; // реальный URL API Telcell
+    {
+        $order = Order::findOrFail($orderId);
 
-    $payload = [
-        'action'    => 'CheckInvoiceStatus',
-        'issuer'    => $this->issuer,       // <-- исправлено
-        'issuer_id' => base64_encode($orderId),
-        'security_code' => $this->key,      // <-- исправлено
-    ];
+        $invoiceId = $order->invoice_id; // или $order->issuer_id
 
-    $response = Http::post($url, $payload);
+        $checksumString = $this->key . $this->issuer . $invoiceId . $order->issuer_id;
+        $checksum = md5($checksumString);
 
-    if (!$response->successful()) {
-        throw new \Exception('Ошибка при обращении к Telcell: ' . $response->body());
+        $payload = [
+            'action'    => 'CheckInvoiceStatus',
+            'issuer'    => $this->issuer,
+            'invoice'   => $invoiceId,
+            'issuer_id' => $order->issuer_id,
+            'checksum'  => $checksum,
+        ];
+
+        try {
+            $response = Http::asForm()->post($this->url, $payload);
+            if (!$response->successful()) {
+                throw new Exception('Ошибка при обращении к Telcell: ' . $response->body());
+            }
+
+            $data = $response->json();
+
+            if (!isset($data['status'])) {
+                throw new Exception('Не удалось получить статус инвойса');
+            }
+
+            // Обновляем статус заказа в базе
+            $order->invoice_status = strtoupper($data['status']);
+            $order->save();
+
+            return strtoupper($data['status']); // PAID, REJECTED, NEW и т.д.
+
+        } catch (Exception $e) {
+            Log::error('Telcell checkInvoiceStatus failed', ['exception' => $e]);
+            return 'ERROR';
+        }
     }
-
-    $data = $response->json();
-
-    if (!isset($data['status'])) {
-        throw new \Exception('Не удалось получить статус инвойса');
-    }
-
-    // Возможные статусы: PAID, REJECTED, PENDING
-    return strtoupper($data['status']);
-}
-
 }
