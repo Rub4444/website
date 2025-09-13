@@ -121,8 +121,8 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
 
 
         //TellCell
-        Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
         Route::get('/basket/pay/{order}', [BasketController::class, 'payWithTelcell'])->name('basket.pay');
+        Route::get('/payment/{order}/create', [PaymentController::class, 'createPayment'])->name('payment.create');
         Route::get('/payment/pay', [PaymentController::class, 'pay']);
         Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
         Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
