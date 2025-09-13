@@ -77,7 +77,7 @@ class TelcellService
     $order->issuer_id      = $issuerIdEncoded; // ✅ новое поле
     $order->invoice_status = 'CREATED';
     $order->save();
-    Log::info("TellCellService", $order);
+    Log::info("TellCellService");
     return $postData;
 }
 
