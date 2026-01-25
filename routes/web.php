@@ -130,11 +130,14 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::get('/payment/pending/{order}', [PaymentController::class, 'pending'])
             ->name('payment.pending');
 
-        Route::get('/payment/status/{order}', function (Order $order) {
+        Route::get('/payment/status/{order}', function ($orderId) {
+            $order = \App\Models\Order::findOrFail($orderId);
+
             return response()->json([
                 'status' => $order->invoice_status,
             ]);
         });
+
 
 
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
