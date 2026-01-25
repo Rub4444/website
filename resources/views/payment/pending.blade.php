@@ -30,30 +30,26 @@ const interval = setInterval(async () => {
             }
         });
 
-        console.log('📡 HTTP status:', res.status);
-
         const data = await res.json();
         console.log('📦 Response:', data);
 
         if (data.invoice_status === 'PAID') {
-            console.log('✅ PAID → redirect');
             clearInterval(interval);
-            window.location.href = "/payment/success/{{ $order->id }}";
+            window.location.href = "/?payment=success";
         }
 
         if (data.invoice_status === 'REJECTED') {
-            console.log('❌ REJECTED → redirect');
             clearInterval(interval);
-            window.location.href = "/payment/fail/{{ $order->id }}";
+            window.location.href = "/?payment=fail";
         }
 
     } catch (e) {
-        console.error('⚠️ Fetch failed:', e);
+        console.warn('Waiting for payment...');
     }
 
     if (tries > 20) {
         clearInterval(interval);
-        console.warn('⌛ Timeout waiting payment');
+        window.location.href = "/?payment=timeout";
     }
-}, 5000);
+}, 3000);
 </script>

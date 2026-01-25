@@ -72,6 +72,18 @@ class MainController extends Controller
             ->take(8)
             ->get();
 
+        if ($request->payment === 'success') {
+            session()->flash('success', 'Վճարումը հաջողությամբ կատարվել է');
+        }
+
+        if ($request->payment === 'fail') {
+            session()->flash('error', 'Վճարումը չհաջողվեց');
+        }
+
+        if ($request->payment === 'timeout') {
+            session()->flash('warning', 'Վճարումը դեռ չի հաստատվել');
+        }
+
         return view('index', compact('categories', 'randomSkus', 'newSkus', 'banners'));
     }
 

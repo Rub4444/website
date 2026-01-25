@@ -42,30 +42,30 @@
         overflow-y: auto; /* или: overflow-y: overlay (если поддерживается) */
         }
         /* стандартный padding для ПК */
-.main__header {
-    padding-top: 50px; /* или сколько нужно */
-}
+        .main__header {
+            padding-top: 50px; /* или сколько нужно */
+        }
 
-/* планшеты */
-@media (max-width: 991.98px) {
-    .main__header {
-        padding-top: 60px;
-    }
-}
+        /* планшеты */
+        @media (max-width: 991.98px) {
+            .main__header {
+                padding-top: 60px;
+            }
+        }
 
-/* мобильные */
-@media (max-width: 767.98px) {
-    .main__header {
-        padding-top: 40px;
-    }
-}
+        /* мобильные */
+        @media (max-width: 767.98px) {
+            .main__header {
+                padding-top: 40px;
+            }
+        }
 
-/* очень маленькие экраны */
-@media (max-width: 575.98px) {
-    .main__header {
-        padding-top: 70px;
-    }
-}
+        /* очень маленькие экраны */
+        @media (max-width: 575.98px) {
+            .main__header {
+                padding-top: 70px;
+            }
+        }
 
     </style>
 </head>
