@@ -92,20 +92,65 @@ class PaymentController extends Controller
     // }
 
 
+    // public function callback(Request $request)
+    // {
+    //     // 1. Логируем входящие данные
+    //     \Log::info('Telcell callback received', $request->all());
+
+    //     // 2. Отвечаем Telcell максимально быстро
+    //     response('OK', 200)->send();
+
+    //     // 3. Выполняем остальную логику после ответа
+    //     $this->processPayment($request);
+
+    //     // 4. Завершаем выполнение, чтобы ничего лишнего не выполнялось
+    //     exit;
+    // }
+
     public function callback(Request $request)
     {
-        // 1. Логируем входящие данные
-        \Log::info('Telcell callback received', $request->all());
+        Log::info('Telcell callback', $request->all());
 
-        // 2. Отвечаем Telcell максимально быстро
-        response('OK', 200)->send();
+        if (!$this->telcell->verifyCallback($request->all())) {
+            Log::warning('Telcell checksum failed');
+            return response('Invalid checksum', 400);
+        }
 
-        // 3. Выполняем остальную логику после ответа
-        $this->processPayment($request);
+        $issuerId = $request->input('issuer_id');
+        [$orderId] = explode('|', base64_decode($issuerId));
 
-        // 4. Завершаем выполнение, чтобы ничего лишнего не выполнялось
-        exit;
+        $order = Order::find($orderId);
+        if (!$order) {
+            return response('Order not found', 404);
+        }
+
+        // idempotency
+        if ($order->status === Order::STATUS_PAID) {
+            return response('OK', 200);
+        }
+
+        $status = strtoupper($request->input('status'));
+
+        $order->update([
+            'invoice_status' => $status,
+        ]);
+
+        // idempotency
+        if ($order->status === Order::STATUS_PAID && $status === 'PAID') {
+            return response('OK', 200);
+        }
+
+        if ($status === 'PAID') {
+            $order->markAsPaid();
+        } elseif ($status === 'REJECTED') {
+            $order->markAsCancelled();
+        }
+
+        return response('OK', 200);
+
     }
+
+
     protected function processPayment(Request $request)
     {
         try {

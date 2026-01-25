@@ -5,110 +5,84 @@ namespace App\Services;
 use App\Models\Order;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
-use Exception;
+
 class TelcellService
 {
-    protected string $issuer;
-    protected string $key;
+    protected string $shopId;
+    protected string $shopKey;
     protected string $url;
 
     public function __construct()
     {
-        $this->issuer = config('services.telcell.shop_id'); // твой shop_id
-        $this->key    = config('services.telcell.shop_key'); // твой shop_key
-        $this->url    = 'https://telcellmoney.am/invoices';
+        $this->shopId  = config('services.telcell.shop_id');
+        $this->shopKey = config('services.telcell.shop_key');
+        $this->url     = config('services.telcell.url');
     }
 
     /**
-     * Создание счета и сохранение issuer_id в заказе
+     * Создание счета Telcell
      */
-    public function createInvoice(string $buyer, float $sum, int $orderId, int $validDays = 1, ?string $info = null): array
-{
-    $order = Order::findOrFail($orderId);
-
-    $currency = '֏';
-    $productEncoded  = base64_encode("IjevanMarket");
-    $issuerIdEncoded = base64_encode((string)$orderId);
-
-    $checksumString = $this->key .
-                      $this->issuer .
-                      $currency .
-                      number_format($sum, 2, '.', '') .
-                      $productEncoded .
-                      $issuerIdEncoded .
-                      $validDays;
-
-    $securityCode = md5($checksumString);
-
-    $postData = [
-        'action'        => 'PostInvoice',
-        'issuer'        => $this->issuer,
-        'currency'      => $currency,
-        'price'         => number_format($sum, 2, '.', ''),
-        'product'       => $productEncoded,
-        'issuer_id'     => $issuerIdEncoded,
-        'valid_days'    => $validDays,
-        'security_code' => $securityCode,
-        'lang'          => 'am',
-        'buyer'         => $buyer,
-        // 'successUrl'    => route('payment.return', ['order' => $orderId], true),
-        // 'failUrl'       => route('payment.return', ['order' => $orderId], true),
-        'successUrl' => route('payment.return', ['order' => $orderId, 'status' => 'success'], true),
-        'failUrl'    => route('payment.return', ['order' => $orderId, 'status' => 'fail'], true),
-        'callbackUrl'   => route('payment.callback', [], true),
-
-    ];
-
-    if ($info) {
-        $postData['info'] = base64_encode($info);
-    }
-
-    // Log::info('Telcell POST Request:', $postData);
-
-    try {
-        Http::asForm()->post($this->url, $postData);
-    } catch (\Exception $e) {
-        Log::error('Telcell createInvoice failed', ['exception' => $e]);
-    }
-
-    // Сохраняем invoice_id, issuer_id и статус заказа
-    $order->invoice_id     = $issuerIdEncoded;
-    $order->issuer_id      = $issuerIdEncoded; // ✅ новое поле
-    $order->invoice_status = 'CREATED';
-    $order->save();
-    Log::info("TellCellService");
-    return $postData;
-}
-
-    /**
-     * Формирование HTML-формы для оплаты
-     */
-    public function createInvoiceHtml(string $buyer, float $sum, int $orderId): string
+    public function createInvoice(Order $order, string $buyer): array
     {
-        Log::info("TellCellServiceHTML");
+        // безопасный issuer_id
+        $issuerId = base64_encode($order->id . '|' . now()->timestamp);
 
-        $invoiceData = $this->createInvoice($buyer, $sum, $orderId);
+        $amount   = number_format($order->getTotalForPayment(), 2, '.', '');
+        $currency = 'AMD';
+        $product  = base64_encode('IjevanMarket');
 
-        $html = '<form id="telcellForm" action="https://telcellmoney.am/invoices" method="POST">';
-        foreach ($invoiceData as $key => $value) {
-            $html .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
+        $checksum = md5(
+            $this->shopKey .
+            $this->shopId .
+            $currency .
+            $amount .
+            $product .
+            $issuerId .
+            1
+        );
+
+        $payload = [
+            'action'        => 'PostInvoice',
+            'issuer'        => $this->shopId,
+            'currency'      => $currency,
+            'price'         => $amount,
+            'product'       => $product,
+            'issuer_id'     => $issuerId,
+            'valid_days'    => 1,
+            'buyer'         => $buyer,
+            'security_code' => $checksum,
+            'lang'          => 'am',
+            'successUrl'    => route('payment.return', ['order' => $order->id, 'status' => 'success'], true),
+            'failUrl'       => route('payment.return', ['order' => $order->id, 'status' => 'fail'], true),
+            'callbackUrl'   => route('payment.callback', [], true),
+        ];
+
+        $response = Http::asForm()->post($this->url, $payload);
+
+        if (!$response->successful()) {
+            Log::error('Telcell invoice failed', ['response' => $response->body()]);
+            throw new \RuntimeException('Telcell invoice error');
         }
-        $html .= '</form>';
-        $html .= '<script>document.getElementById("telcellForm").submit();</script>';
 
-        return $html;
+        $order->update([
+            'issuer_id'      => $issuerId,
+            'invoice_status' => 'CREATED',
+        ]);
+
+        return $payload;
     }
 
     /**
-     * Проверка подписи callback-а
+     * Проверка подписи callback
      */
     public function verifyCallback(array $data): bool
     {
-        Log::info("verifyCallback");
+        if (!isset($data['checksum'], $data['invoice'], $data['issuer_id'])) {
+            return false;
+        }
 
-        $checksum = md5(
-            $this->key .
+        $expected = md5(
+            $this->shopKey .
             $data['invoice'] .
             $data['issuer_id'] .
             ($data['payment_id'] ?? '') .
@@ -118,32 +92,22 @@ class TelcellService
             ($data['time'] ?? '') .
             ($data['status'] ?? '')
         );
+        // Log::info('TEST_CHECKSUM_DEBUG', [
+        //     'expected' => md5(
+        //         config('services.telcell.shop_key') .
+        //         request('invoice') .
+        //         request('issuer_id') .
+        //         '' .
+        //         '' .
+        //         request('currency') .
+        //         request('sum') .
+        //         request('time') .
+        //         'REJECTED'
+        //     )
+        // ]);
 
-        return $checksum === ($data['checksum'] ?? null);
-    }
 
-    /**
-     * Обработка callback-а от Telcell
-     */
-    public function handleCallback(Request $request)
-    {
-        Log::info("handleCallback");
 
-        $data = $request->all();
-
-        if (!$this->verifyCallback($data))
-        {
-            return response('Invalid checksum', 400);
-        }
-
-        $orderId = base64_decode($data['issuer_id']);
-        $order = Order::find($orderId);
-
-        if (!$order) return response('Order not found', 404);
-
-        $order->invoice_status = $data['status'];
-        $order->save();
-
-        return response('OK', 200);
+        return hash_equals($expected, $data['checksum']);
     }
 }
