@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\Traits;
 
 use Illuminate\Support\Facades\App;
@@ -7,26 +8,26 @@ trait Translatable
 {
     protected $defaultLocale = 'arm';
 
-    public function __($originFieldName)
+    public function __($field)
     {
-        $locale = App::getLocale() ?? $this->defaultLocale;
+        $locale = App::getLocale() ?: $this->defaultLocale;
 
-        if ($locale === 'en') {
-            $fieldName = $originFieldName . '_en';
-        } else {
-            $fieldName = $originFieldName;
-        }
-        $attributes =  array_keys($this->attributes);
-
-        if(!in_array($fieldName, $attributes))
-        {
-            throw new \LogicException('no such attribute for model ' . get_class($this));
+        // если не en — всегда базовое поле
+        if ($locale !== 'en') {
+            return $this->$field ?? null;
         }
 
-        if ($locale === 'en' && (empty($this->$fieldName))) {
-            return $this->$originFieldName;
+        $translatedField = $field . '_en';
+
+        // если есть name_en и он не пустой
+        if (
+            array_key_exists($translatedField, $this->attributes) &&
+            !empty($this->$translatedField)
+        ) {
+            return $this->$translatedField;
         }
 
-        return $this->$fieldName;
+        // fallback на name
+        return $this->$field ?? null;
     }
 }

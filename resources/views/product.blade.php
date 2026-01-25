@@ -15,8 +15,17 @@
             <div class="col-lg-6">
                 <div class="bg-white rounded shadow-sm p-4 position-relative d-flex justify-content-center align-items-center" style="min-height: 320px;">
                     <a class="glightbox" data-gallery="product-gallery" href="{{ Storage::url($skus->image) }}">
-                        <img src="{{ Storage::url($skus->image) }}" alt="{{ $skus->product->__('name') }}"
-                            class="img-fluid" style="max-height: 280px; object-fit: contain;">
+                        @if ($skus->image)
+                            <img src="{{ Storage::url($skus->image) }}" 
+                                alt="{{ $skus->product->__('name') }}"
+                                class="img-fluid" 
+                                style="max-height: 280px; object-fit: contain;">
+                        @else
+                            <img src="{{ asset('img/no-image.png') }}"
+                                class="img-fluid"
+                                alt="No image"  
+                                style="max-height: 280px; object-fit: contain;">
+                        @endif
                     </a>
 
                     @auth

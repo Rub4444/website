@@ -27,10 +27,17 @@
                                          alt="Product"
                                          class="rounded"
                                          style="width: 70px; height: 70px; object-fit: cover;"> --}}
-                                    <img src="{{ Storage::url($sku->image) }}"
-                                    alt="Product"
-                                    class="rounded"
-                                    style="width: 70px; height: 70px; object-fit: contain;">
+                                    @if ($sku->image)
+                                        <img src="{{ Storage::url($sku->image) }}"
+                                            alt="{{ $sku->product->__('name') }}"
+                                            class="rounded"
+                                            style="width: 70px; height: 70px; object-fit: contain;">
+                                    @else
+                                        <img src="{{ asset('img/no-image.png') }}"
+                                            class="rounded"
+                                            alt="No image"  
+                                            style="width: 70px; height: 70px; object-fit: contain;">
+                                    @endif
                                 </a>
                                 <div>
                                     <h6 class="mb-0">
