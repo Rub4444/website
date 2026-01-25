@@ -12,18 +12,48 @@
 </div>
 
 <script>
-setInterval(async () => {
-    const res = await fetch('/payment/status/{{ $order->id }}');
-    const data = await res.json();
+const statusUrl = "/api/payment-status/{{ $order->id }}";
+let tries = 0;
 
-    if (data.status === 'PAID') {
-        window.location.href = '/payment/success/{{ $order->id }}';
+console.log('⏳ Pending page loaded');
+console.log('🔗 Status URL:', statusUrl);
+
+const interval = setInterval(async () => {
+    tries++;
+    console.log(`🔄 Try #${tries}`);
+
+    try {
+        const res = await fetch(statusUrl, {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        console.log('📡 HTTP status:', res.status);
+
+        const data = await res.json();
+        console.log('📦 Response:', data);
+
+        if (data.invoice_status === 'PAID') {
+            console.log('✅ PAID → redirect');
+            clearInterval(interval);
+            window.location.href = "/payment/success/{{ $order->id }}";
+        }
+
+        if (data.invoice_status === 'REJECTED') {
+            console.log('❌ REJECTED → redirect');
+            clearInterval(interval);
+            window.location.href = "/payment/fail/{{ $order->id }}";
+        }
+
+    } catch (e) {
+        console.error('⚠️ Fetch failed:', e);
     }
 
-    if (data.invoice_status === 'REJECTED') {
-        window.location.href = '/payment/fail/{{ $order->id }}';
+    if (tries > 20) {
+        clearInterval(interval);
+        console.warn('⌛ Timeout waiting payment');
     }
-}, 2000);
+}, 5000);
 </script>
-
-@endsection
