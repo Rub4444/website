@@ -35,6 +35,10 @@ Route::get('/payment/status/{order}', function (Order $order) {
     ]);
 })->name('payment.status');
 
+Route::get('/payment/success/{order}', [PaymentController::class, 'success'])
+    ->name('payment.success');
+
+
 Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
     Route::get('/email/verify', function ()
     {
