@@ -202,37 +202,27 @@ class PaymentController extends Controller
      * Возврат клиента после оплаты
      */
     public function handleReturn(Request $request)
-    {
-        Log::alert("handleReturn");
-        $orderId = $request->input('order');
-        $status  = $request->input('status');
-        $order = Order::find($orderId);
+{
+    Log::alert('handleReturn');
 
-        if (!$order) {
-            return redirect('/')->with('error', 'Պատվերի համարը նշված չէ');
-        }
-        if (!$order) {
-            return redirect('/')->with('error', 'Պատվերը չի գտնվել');
-        }
+    $orderId = (int) $request->input('order');
+    $order = Order::find($orderId);
 
-        if ($order->status === 'PAID')
-        {
-            return view('payment.success', compact('order'));
-        }
-        elseif ($order->status === 'REJECTED')
-        {
-            return view('payment.fail', compact('order'));
-        }
-        // else
-        // {
-        //     return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
-        // }
-        else
-        {
-            return redirect()->route('payment.pending', ['order' => $order->id]);
-        }
-
+    if (!$order) {
+        return redirect('/')->with('error', 'Պատվերը չի գտնվել');
     }
+
+    if ($order->status === Order::STATUS_PAID) {
+        return view('payment.success', compact('order'));
+    }
+
+    if ($order->invoice_status === 'REJECTED') {
+        return view('payment.fail', compact('order'));
+    }
+
+    return view('payment.pending', compact('order'));
+}
+
 
     public function pending(Order $order)
     {
