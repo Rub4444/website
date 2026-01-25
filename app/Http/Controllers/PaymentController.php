@@ -137,17 +137,17 @@ class PaymentController extends Controller
         if ($order->status === Order::STATUS_PAID) {
             return response('OK', 200);
         }
-        if ($status === 'PAID') {
-            $order->update([
-                'status' => Order::STATUS_PAID,
-                'invoice_status' => 'PAID'
-            ]);
-        }
-
         // if ($status === 'PAID') {
-        //     $order->markAsPaid();
-        //     $order->update(['invoice_status' => 'PAID']);
+        //     $order->update([
+        //         'status' => Order::STATUS_PAID,
+        //         'invoice_status' => 'PAID'
+        //     ]);
         // }
+
+        if ($status === 'PAID') {
+            $order->markAsPaid();
+            $order->update(['invoice_status' => 'PAID']);
+        }
 
         if ($status === 'REJECTED') {
             $order->markAsCancelled();
@@ -225,12 +225,12 @@ class PaymentController extends Controller
         return redirect('/')->with('error', 'Պատվերը չի գտնվել');
     }
 
-    // if ($order->status === Order::STATUS_PAID) {
-    //     return view('payment.success', compact('order'));
-    // }
-    if ($order->invoice_status === 'PAID') {
-        return redirect()->route('payment.success', $order);
+    if ($order->status === Order::STATUS_PAID) {
+        return view('payment.success', compact('order'));
     }
+    // if ($order->invoice_status === 'PAID') {
+    //     return redirect()->route('payment.success', $order);
+    // }
 
 
     if ($order->invoice_status === 'REJECTED') {
