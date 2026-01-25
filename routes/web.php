@@ -127,6 +127,16 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
         Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
 
+        Route::get('/payment/pending/{order}', [PaymentController::class, 'pending'])
+            ->name('payment.pending');
+
+        Route::get('/payment/status/{order}', function (Order $order) {
+            return response()->json([
+                'status' => $order->invoice_status,
+            ]);
+        });
+
+
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
         Route::post('/basket/add/{skus}', [BasketController::class, 'basketAdd'])->name('basket-add');

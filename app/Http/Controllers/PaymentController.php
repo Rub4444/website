@@ -227,12 +227,21 @@ class PaymentController extends Controller
         {
             return view('payment.fail', compact('order'));
         }
+        // else
+        // {
+        //     return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
+        // }
         else
         {
-            return redirect('/')->with('warning', 'Վճարումը դեռեւս չի հաստատվել');
+            return redirect()->route('payment.pending', ['order' => $order->id]);
         }
+
     }
 
+    public function pending(Order $order)
+    {
+        return view('payment.pending', compact('order'));
+    }
 
 
     /**

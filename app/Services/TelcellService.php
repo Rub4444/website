@@ -25,19 +25,16 @@ class TelcellService
     public function createInvoice(Order $order, string $buyer): array
     {
         if ($order->invoice_status === 'CREATED') {
-            Log::warning('Telcell invoice already exists', [
-                'order_id' => $order->id,
-                'issuer_id' => $order->issuer_id,
-            ]);
-
-            return [];
+            throw new \RuntimeException('Invoice already created');
         }
+
 
         // безопасный issuer_id
         $issuerId = base64_encode($order->id . '|' . now()->timestamp);
 
         $amount   = number_format($order->getTotalForPayment(), 2, '.', '');
-        $currency = '֏';
+        $currency = 51;
+        // $currency = 'AMD';
         $product  = base64_encode('IjevanMarket');
 
         $checksum = md5(
@@ -95,12 +92,17 @@ class TelcellService
      */
     public function verifyCallback(array $data): bool
     {
-        if (!isset($data['checksum'], $data['invoice'], $data['issuer_id'])) {
+        if (!isset(
+            $data['checksum'],
+            $data['invoice'],
+            $data['issuer_id'],
+            $data['status']
+        )) {
             return false;
         }
 
-        $expected = md5(
-            $this->shopKey .
+        $checksumString =
+            config('services.telcell.shop_key') .
             $data['invoice'] .
             $data['issuer_id'] .
             ($data['payment_id'] ?? '') .
@@ -108,33 +110,31 @@ class TelcellService
             ($data['currency'] ?? '') .
             ($data['sum'] ?? '') .
             ($data['time'] ?? '') .
-            ($data['status'] ?? '')
-        );
-        // Log::info('TEST_CHECKSUM_DEBUG', [
-        //     'expected' => md5(
-        //         config('services.telcell.shop_key') .
-        //         request('invoice') .
-        //         request('issuer_id') .
-        //         '' .
-        //         '' .
-        //         request('currency') .
-        //         request('sum') .
-        //         request('time') .
-        //         'REJECTED'
-        //     )
-        // ]);
+            $data['status'];
 
+        $expected = md5($checksumString);
 
+        Log::info('TELCELL CHECKSUM DEBUG', [
+            'string'   => $checksumString,
+            'expected' => $expected,
+            'received' => $data['checksum'],
+        ]);
 
         return hash_equals($expected, $data['checksum']);
     }
+
 
     /**
      * HTML-форма с автосабмитом (редирект на Telcell)
      */
     public function createInvoiceHtml(Order $order, string $buyer): string
     {
-        $payload = $this->createInvoice($order, $buyer);
+        try {
+            $payload = $this->createInvoice($order, $buyer);
+        } catch (\RuntimeException $e) {
+            return '';
+        }
+
 
         $html = '<form id="telcellForm" method="POST" action="'.$this->url.'">';
 

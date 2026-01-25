@@ -28,8 +28,7 @@ class BasketController extends Controller
     {
         $basket = new Basket();
 
-        if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse())
-        {
+        if ($basket->getOrder()->hasCoupon() && !$basket->getOrder()->coupon->availableForUse()) {
             $basket->clearCoupon();
             session()->flash('warning', __('basket.coupon_is_not_available'));
             return redirect()->route('basket');
@@ -48,68 +47,30 @@ class BasketController extends Controller
             $request->input('order_note')
         );
 
-        // // Сохраняем заметку
-        // $order->note = $request->input('order_note', null);
-        // $order->save();
-
-        if ($order === true)
-        {
-            $order = \App\Models\Order::latest()->first();
-        }
-        // \Log::info('ORDER ID:', ['order_id' => $order->id]);
-
-
-        if (!$order)
-        {
+        if (!$order) {
             session()->flash('warning', __('basket.product_is_not_available'));
             return redirect()->route('basket');
         }
 
-        // Создаем счёт через Telcell
         $buyer = $request->phone ?: $email;
-        $description = "Оплата заказа #{$order->id}";
-        // $issuerId = (string)$order->id;
-        // Log::info("BasketController->basketConfirm");
-        // $result = $telcell->createInvoice(
-        //     $buyer,         // string
-        //     $order->sum,    // float
-        //     $order->id,     // int — ID заказа
-        //     1,              // valid_days
-        //     $description    // строка описания (опционально)
-        // );
-        // $invoiceHtml = $telcell->createInvoiceHtml(
-        //     $buyer,
-        //     $order->sum,
-        //     $order->id
-        // );
-        // Log::info("BasketController->basketConfirm after createInvoice");
-        Log::info("BasketController->basketConfirm before telcell");
 
-        $invoiceHtml = $telcell->createInvoiceHtml(
-            $order,
-            $buyer
-        );
+        Log::info('BasketController before Telcell', ['order_id' => $order->id]);
 
-        Log::info("BasketController->basketConfirm after telcell");
+        $invoiceHtml = $telcell->createInvoiceHtml($order, $buyer);
+
+        Log::info('BasketController after Telcell', [
+            'order_id' => $order->id,
+            'html_empty' => empty($invoiceHtml),
+        ]);
+
+        // ✅ ВАЖНО
+        if (empty($invoiceHtml)) {
+            return redirect()->route('payment.pending', ['order' => $order->id]);
+        }
 
         return response($invoiceHtml);
-
-
-        session()->flash('success', __('basket.your_order_confirmed'));
-
-        // if (isset($result['invoice']))
-        // {
-        //     // Редирект на страницу оплаты Telcell
-        //     $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
-        //     return redirect()->away($paymentUrl);
-        // }
-        // Log::info("BasketController->basketConfirm after order confirmed");
-
-        // session()->flash('warning', 'Ошибка при создании платежа Telcell.');
-        return response($invoiceHtml);
-
-        // return redirect()->route('index');
     }
+
 
     public function basketClear()
     {
@@ -135,19 +96,11 @@ class BasketController extends Controller
         return view('order', compact('order', 'categories'));
     }
 
-    public function payWithTelcell($orderId)
+    public function payWithTelcell(Order $order)
     {
-        $order = Order::findOrFail($orderId);
-
-        $buyer = $order->buyer; // телефон покупателя
-        $sum = $order->total;   // сумма заказа
-
-        // Генерируем HTML форму Telcell
-        $formHtml = app(TelcellService::class)->createInvoiceHtml($buyer, $sum, $orderId);
-
-        // Возвращаем view, которая сразу отправляет форму
-        return response()->view('telcell.autopost', ['formHtml' => $formHtml]);
+        return redirect()->route('payment.pending', ['order' => $order->id]);
     }
+
 
 
     public function basketAdd(Request $request, Sku $skus)
