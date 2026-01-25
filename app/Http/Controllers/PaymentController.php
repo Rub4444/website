@@ -119,8 +119,14 @@ class PaymentController extends Controller
         }
 
         // твой формат: base64(order_id|timestamp)
-        $decoded = base64_decode($issuerId);
-        [$orderId] = explode('|', $decoded);
+        if (str_contains($issuerId, '|')) {
+            // пришёл как "152|timestamp"
+            [$orderId] = explode('|', $issuerId);
+        } else {
+            // пришёл в base64
+            [$orderId] = explode('|', base64_decode($issuerId));
+        }
+        $orderId = (int) $orderId;
 
         $order = Order::find($orderId);
         if (!$order) {
