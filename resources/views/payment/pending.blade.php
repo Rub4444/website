@@ -17,13 +17,13 @@ setInterval(async () => {
     const data = await res.json();
 
     if (data.status === 'PAID') {
-        window.location.href = '/payment/return?order={{ $order->id }}&status=success';
+        window.location.href = '/payment/success/{{ $order->id }}';
     }
 
-    if (data.status === 'REJECTED') {
-        window.location.href = '/payment/return?order={{ $order->id }}&status=fail';
+    if (data.invoice_status === 'REJECTED') {
+        window.location.href = '/payment/fail/{{ $order->id }}';
     }
-}, 3000);
+}, 2000);
 </script>
 
 @endsection

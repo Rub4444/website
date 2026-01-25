@@ -19,16 +19,16 @@ class PaymentController extends Controller
     /**
      * Создание счёта и редирект на Telcell
      */
-    public function createPayment(Order $order)
-    {
-        $buyer = $order->phone ?: $order->email;
-        $sum   = $order->sum;
-        Log::alert("createPayment");
-        // Генерируем HTML форму Telcell
-        $formHtml = $this->telcell->createInvoiceHtml($buyer, $sum, $order->id);
+    // public function createPayment(Order $order)
+    // {
+    //     $buyer = $order->phone ?: $order->email;
+    //     $sum   = $order->sum;
+    //     Log::alert("createPayment");
+    //     // Генерируем HTML форму Telcell
+    //     $formHtml = $this->telcell->createInvoiceHtml($buyer, $sum, $order->id);
 
-        return response()->view('telcell.autopost', ['formHtml' => $formHtml]);
-    }
+    //     return response()->view('telcell.autopost', ['formHtml' => $formHtml]);
+    // }
 
     /**
      * Callback от Telcell
@@ -147,54 +147,54 @@ class PaymentController extends Controller
 
 
 
-    protected function processPayment(Request $request)
-    {
-        try {
-            $invoiceId = $request->input('invoice');
-            $issuerId  = $request->input('issuer_id');
-            $status    = strtoupper($request->input('status', ''));
+    // protected function processPayment(Request $request)
+    // {
+    //     try {
+    //         $invoiceId = $request->input('invoice');
+    //         $issuerId  = $request->input('issuer_id');
+    //         $status    = strtoupper($request->input('status', ''));
 
-            $decodedIssuerId = $issuerId ? base64_decode($issuerId) : null;
+    //         $decodedIssuerId = $issuerId ? base64_decode($issuerId) : null;
 
-            $order = Order::where('invoice_id', $invoiceId)
-                ->orWhere('issuer_id', $decodedIssuerId)
-                ->first();
+    //         $order = Order::where('invoice_id', $invoiceId)
+    //             ->orWhere('issuer_id', $decodedIssuerId)
+    //             ->first();
 
-            if (!$order)
-            {
-                \Log::warning('Order not found after callback', [
-                    'invoice' => $invoiceId,
-                    'issuer_id' => $decodedIssuerId
-                ]);
-                return;
-            }
+    //         if (!$order)
+    //         {
+    //             \Log::warning('Order not found after callback', [
+    //                 'invoice' => $invoiceId,
+    //                 'issuer_id' => $decodedIssuerId
+    //             ]);
+    //             return;
+    //         }
 
-            if ($status === 'PAID')
-            {
-                $order->markAsPaid();
-                // Отправка письма
-                Mail::to($email)->send(new OrderCreated($name, $order));
-                // \Log::info('Order marked as PAID', ['order_id' => $order->id]);
-            }
-            elseif ($status === 'REJECTED')
-            {
-                $order->markAsCancelled();
-                // \Log::info('Order marked as REJECTED', ['order_id' => $order->id]);
-            }
-            else
-            {
-                \Log::warning('Unknown payment status', ['status' => $status, 'order_id' => $order->id]);
-            }
+    //         if ($status === 'PAID')
+    //         {
+    //             $order->markAsPaid();
+    //             // Отправка письма
+    //             Mail::to($email)->send(new OrderCreated($name, $order));
+    //             // \Log::info('Order marked as PAID', ['order_id' => $order->id]);
+    //         }
+    //         elseif ($status === 'REJECTED')
+    //         {
+    //             $order->markAsCancelled();
+    //             // \Log::info('Order marked as REJECTED', ['order_id' => $order->id]);
+    //         }
+    //         else
+    //         {
+    //             \Log::warning('Unknown payment status', ['status' => $status, 'order_id' => $order->id]);
+    //         }
 
-        }
-        catch (\Throwable $e)
-        {
-            \Log::error('Error in processing Telcell callback', [
-                'message' => $e->getMessage(),
-                'trace'   => $e->getTraceAsString(),
-            ]);
-        }
-    }
+    //     }
+    //     catch (\Throwable $e)
+    //     {
+    //         \Log::error('Error in processing Telcell callback', [
+    //             'message' => $e->getMessage(),
+    //             'trace'   => $e->getTraceAsString(),
+    //         ]);
+    //     }
+    // }
 
 
 

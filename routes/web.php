@@ -20,6 +20,7 @@ use App\Http\Controllers\WishlistController;
 
 use App\Http\Controllers\ProductImportController;
 use App\Http\Controllers\PaymentController;
+use App\Models\Order;
 
 Auth::routes([
     'reset'=>true,
@@ -130,13 +131,12 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::get('/payment/pending/{order}', [PaymentController::class, 'pending'])
             ->name('payment.pending');
 
-        Route::get('/payment/status/{order}', function ($orderId) {
-            $order = \App\Models\Order::findOrFail($orderId);
-
+        Route::get('/payment/status/{order}', function (Order $order) {
             return response()->json([
-                'status' => $order->invoice_status,
+                'status' => $order->status,
+                'invoice_status' => $order->invoice_status,
             ]);
-        });
+        })->name('payment.status');
 
 
 
