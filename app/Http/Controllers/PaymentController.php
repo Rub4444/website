@@ -205,7 +205,8 @@ class PaymentController extends Controller
 {
     Log::alert('handleReturn');
 
-    $orderId = (int) $request->input('order');
+    $orderRaw = $request->input('order');
+    $orderId = (int) explode('|', $orderRaw)[0];
     $order = Order::find($orderId);
 
     if (!$order) {
