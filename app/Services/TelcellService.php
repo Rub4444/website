@@ -28,12 +28,13 @@ class TelcellService
             throw new \RuntimeException('Invoice already created');
         }
 
-        // $buyer = preg_replace('/\D/', '', $buyer);
+        // ОБЯЗАТЕЛЬНО
+        $buyer = preg_replace('/\D/', '', $buyer);
 
         $issuerId = base64_encode($order->id . '|' . time());
 
         $amount   = number_format($order->getTotalForPayment(), 2, '.', '');
-        $currency = 'AMD';
+        $currency = '֏';
         $product  = base64_encode('IjevanMarket');
 
         $checksum = md5(
@@ -50,7 +51,7 @@ class TelcellService
             'action'        => 'PostInvoice',
             'issuer'        => $this->shopId,
             'currency'      => $currency,
-            'price'         => (string)$amount,
+            'price'         => $amount,
             'product'       => $product,
             'issuer_id'     => $issuerId,
             'valid_days'    => 1,
@@ -62,7 +63,7 @@ class TelcellService
             'callbackUrl'   => route('payment.callback', [], true),
         ];
 
-        Log::info('TELCELL PAYLOAD', $payload); // 👈 ОБЯЗАТЕЛЬНО ОСТАВЬ
+        Log::info('TELCELL PAYLOAD', $payload);
 
         $response = Http::asForm()->post($this->url, $payload);
 
@@ -85,25 +86,22 @@ class TelcellService
      */
     public function verifyCallback(array $data): bool
     {
-        if (!isset(
-            $data['checksum'],
-            $data['invoice'],
-            $data['issuer_id'],
-            $data['status']
-        )) {
-            return false;
+        foreach (['invoice','issuer_id','payment_id','buyer','currency','sum','time','status','checksum'] as $key) {
+            if (!isset($data[$key])) {
+                return false;
+            }
         }
 
         $checksumString =
-        config('services.telcell.shop_key') .
-        $data['invoice'] .
-        $data['issuer_id'] .
-        ($data['payment_id'] ?? '') .
-        ($data['currency'] ?? '') .
-        ($data['sum'] ?? '') .
-        ($data['time'] ?? '') .
-        $data['status'];
-
+            $this->shopKey .
+            $data['invoice'] .
+            $data['issuer_id'] .
+            $data['payment_id'] .
+            $data['buyer'] .
+            $data['currency'] .
+            $data['sum'] .
+            $data['time'] .
+            $data['status'];
 
         $expected = md5($checksumString);
 
@@ -115,6 +113,7 @@ class TelcellService
 
         return hash_equals($expected, $data['checksum']);
     }
+
 
 
     /**
