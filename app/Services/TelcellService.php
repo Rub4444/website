@@ -28,12 +28,11 @@ class TelcellService
             throw new \RuntimeException('Invoice already created');
         }
 
+        $buyer = preg_replace('/\D/', '', $buyer); // 🔴 ОБЯЗАТЕЛЬНО
 
-        // безопасный issuer_id
-        $issuerId = base64_encode($order->id . '|' . now()->timestamp);
+        $issuerId = base64_encode($order->id . '|' . time());
 
         $amount   = number_format($order->getTotalForPayment(), 2, '.', '');
-        // $currency = 51;
         $currency = 'AMD';
         $product  = base64_encode('IjevanMarket');
 
@@ -51,7 +50,7 @@ class TelcellService
             'action'        => 'PostInvoice',
             'issuer'        => $this->shopId,
             'currency'      => $currency,
-            'price'         => $amount,
+            'price'         => (string)$amount,
             'product'       => $product,
             'issuer_id'     => $issuerId,
             'valid_days'    => 1,
@@ -63,6 +62,8 @@ class TelcellService
             'callbackUrl'   => route('payment.callback', [], true),
         ];
 
+        Log::info('TELCELL PAYLOAD', $payload); // 👈 ОБЯЗАТЕЛЬНО ОСТАВЬ
+
         $response = Http::asForm()->post($this->url, $payload);
 
         if (!$response->successful()) {
@@ -70,22 +71,14 @@ class TelcellService
             throw new \RuntimeException('Telcell invoice error');
         }
 
-        Log::info('Telcell invoice created', [
-            'order_id'   => $order->id,
-            'issuer_id'  => $issuerId,
-            'amount'     => $amount,
-            'buyer'      => $buyer,
-        ]);
-
-
         $order->update([
             'issuer_id'      => $issuerId,
-            'invoice_id'     => null,
             'invoice_status' => 'CREATED',
         ]);
 
         return $payload;
     }
+
 
     /**
      * Проверка подписи callback
