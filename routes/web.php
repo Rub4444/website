@@ -17,27 +17,23 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishlistController;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductImportController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Order;
-use Illuminate\Support\Facades\Auth;
 
 Auth::routes([
     'reset'=>true,
     'confirm'=>false,
     'verify'=>true
 ]);
-
-Route::get('/api/payment-status/{order}', function (Order $order) {
-    Log::info('🟢 STATUS HIT', ['order' => $order->id]);
-
+    
+Route::get('/payment/status/{order}', function (Order $order) {
     return response()->json([
         'status' => $order->status,
         'invoice_status' => $order->invoice_status,
     ]);
-});
-
+})->name('payment.status');
 
 Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
     Route::get('/email/verify', function ()
