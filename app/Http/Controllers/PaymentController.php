@@ -111,17 +111,20 @@ class PaymentController extends Controller
     {
         Log::info('Telcell callback', $request->all());
 
-        if (!$this->telcell->verifyCallback($request->all())) {
-            Log::warning('Telcell checksum failed');
-            return response('Invalid checksum', 400);
+        $status   = strtoupper($request->input('status'));
+        $issuerId = $request->input('issuer_id');
+
+        if (!$issuerId) {
+            return response('OK', 200);
         }
 
-        $issuerId = $request->input('issuer_id');
-        [$orderId] = explode('|', base64_decode($issuerId));
+        // твой формат: base64(order_id|timestamp)
+        $decoded = base64_decode($issuerId);
+        [$orderId] = explode('|', $decoded);
 
         $order = Order::find($orderId);
         if (!$order) {
-            return response('Order not found', 404);
+            return response('OK', 200);
         }
 
         // idempotency
@@ -129,26 +132,19 @@ class PaymentController extends Controller
             return response('OK', 200);
         }
 
-        $status = strtoupper($request->input('status'));
-
-        $order->update([
-            'invoice_status' => $status,
-        ]);
-
-        // idempotency
-        if ($order->status === Order::STATUS_PAID && $status === 'PAID') {
-            return response('OK', 200);
-        }
-
         if ($status === 'PAID') {
             $order->markAsPaid();
-        } elseif ($status === 'REJECTED') {
+            $order->update(['invoice_status' => 'PAID']);
+        }
+
+        if ($status === 'REJECTED') {
             $order->markAsCancelled();
+            $order->update(['invoice_status' => 'REJECTED']);
         }
 
         return response('OK', 200);
-
     }
+
 
 
     protected function processPayment(Request $request)

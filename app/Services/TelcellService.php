@@ -28,7 +28,7 @@ class TelcellService
             throw new \RuntimeException('Invoice already created');
         }
 
-        $buyer = preg_replace('/\D/', '', $buyer); // 🔴 ОБЯЗАТЕЛЬНО
+        // $buyer = preg_replace('/\D/', '', $buyer);
 
         $issuerId = base64_encode($order->id . '|' . time());
 
@@ -95,15 +95,15 @@ class TelcellService
         }
 
         $checksumString =
-            config('services.telcell.shop_key') .
-            $data['invoice'] .
-            $data['issuer_id'] .
-            ($data['payment_id'] ?? '') .
-            ($data['buyer'] ?? '') .
-            ($data['currency'] ?? '') .
-            ($data['sum'] ?? '') .
-            ($data['time'] ?? '') .
-            $data['status'];
+        config('services.telcell.shop_key') .
+        $data['invoice'] .
+        $data['issuer_id'] .
+        ($data['payment_id'] ?? '') .
+        ($data['currency'] ?? '') .
+        ($data['sum'] ?? '') .
+        ($data['time'] ?? '') .
+        $data['status'];
+
 
         $expected = md5($checksumString);
 
