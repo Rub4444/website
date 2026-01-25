@@ -33,8 +33,8 @@ class TelcellService
         $issuerId = base64_encode($order->id . '|' . now()->timestamp);
 
         $amount   = number_format($order->getTotalForPayment(), 2, '.', '');
-        $currency = 51;
-        // $currency = 'AMD';
+        // $currency = 51;
+        $currency = 'AMD';
         $product  = base64_encode('IjevanMarket');
 
         $checksum = md5(
