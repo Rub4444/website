@@ -12,7 +12,7 @@
 </div>
 
 <script>
-const statusUrl = "/api/payment-status/{{ $order->id }}";
+const statusUrl = "/payment/status/{{ $order->id }}";
 let tries = 0;
 
 console.log('⏳ Pending page loaded');

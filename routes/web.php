@@ -28,7 +28,7 @@ Auth::routes([
     'verify'=>true
 ]);
     
-Route::get('/api/payment/status/{order}', function (Order $order) {
+Route::get('/payment/status/{order}', function (Order $order) {
     return response()->json([
         'status' => $order->status,
         'invoice_status' => $order->invoice_status,
