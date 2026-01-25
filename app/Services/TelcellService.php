@@ -24,6 +24,15 @@ class TelcellService
      */
     public function createInvoice(Order $order, string $buyer): array
     {
+        if ($order->invoice_status === 'CREATED') {
+            Log::warning('Telcell invoice already exists', [
+                'order_id' => $order->id,
+                'issuer_id' => $order->issuer_id,
+            ]);
+
+            return [];
+        }
+
         // безопасный issuer_id
         $issuerId = base64_encode($order->id . '|' . now()->timestamp);
 
@@ -64,8 +73,17 @@ class TelcellService
             throw new \RuntimeException('Telcell invoice error');
         }
 
+        Log::info('Telcell invoice created', [
+            'order_id'   => $order->id,
+            'issuer_id'  => $issuerId,
+            'amount'     => $amount,
+            'buyer'      => $buyer,
+        ]);
+
+
         $order->update([
             'issuer_id'      => $issuerId,
+            'invoice_id'     => null,
             'invoice_status' => 'CREATED',
         ]);
 
@@ -110,4 +128,24 @@ class TelcellService
 
         return hash_equals($expected, $data['checksum']);
     }
+
+    /**
+     * HTML-форма с автосабмитом (редирект на Telcell)
+     */
+    public function createInvoiceHtml(Order $order, string $buyer): string
+    {
+        $payload = $this->createInvoice($order, $buyer);
+
+        $html = '<form id="telcellForm" method="POST" action="'.$this->url.'">';
+
+        foreach ($payload as $key => $value) {
+            $html .= '<input type="hidden" name="'.$key.'" value="'.htmlspecialchars($value).'">';
+        }
+
+        $html .= '</form>';
+        $html .= '<script>document.getElementById("telcellForm").submit();</script>';
+
+        return $html;
+    }
+
 }

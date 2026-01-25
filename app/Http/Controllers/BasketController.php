@@ -69,20 +69,31 @@ class BasketController extends Controller
         $buyer = $request->phone ?: $email;
         $description = "Оплата заказа #{$order->id}";
         // $issuerId = (string)$order->id;
-        Log::info("BasketController->basketConfirm");
-        $result = $telcell->createInvoice(
-            $buyer,         // string
-            $order->sum,    // float
-            $order->id,     // int — ID заказа
-            1,              // valid_days
-            $description    // строка описания (опционально)
-        );
+        // Log::info("BasketController->basketConfirm");
+        // $result = $telcell->createInvoice(
+        //     $buyer,         // string
+        //     $order->sum,    // float
+        //     $order->id,     // int — ID заказа
+        //     1,              // valid_days
+        //     $description    // строка описания (опционально)
+        // );
+        // $invoiceHtml = $telcell->createInvoiceHtml(
+        //     $buyer,
+        //     $order->sum,
+        //     $order->id
+        // );
+        // Log::info("BasketController->basketConfirm after createInvoice");
+        Log::info("BasketController->basketConfirm before telcell");
+
         $invoiceHtml = $telcell->createInvoiceHtml(
-            $buyer,
-            $order->sum,
-            $order->id
+            $order,
+            $buyer
         );
-        Log::info("BasketController->basketConfirm after createInvoice");
+
+        Log::info("BasketController->basketConfirm after telcell");
+
+        return response($invoiceHtml);
+
 
         session()->flash('success', __('basket.your_order_confirmed'));
 
@@ -92,7 +103,7 @@ class BasketController extends Controller
         //     $paymentUrl = "https://telcellmoney.am/payments/invoice/?invoice={$result['invoice']}&return_url=" . route('payment.return');
         //     return redirect()->away($paymentUrl);
         // }
-        Log::info("BasketController->basketConfirm after order confirmed");
+        // Log::info("BasketController->basketConfirm after order confirmed");
 
         // session()->flash('warning', 'Ошибка при создании платежа Telcell.');
         return response($invoiceHtml);
