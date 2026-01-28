@@ -35,19 +35,20 @@ Route::get('/payment/status/{order}', function (Order $order) {
     ]);
 })->name('payment.status');
 
-// Route::get('/payment/success/{order}', [PaymentController::class, 'success'])
-//     ->name('payment.success');
+Route::get('/payment/pending', [PaymentController::class, 'pending'])
+    ->name('payment.pending');
 
+Route::get('/payment/success', [PaymentController::class, 'success'])
+    ->name('payment.success');
+
+Route::get('/payment/failed', [PaymentController::class, 'failed'])
+    ->name('payment.failed');
 
 Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
     Route::get('/email/verify', function ()
     {
         return view('auth.verify');
     })->name('verification.notice');
-
-    // Route::get('/locale/{locale}', [MainController::class, 'changeLocale'])->name('locale');
-    // routes/web.php
-
 
     Route::get('/locale/{lang}', function ($lang) {
         if (in_array($lang, ['en', 'hy'])) {
@@ -140,8 +141,8 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
         Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
         Route::get('/payment/return', [PaymentController::class, 'handleReturn'])->name('payment.return');
 
-        Route::get('/payment/pending/{order}', [PaymentController::class, 'pending'])
-            ->name('payment.pending');
+        // Route::get('/payment/pending/{order}', [PaymentController::class, 'pending'])
+        //     ->name('payment.pending');
 
         Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
