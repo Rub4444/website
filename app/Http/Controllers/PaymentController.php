@@ -104,6 +104,6 @@ class PaymentController extends Controller
 
     public function failed()
     {
-        return view('payment.failed');
+        return view('payment.fail');
     }
 }
