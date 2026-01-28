@@ -79,14 +79,13 @@ class PaymentController extends Controller
     public function pending(Request $request)
     {
         $orderId = (int) $request->get('order_id');
-
         $order = Order::find($orderId);
 
-        if (!$order) {
+        if (! $order) {
             return redirect()->route('payment.failed');
         }
 
-        if ($order->status === Order::STATUS_PAID) {
+        if ($order->invoice_status === 'PAID') {
             return redirect()->route('payment.success');
         }
 
@@ -96,6 +95,7 @@ class PaymentController extends Controller
 
         return view('payment.pending', compact('order'));
     }
+
 
     public function success()
     {
