@@ -710,7 +710,11 @@
 
             <hr class="text-white">
             <div class="text-center">
-                <p class="mb-0">&copy; 2025 <a href="">@lang('main.online_shop')</a>. @lang('main.all_right')</p>
+                <p class="mb-0">
+                    &copy; {{ now()->year }}
+                    <a href="{{ url('/') }}">@lang('main.online_shop')</a>.
+                    @lang('main.all_right')
+                </p>
             </div>
         </div>
     </footer>

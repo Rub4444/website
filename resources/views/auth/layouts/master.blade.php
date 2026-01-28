@@ -275,7 +275,11 @@
             </div>
             <hr class="text-white">
             <div class="text-center">
-                <p class="mb-0">&copy; 2025 <a href="">Իջևան Մարկետ</a>. Բոլոր իրավունքները պաշտպանված են</p>
+                <p class="mb-0">
+                    &copy; {{ now()->year }}
+                    <a href="{{ url('/') }}">Իջևան Մարկետ</a>.
+                    Բոլոր իրավունքները պաշտպանված են
+                </p>
             </div>
         </div>
     </footer>

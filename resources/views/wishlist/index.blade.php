@@ -30,8 +30,14 @@
                                 @endauth
 
                                 <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
-                                    <img src="{{ asset('storage/' . $sku->image) }}" class="rounded me-3" width="60" height="60"
+                                    @if ($sku->image)
+                                        <img src="{{ asset('storage/' . $sku->image) }}" class="rounded me-3" width="60" height="60"
                                          alt="" style="width: 70px; height: 70px; object-fit: contain;">
+                                    @else
+                                        <img src="{{ asset('img/no-image.png') }}" class="rounded me-3" width="60" height="60"
+                                         alt="No Image" style="width: 70px; height: 70px; object-fit: contain;">
+                                    @endif
+                                    
                                 </a>
 
                                 <div>
