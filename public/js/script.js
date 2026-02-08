@@ -187,6 +187,70 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   });
 
+  /* ================= OFFCANVAS & SEARCH (data-offcanvas) ================= */
+  const offcanvasEl = $(".offcanvas__header");
+  const searchBoxEl = $(".predictive__search--box");
+  const body = document.body;
+
+  function closeOffcanvas() {
+    offcanvasEl?.classList.remove("open");
+    body.classList.remove("overlay__active");
+  }
+  function closeSearch() {
+    searchBoxEl?.classList.remove("active");
+    body.classList.remove("overlay__active");
+  }
+  function closeAllPanels() {
+    closeOffcanvas();
+    closeSearch();
+  }
+
+  document.addEventListener("click", (e) => {
+    const target = e.target;
+    if (!target || !target.closest) return;
+
+    if (target.closest("[data-offcanvas]")) {
+      if (target.closest(".offcanvas__header--menu__open--btn")) {
+        e.preventDefault();
+        offcanvasEl?.classList.add("open");
+        body.classList.add("overlay__active");
+        return;
+      }
+      if (target.closest(".offcanvas__close--btn")) {
+        e.preventDefault();
+        closeOffcanvas();
+        return;
+      }
+      if (target.closest(".search__open--btn")) {
+        e.preventDefault();
+        searchBoxEl?.classList.add("active");
+        body.classList.add("overlay__active");
+        return;
+      }
+      if (target.closest(".predictive__search--close__btn")) {
+        e.preventDefault();
+        closeSearch();
+        return;
+      }
+    }
+
+    if (body.classList.contains("overlay__active")) {
+      if (!target.closest(".offcanvas__header") && !target.closest(".predictive__search--box")) {
+        closeAllPanels();
+      }
+    }
+  });
+
+  /* ================= CATEGORIES DROPDOWN ================= */
+  const categoriesHeader = $(".categories__menu--header");
+  const dropdownCategories = $(".dropdown__categories--menu");
+  if (categoriesHeader && dropdownCategories) {
+    categoriesHeader.addEventListener("click", (e) => {
+      e.preventDefault();
+      dropdownCategories.classList.toggle("active");
+    });
+  }
+
   /* ================= NEWSLETTER ================= */
   const popup = $(".newsletter__popup");
   if (popup && !localStorage.getItem("newsletter__show")) {
