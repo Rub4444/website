@@ -39,12 +39,14 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $skus = $order->skus()->withTrashed()->get();
+        $order->load(['currency', 'coupon']);
+        $skus = $order->skus()->withTrashed()->with('product')->get();
         return view('auth.orders.show', compact('order', 'skus'));
     }
 
     public function confirm(Order $order)
     {
+        $order->load('user');
         $order->markAsShipped(); // вместо $order->status = 5
 
         // Берём email из пользователя, если есть, иначе из заказа
@@ -65,8 +67,9 @@ class OrderController extends Controller
             'cancellation_comment' => 'nullable|string|max:1000',
         ]);
 
+        $order->load('skus');
         // Восстанавливаем товары на склад
-        foreach($order->skus as $sku)
+        foreach ($order->skus as $sku)
         {
             $sku->count += $sku->pivot->count;
             $sku->save();

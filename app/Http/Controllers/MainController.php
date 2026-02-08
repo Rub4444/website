@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use DebugBar\DebugBar;
-use Illuminate\Support\Facades\Cache;
 
 
 class MainController extends Controller
@@ -58,16 +57,16 @@ class MainController extends Controller
     {
         $banners = \App\Models\Banner::where('is_active', true)->get();
 
-        $categories = Category::whereHas('products')->get();
+        // Категории для шаблона — из CategoriesComposer (кеш view_categories)
 
         // --- Random 8 товаров ---
-        $randomSkus = Sku::with(['product', 'product.category'])
+        $randomSkus = Sku::with(['product', 'product.category', 'propertyOptions'])
             ->inRandomOrder()
             ->take(8)
             ->get();
 
         // --- Latest 8 товаров (новинки) ---
-        $newSkus = Sku::with(['product', 'product.category'])
+        $newSkus = Sku::with(['product', 'product.category', 'propertyOptions'])
             ->latest()
             ->take(8)
             ->get();
@@ -84,7 +83,7 @@ class MainController extends Controller
             session()->flash('warning', 'Վճարումը դեռ չի հաստատվել');
         }
 
-        return view('index', compact('categories', 'randomSkus', 'newSkus', 'banners'));
+        return view('index', compact('randomSkus', 'newSkus', 'banners'));
     }
 
     public function categories()
@@ -101,11 +100,8 @@ class MainController extends Controller
 public function category(Request $request, $code)
 {
     $category = Category::where('code', $code)->firstOrFail();
-    // $categories = Category::all();
-    $categories = Cache::remember('categories', 3600, function ()
-    {
-        return Category::all();
-    });
+
+    // Категории для меню — из CategoriesComposer (кеш view_categories)
 
     // Запрос к SKU только из этой категории
     // $query = Sku::whereHas('product', function ($q) use ($category) {
@@ -134,10 +130,10 @@ public function category(Request $request, $code)
         }
     }
 
-    // Пагинация + сохранение query string
-    $skus = $query->paginate(32)->withQueryString();
+    // Пагинация + сохранение query string, eager load для карточки товара (избежание N+1)
+    $skus = $query->with(['product', 'product.category', 'propertyOptions'])->paginate(32)->withQueryString();
 
-    return view('category', compact('category', 'categories', 'skus'));
+    return view('category', compact('category', 'skus'));
 }
 
     public function sku($categoryCode, $productCode, Sku $skus)

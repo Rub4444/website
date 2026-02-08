@@ -20,8 +20,7 @@ class BasketController extends Controller
     public function basket()
     {
         $order = (new Basket())->getOrder();
-        $categories = Category::all();
-        return view('basket', compact('order', 'categories'));
+        return view('basket', compact('order'));
     }
 
     public function addAjax(Request $request, Sku $sku)
@@ -144,8 +143,7 @@ class BasketController extends Controller
             session()->flash('warning', __('basket.product_is_not_available'));
             return redirect()->route('basket');
         }
-        $categories = Category::all();
-        return view('order', compact('order', 'categories'));
+        return view('order', compact('order'));
     }
 
     public function payWithTelcell(Order $order)

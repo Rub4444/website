@@ -12,6 +12,7 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="preload" href="{{ asset('css/style.css') }}" as="style">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/glightbox.min.css') }}">
@@ -527,13 +528,12 @@
 
 
     <footer class="text-white py-5">
-        <script src="{{ asset('js/popper.js') }}"></script>
-        <script src="{{ asset('js/swiper-bundle.min.js') }}"></script>
-        <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('js/glightbox.min.js') }}"></script>
-        <script src="{{ asset('js/jquery.min.js') }}"></script>
-        <script src="{{ asset('js/script.js') }}"></script>
-        <script src="{{ asset('js/cart.js') }}"></script>
+        <script src="{{ asset('js/jquery.min.js') }}" defer></script>
+        <script src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
+        <script src="{{ asset('js/swiper-bundle.min.js') }}" defer></script>
+        <script src="{{ asset('js/glightbox.min.js') }}" defer></script>
+        <script src="{{ asset('js/script.js') }}" defer></script>
+        <script src="{{ asset('js/cart.js') }}" defer></script>
 
         <div class="container">
             <div class="row">

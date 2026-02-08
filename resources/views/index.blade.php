@@ -150,9 +150,9 @@
                                         <div class="banner-wrapper position-relative h-100">
                                             <a href="{{ $banner->link }}">
                                                 @if ($banner->image && Storage::disk('public')->exists($banner->image))
-                                                    <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title }}" class="banner-img">
+                                                    <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title }}" class="banner-img" loading="lazy" decoding="async">
                                                 @else
-                                                    <img src="{{ asset('img/no-image.png') }}" alt="No image" class="banner-img">
+                                                    <img src="{{ asset('img/no-image.png') }}" alt="No image" class="banner-img" loading="lazy">
                                                 @endif
                                             </a>
                                         </div>
@@ -191,12 +191,12 @@
                                             <img src="{{ Storage::url($banner->img_mobile) }}"
                                                 class="d-block w-100 rounded-4 h-100 img-fluid"
                                                 style="object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
-                                                alt="{{ $banner->title }}">
+                                                alt="{{ $banner->title }}" loading="lazy" decoding="async">
                                         @else
                                             <img src="{{ asset('img/no-image.png') }}"
                                                 class="d-block w-100 rounded-4 h-100 img-fluid"
                                                 style="object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
-                                                alt="No image">
+                                                alt="No image" loading="lazy">
                                         @endif
                                     </a>
                                     {{-- <div class="carousel-caption text-start">

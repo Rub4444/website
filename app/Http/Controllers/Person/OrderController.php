@@ -20,16 +20,14 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        // Проверка, что заказ принадлежит текущему пользователю
         if ($order->user_id !== Auth::id()) {
-            abort(403); // Если заказ не принадлежит пользователю, показываем ошибку
+            abort(403);
         }
 
-        // Получаем SKUs и их связанные данные (count и price)
-        $skus = $order->skus; // Теперь у вас есть доступ к count и price через pivot
+        $order->load(['skus.product', 'currency', 'coupon']);
+        $skus = $order->skus;
 
-        // Получаем координаты для карты (например, из данных заказа)
-        $latitude = $order->latitude;  // Предположим, что эти поля существуют в заказе
+        $latitude = $order->latitude;
         $longitude = $order->longitude;
 
         return view('auth.orders.show', compact('order', 'skus'));

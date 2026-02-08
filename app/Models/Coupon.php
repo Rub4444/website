@@ -37,7 +37,7 @@ class Coupon extends Model
     public function availableForUse()
     {
         $this->refresh();
-        if(!$this->isOnlyOnce() || $this->orders->count() === 0)
+        if (!$this->isOnlyOnce() || !$this->orders()->exists())
         {
             return is_null($this->expired_at) || $this->expired_at->gte(Carbon::now());
         }

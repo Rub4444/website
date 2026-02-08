@@ -11,14 +11,18 @@
         </a> --}}
         <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
             <div class="product-img-wrapper">
-                @if ($sku->image && file_exists(public_path('storage/' . $sku->image)))
+                @if ($sku->image)
                     <img src="{{ asset('storage/' . $sku->image) }}"
                         class="card-img-top img-fluid"
-                        alt="{{ $sku->product->__('name') }}">
+                        alt="{{ $sku->product->__('name') }}"
+                        loading="lazy"
+                        decoding="async"
+                        onerror="this.src='{{ asset('img/no-image.png') }}';this.onerror=null;">
                 @else
                     <img src="{{ asset('img/no-image.png') }}"
                         class="card-img-top img-fluid"
-                        alt="No image">
+                        alt="No image"
+                        loading="lazy">
                 @endif
             </div>
         </a>

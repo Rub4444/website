@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CategoryRequest;
 
@@ -57,6 +58,7 @@ public function store(CategoryRequest $request)
     }
 
     Category::create($params);
+    Cache::forget('view_categories');
 
     return redirect()->route('categories.index')
         ->with('success', 'Категория создана успешно!');
@@ -86,6 +88,7 @@ public function store(CategoryRequest $request)
     }
 
     $category->update($params);
+    Cache::forget('view_categories');
 
     return redirect()->route('categories.index')
         ->with('success', 'Категория обновлена успешно!');
@@ -107,6 +110,7 @@ public function store(CategoryRequest $request)
     }
 
     $category->delete();
+    Cache::forget('view_categories');
 
     return redirect()->route('categories.index')
         ->with('success', 'Категория удалена успешно!');

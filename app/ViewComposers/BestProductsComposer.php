@@ -26,9 +26,9 @@ class BestProductsComposer
         ->pluck('sku_id')
         ->toArray();
 
-        $bestSkus = Sku::with(['product', 'product.category'])
-        ->whereIn('id', $bestSkuIds)
-        ->get();
+        $bestSkus = Sku::with(['product', 'product.category', 'propertyOptions'])
+            ->whereIn('id', $bestSkuIds)
+            ->get();
 
         $view->with('bestSkus', $bestSkus);
     }

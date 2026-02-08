@@ -52,21 +52,26 @@ class Basket
 
     public function countAvailable($updateCount = false)
     {
+        $ids = $this->order->skus->pluck('id');
+        if ($ids->isEmpty()) {
+            return true;
+        }
+        $skusById = Sku::whereIn('id', $ids)->get()->keyBy('id');
         $skus = collect([]);
         foreach ($this->order->skus as $orderSku)
         {
-            $sku = Sku::find($orderSku->id);
-            if ($orderSku->countInOrder > $sku->count)
+            $sku = $skusById->get($orderSku->id);
+            if (!$sku || $orderSku->countInOrder > $sku->count)
             {
                 return false;
             }
-            if($updateCount)
+            if ($updateCount)
             {
                 $sku->count -= $orderSku->countInOrder;
                 $skus->push($sku);
             }
         }
-        if($updateCount)
+        if ($updateCount)
         {
             $skus->map->save();
         }

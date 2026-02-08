@@ -28,7 +28,12 @@ class ViewServiceProvider extends ServiceProvider
 
         View::composer('*', function($view)
         {
-            $currencySymbol = CurrencyConversion::getCurrencySymbol();
+            $currencyCode = session('currency', CurrencyConversion::DEFAULT_CURRENCY_CODE);
+            $currencySymbol = \Illuminate\Support\Facades\Cache::remember(
+                'currency_symbol_' . $currencyCode,
+                3600,
+                fn () => \App\Models\Currency::where('code', $currencyCode)->value('symbol') ?? '֏'
+            );
             $view->with('currencySymbol', $currencySymbol);
         });
     }

@@ -35,11 +35,9 @@ class ShopController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        // Здесь используем paginate, чтобы можно было применить withQueryString()
-        $skus = $query->paginate(60)->withQueryString(); // ✅ Пагинация + фильтры
+        // Здесь используем paginate, чтобы можно было применить withQueryString(); eager load для карточки (N+1)
+        $skus = $query->with(['product', 'product.category', 'propertyOptions'])->paginate(60)->withQueryString();
 
-        $categories = Category::all();
-
-        return view('shop.index', compact('skus', 'categories'));
+        return view('shop.index', compact('skus'));
     }
 }
