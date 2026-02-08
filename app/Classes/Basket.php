@@ -7,6 +7,7 @@ use App\Models\Sku;
 use App\Models\Coupon;
 use App\Mail\OrderCreated;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\Services\sConversion;
@@ -16,38 +17,77 @@ class Basket
 {
     protected $order;
 
+    /** @var CartStore|null */
+    protected $cartStore;
+
     public function __construct($createOrder = false)
     {
+        $this->cartStore = new CartStore();
         $order = session('order');
 
-        if (is_null($order) && $createOrder)
-        {
-            $data = [];
-
-            if (Auth::check())
-            {
-                $data['user_id'] = Auth::id();
+        if (is_null($order) && $createOrder) {
+            $userId = Auth::check() ? Auth::id() : null;
+            $items = $this->cartStore->getItems($userId, session()->getId());
+            if ($items !== []) {
+                $this->order = $this->buildOrderFromItems($items, $userId);
+                session(['order' => $this->order]);
+            } else {
+                $data = $userId ? ['user_id' => $userId] : [];
+                $data['currency_id'] = 1;
+                $this->order = new Order($data);
+                session(['order' => $this->order]);
             }
-
-            $data['currency_id'] = 1;
-
-            $this->order = new Order($data);
-
-            session(['order' => $this->order]);
-
-            // 👇 Добавляем пакет один раз при создании новой корзины
-            // $this->addPackageSku();
-        }
-        else
-        {
+        } else {
             $this->order = $order;
         }
+    }
 
+    /**
+     * @param array<int, float> $items sku_id => count
+     */
+    protected function buildOrderFromItems(array $items, ?int $userId): Order
+    {
+        $data = ['currency_id' => 1];
+        if ($userId) {
+            $data['user_id'] = $userId;
+        }
+        $order = new Order($data);
+        $skuIds = array_keys($items);
+        $skus = Sku::whereIn('id', $skuIds)->with('product')->get();
+        $collection = collect([]);
+        foreach ($skus as $sku) {
+            $count = $items[$sku->id] ?? 0;
+            if ($count <= 0) {
+                continue;
+            }
+            $sku->countInOrder = $count;
+            $sku->unit = $sku->product->unit ?? 'pcs';
+            $collection->push($sku);
+        }
+        $order->setRelation('skus', $collection);
+        return $order;
+    }
+
+    protected function syncCartToRedis(): void
+    {
+        $userId = $this->order->user_id ?? (Auth::check() ? Auth::id() : null);
+        $items = [];
+        foreach ($this->order->skus ?? [] as $sku) {
+            $items[$sku->id] = $sku->countInOrder;
+        }
+        $this->cartStore->setItems($userId, $items, session()->getId());
     }
 
     public function getOrder()
     {
         return $this->order;
+    }
+
+    public function clearCart(): void
+    {
+        $userId = Auth::check() ? Auth::id() : null;
+        $this->cartStore->forget($userId, session()->getId());
+        session()->forget('order');
     }
 
     public function countAvailable($updateCount = false)
@@ -80,39 +120,49 @@ class Basket
 
     public function saveOrder($name, $phone, $email, $deliveryType, $delivery_city = null, $delivery_street = null, $delivery_home = null, $note = null)
     {
-        if (!$this->countAvailable(true)) return false;
-
-        // Сохраняем заказ и получаем объект Order
-        $order = $this->order; // текущий Order в Basket
-        $skus = $order->skus;  // временно сохраняем товары
-
-        $order->name = $name;
-        $order->phone = $phone;
-        $order->email = $email;
-        $order->delivery_type = $deliveryType;
-        $order->delivery_city = $delivery_city;
-        $order->delivery_street = $delivery_street;
-        $order->delivery_home = $delivery_home;
-        $order->status = 1;
-        $order->note = $note;
-        $order->sum = max(0, $order->getFullSum());
-        if ($order->delivery_type === 'delivery' && $order->sum < 10000) {
-            $order->sum += 500;
+        if (!$this->countAvailable(true)) {
+            return false;
         }
 
-        $order->save(); // сохраняем заказ (теперь есть $order->id)
+        $order = $this->order;
+        $skus = $order->skus;
 
-        // Привязываем товары через pivot
-        foreach ($skus as $sku) {
-            $order->skus()->attach($sku->id, [
-                'count' => $sku->countInOrder,
-                'price' => $sku->price,
-            ]);
-        }
+        return DB::transaction(function () use ($order, $skus, $name, $phone, $email, $deliveryType, $delivery_city, $delivery_street, $delivery_home, $note) {
+            if ($order->getKey()) {
+                $locked = Order::where('id', $order->id)->lockForUpdate()->first();
+                if (!$locked || (int) $locked->status !== Order::STATUS_PENDING) {
+                    return null;
+                }
+            }
 
-        session()->forget('order');
+            $order->name = $name;
+            $order->phone = $phone;
+            $order->email = $email;
+            $order->delivery_type = $deliveryType;
+            $order->delivery_city = $delivery_city;
+            $order->delivery_street = $delivery_street;
+            $order->delivery_home = $delivery_home;
+            $order->status = Order::STATUS_PENDING;
+            $order->note = $note;
+            $order->sum = max(0, $order->getFullSum());
+            if ($order->delivery_type === 'delivery' && $order->sum < 10000) {
+                $order->sum += 500;
+            }
 
-        return $order; // возвращаем сам объект заказа
+            $order->save();
+
+            foreach ($skus as $sku) {
+                $order->skus()->attach($sku->id, [
+                    'count' => $sku->countInOrder,
+                    'price' => $sku->price,
+                ]);
+            }
+
+            $this->cartStore->forget($order->user_id, session()->getId());
+            session()->forget('order');
+
+            return $order;
+        });
     }
 
 
@@ -132,6 +182,7 @@ class Basket
                 $this->order->skus = $this->order->skus->filter(fn($s) => $s->id !== $sku->id);
             }
         }
+        $this->syncCartToRedis();
     }
 
 
@@ -172,6 +223,7 @@ class Basket
             $sku->unit = $unit; // сохраняем единицу для корзины
             $this->order->skus->push($sku);
         }
+        $this->syncCartToRedis();
         return true;
     }
 
