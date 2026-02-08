@@ -70,7 +70,6 @@
     </style>
 </head>
 <body  style="background-color: white;">
-    <!--Start preloader -->
     <div id="preloader" aria-live="polite">
         <div id="ctn-preloader" class="ctn-preloader">
             <div class="animation-preloader">
@@ -105,8 +104,6 @@
             <div class="loader-section section-right"></div>
         </div>
     </div>
-    <!-- End preloader -->
-    <!-- Start header area -->
     <header class="header__section header__transparent ">
         <div class="header__topbar bg__primary2 fixed-top">
             <div class="container">
@@ -169,6 +166,11 @@
                                             </g>
                                         </g>
                                     </svg>
+                                    <span id="cart-count">
+                                        {{ session()->has('order')
+                                            ? session('order')->skus->sum('countInOrder')
+                                            : 0 }}
+                                    </span>
                                 </a>
                             </li>
 
@@ -418,9 +420,7 @@
             </button>
         </div>
         <!-- End serch box area -->
-    <!-- End Offcanvas header menu -->
     </header>
-    <!-- End header area -->
 
     @if(session()->has('success'))
         <div class="col-12">
@@ -449,82 +449,6 @@
     @yield('content')
     @stack('scripts')
 
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.toggle-wishlist').forEach(button => {
-                button.addEventListener('click', function () {
-                    const skuId = this.dataset.id;
-                    const icon = this.querySelector('i');
-
-                    fetch('/wishlist/toggle/' + skuId, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.status === 'added') {
-                            this.setAttribute('aria-pressed', 'true');
-                            icon.classList.remove('bi-heart', 'text-secondary');
-                            icon.classList.add('bi-heart-fill', 'text-danger');
-                            this.title = 'Удалить из избранного';
-                        } else if (data.status === 'removed') {
-                            this.setAttribute('aria-pressed', 'false');
-                            icon.classList.remove('bi-heart-fill', 'text-danger');
-                            icon.classList.add('bi-heart', 'text-white');
-                            this.title = 'Добавить в избранное';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Ошибка при обновлении избранного:', error);
-                    });
-                });
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            // Toggle hidden categories
-            const toggleBtn = document.getElementById('toggleCategoriesBtn');
-            toggleBtn?.addEventListener('click', function () {
-                const extraItems = document.querySelectorAll('.extra-category');
-                const icon = this.querySelector('i');
-                const isHidden = extraItems[0]?.classList.contains('d-none');
-
-                extraItems.forEach(item => {
-                    item.classList.toggle('d-none');
-                });
-
-                if (isHidden) {
-                    icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
-                } else {
-                    icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
-                }
-            });
-        });
-
-        const scrollBtn = document.getElementById('scroll__top');
-
-        console.log(scrollBtn);
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollBtn.style.display = 'flex';
-            } else {
-                scrollBtn.style.display = 'none';
-            }
-        });
-
-        scrollBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-
-    </script> --}}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
@@ -609,7 +533,7 @@
         <script src="{{ asset('js/glightbox.min.js') }}"></script>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/script.js') }}"></script>
-
+        <script src="{{ asset('js/cart.js') }}"></script>
 
         <div class="container">
             <div class="row">

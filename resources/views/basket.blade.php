@@ -27,7 +27,7 @@
                                          alt="Product"
                                          class="rounded"
                                          style="width: 70px; height: 70px; object-fit: cover;"> --}}
-                                    @if ($sku->image)
+                                   @if ($sku->image && Storage::disk('public')->exists($sku->image))
                                         <img src="{{ Storage::url($sku->image) }}"
                                             alt="{{ $sku->product->__('name') }}"
                                             class="rounded"
@@ -35,7 +35,7 @@
                                     @else
                                         <img src="{{ asset('img/no-image.png') }}"
                                             class="rounded"
-                                            alt="No image"  
+                                            alt="No image"
                                             style="width: 70px; height: 70px; object-fit: contain;">
                                     @endif
                                 </a>
@@ -50,7 +50,7 @@
 
                         <!-- Количество -->
                         <td class="text-center">
-                            <div class="input-group justify-content-center" style="max-width: 130px; margin: auto;">
+                            {{-- <div class="input-group justify-content-center" style="max-width: 130px; margin: auto;">
                                 <form action="{{ route('basket-remove', $sku) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="quantity" value="{{ $sku->product->unit === 'kg' ? 0.5 : 1 }}">
@@ -68,6 +68,16 @@
                                     <input type="hidden" name="quantity" value="{{ $sku->product->unit === 'kg' ? 0.5 : 1 }}">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-2">+</button>
                                 </form>
+                            </div> --}}
+                            <div class="basket-controls"
+                                data-sku-id="{{ $sku->id }}"
+                                data-unit="{{ $sku->product->unit }}">
+                                
+                                <button class="btn btn-outline-secondary btn-sm basket-minus">−</button>
+
+                                <span class="basket-qty mx-2">{{ $sku->countInOrder }}</span>
+
+                                <button class="btn btn-outline-secondary btn-sm basket-plus">+</button>
                             </div>
                             <span>{{ $sku->product->unit === 'kg' ? __('order.kg') : __('order.piece') }}</span>
                         </td>
@@ -113,13 +123,13 @@
                     @if($order->hasCoupon())
                         <h5>
                             @lang('basket.cost'):
-                            <strike class="text-muted">{{ $order->getFullSum(false) }} {{ $currencySymbol }}</strike>
-                            <strong class="text-danger ms-2">{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
+                            <strike class="text-muted" id="basket-total-old">{{ $order->getFullSum(false) }} {{ $currencySymbol }}</strike>
+                            <strong class="text-danger ms-2" id="basket-total">{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
                         </h5>
                     @else
                         <h5>
                             @lang('basket.cost'):
-                            <strong>{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
+                            <strong id="basket-total">{{ $order->getFullSum() }} {{ $currencySymbol }}</strong>
                         </h5>
                     @endif
                 </div>

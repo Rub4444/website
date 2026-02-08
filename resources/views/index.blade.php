@@ -149,7 +149,11 @@
                                     <div class="col-12 col-md-6" style="height: 200px;">
                                         <div class="banner-wrapper position-relative h-100">
                                             <a href="{{ $banner->link }}">
-                                                <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title }}" class="banner-img">
+                                                @if ($banner->image && Storage::disk('public')->exists($banner->image))
+                                                    <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title }}" class="banner-img">
+                                                @else
+                                                    <img src="{{ asset('img/no-image.png') }}" alt="No image" class="banner-img">
+                                                @endif
                                             </a>
                                         </div>
                                     </div>
@@ -183,10 +187,17 @@
                             <div style="height: 200px;">
                                 <div class="position-relative h-100" style="overflow: hidden; border-radius: 1.5rem !important;">
                                     <a href="{{ $banner->link }}">
-                                        <img src="{{ Storage::url($banner->img_mobile) }}"
-                                            class="d-block w-100 rounded-4 h-100 img-fluid"
-                                            style="object-fit: cover; object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
-                                            alt="{{ $banner->title }}">
+                                        @if ($banner->img_mobile && Storage::disk('public')->exists($banner->img_mobile))
+                                            <img src="{{ Storage::url($banner->img_mobile) }}"
+                                                class="d-block w-100 rounded-4 h-100 img-fluid"
+                                                style="object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
+                                                alt="{{ $banner->title }}">
+                                        @else
+                                            <img src="{{ asset('img/no-image.png') }}"
+                                                class="d-block w-100 rounded-4 h-100 img-fluid"
+                                                style="object-fit: cover !important; width: 100% !important; height: 100% !important; border-radius: 1.5rem !important;"
+                                                alt="No image">
+                                        @endif
                                     </a>
                                     {{-- <div class="carousel-caption text-start">
                                         <h5 class="fw-bold">{{ $banner->title }}</h5>

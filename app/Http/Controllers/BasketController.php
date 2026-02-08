@@ -24,6 +24,58 @@ class BasketController extends Controller
         return view('basket', compact('order', 'categories'));
     }
 
+    public function addAjax(Request $request, Sku $sku)
+    {
+        $quantity = $request->input(
+            'quantity',
+            $sku->unit === 'kg' ? 0.5 : 1
+        );
+
+        $basket = new \App\Classes\Basket(true);
+        $result = $basket->addSku($sku, $quantity);
+
+        if (!$result) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Не удалось добавить товар'
+            ], 400);
+        }
+
+        $order = $basket->getOrder();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Товар добавлен в корзину',
+            'cart_count' => $order->skus->sum('countInOrder'),
+        ]);
+    }
+
+    public function updateAjax(Request $request, Sku $sku)
+    {
+        $delta = (float) $request->delta;
+
+        $basket = new Basket(true);
+
+        if ($delta > 0) {
+            $basket->addSku($sku, abs($delta));
+        } else {
+            $basket->removeSku($sku, abs($delta));
+        }
+
+        $order = $basket->getOrder();
+
+        $item = $order->skus->firstWhere('id', $sku->id);
+
+        return response()->json([
+            'success' => true,
+            'item_count' => $item?->countInOrder ?? 0,
+            'cart_count' => $order->skus->sum('countInOrder'),
+            'total_sum' => $order->getFullSum(),
+        ]);
+    }
+
+
+
     public function basketConfirm(Request $request, TelcellService $telcell)
     {
         $basket = new Basket();

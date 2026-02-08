@@ -11,7 +11,7 @@
         </a> --}}
         <a href="{{ route('sku', [$sku->product->category->code, $sku->product->code, $sku]) }}">
             <div class="product-img-wrapper">
-                @if ($sku->image)
+                @if ($sku->image && file_exists(public_path('storage/' . $sku->image)))
                     <img src="{{ asset('storage/' . $sku->image) }}"
                         class="card-img-top img-fluid"
                         alt="{{ $sku->product->__('name') }}">
@@ -85,7 +85,45 @@
             </p>
 
             <!-- Кнопка корзины -->
-            <form action="{{ route('basket-add', $sku) }}" method="POST" class="mt-2">
+            {{-- <button type="button"
+                    class="btn btn-success w-100 add-to-cart"
+                    data-sku-id="{{ $sku->id }}">
+                <i class="bi bi-cart-plus me-1"></i> @lang('main.basket')
+            </button> --}}
+            @php
+                $order = session('order');
+                $cartItem = $order?->skus->firstWhere('id', $sku->id);
+                $qtyInCart = $cartItem?->countInOrder ?? 0;
+            @endphp
+
+            {{-- КНОПКА "В КОРЗИНУ" --}}
+            <button type="button"
+                    class="btn btn-success w-100 add-to-cart {{ $qtyInCart > 0 ? 'd-none' : '' }}"
+                    data-sku-id="{{ $sku->id }}"
+                    data-unit="{{ $sku->product->unit }}">
+                <i class="bi bi-cart-plus me-1"></i> @lang('main.basket')
+            </button>
+
+
+            {{-- + / − (СКРЫТО ПО УМОЛЧАНИЮ) --}}
+            <div class="cart-controls mt-2 {{ $qtyInCart > 0 ? '' : 'd-none' }}"
+                data-sku-id="{{ $sku->id }}"
+                data-unit="{{ $sku->product->unit }}">
+
+                <button type="button"
+                        class="btn btn-outline-secondary btn-sm cart-minus"
+                        {{ $qtyInCart <= 0 ? 'disabled' : '' }}>
+                    −
+                </button>
+
+                <span class="cart-qty mx-2">{{ $qtyInCart }}</span>
+
+                <button type="button" class="btn btn-success btn-sm cart-plus">+</button>
+            </div>
+
+
+
+            {{-- <form action="{{ route('basket-add', $sku) }}" method="POST" class="mt-2">
                 @csrf
                 @if($sku->isAvailable())
                     <button type="submit" class="btn btn-success w-100">
@@ -96,7 +134,7 @@
                         @lang('main.available')
                     </button>
                 @endif
-            </form>
+            </form> --}}
         </div>
     </div>
 </div>

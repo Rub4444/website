@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\Services\sConversion;
+use Illuminate\Support\Facades\Log;
 
 class Basket
 {
@@ -132,6 +133,14 @@ class Basket
 
         public function addSku(Sku $sku, $quantity = null)
     {
+        Log::info('ADD SKU DEBUG', [
+            'sku_id' => $sku->id,
+            'quantity' => $quantity,
+            'available' => $sku->isAvailable(),
+            'count' => $sku->count ?? null,
+            'unit' => $sku->unit,
+            'price' => $sku->price,
+        ]);
         $unit = $sku->product->unit; // берём unit у продукта
         $quantity = $quantity ?? ($unit === 'kg' ? 0.5 : 1); // default 0.5kg или 1шт
 
@@ -158,6 +167,7 @@ class Basket
             $sku->unit = $unit; // сохраняем единицу для корзины
             $this->order->skus->push($sku);
         }
+        return true;
     }
 
     public function setCoupon(Coupon $coupon)

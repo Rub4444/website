@@ -114,14 +114,21 @@ Route::middleware([\App\Http\Middleware\LogVisit::class])->group(function () {
             return back()->with('message', 'Ссылка подтверждения отправлена на ваш email.');
         })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+        Route::post('/cart/add/{sku}', [BasketController::class, 'addAjax'])
+            ->name('cart.add.ajax');
+        Route::post('/cart/update/{sku}', [BasketController::class, 'updateAjax'])
+            ->name('cart.update.ajax');
+
+
         Route::group([
             'middleware' => ['basket_not_empty']
             // ete uzum enq basket@ grancven nor qcen
             // 'middleware' => ['auth', 'verified', 'basket_not_empty']
         ], function () {
 
-            Route::post('/basket/ajax/add/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxAdd'])->name('basket.ajax.add');
-            Route::post('/basket/ajax/remove/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxRemove'])->name('basket.ajax.remove');
+            // Route::post('/basket/ajax/add/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxAdd'])->name('basket.ajax.add');
+            // Route::post('/basket/ajax/remove/{sku}', [\App\Http\Controllers\BasketController::class, 'ajaxRemove'])->name('basket.ajax.remove');
+
 
             Route::delete('/basket/clear', [BasketController::class, 'basketClear'])->name('basket.clear');
 
